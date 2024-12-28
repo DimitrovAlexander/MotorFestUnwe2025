@@ -1,0 +1,81 @@
+﻿@page
+@model RegisterModel
+@{
+	ViewData["Title"] = "Регистрация";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+	<div class="col-md-4">
+		<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+			<h2>Регистрирай нов акаунт.</h2>
+			<hr />
+			<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+			<div class="form-floating mb-3">
+				<input asp-for="Input.FirstName" class="form-control" autocomplete="off" aria-required="true" placeholder="Име" />
+				<label asp-for="Input.FirstName">Име</label>
+				<span asp-validation-for="Input.FirstName" class="text-danger"></span>
+			</div>
+			<div class="form-floating mb-3">
+				<input asp-for="Input.LastName" class="form-control" autocomplete="off" aria-required="true" placeholder="Фамилия" />
+				<label asp-for="Input.LastName">Фамилия</label>
+				<span asp-validation-for="Input.LastName" class="text-danger"></span>
+			</div>
+
+			<div class="form-floating mb-3">
+				<input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+				<label asp-for="Input.Email">Имейл</label>
+				<span asp-validation-for="Input.Email" class="text-danger"></span>
+			</div>
+			<div class="form-floating mb-3">
+				<input asp-for="Input.Usernmae" class="form-control" autocomplete="username" aria-required="true" placeholder="Потребителско име" />
+				<label asp-for="Input.Usernmae">Потребителско име</label>
+				<span asp-validation-for="Input.Usernmae" class="text-danger"></span>
+			</div>
+
+			<div class="form-floating mb-3">
+				<input asp-for="Input.Identifier" class="form-control" autocomplete="off" aria-required="true" placeholder="ЕГН или Булстат" />
+				<label asp-for="Input.Identifier">Идентификатор</label>
+				<span asp-validation-for="Input.Identifier" class="text-danger"></span>
+			</div>
+			<div class="form-floating mb-3">
+				<input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Парола" />
+				<label asp-for="Input.Password">Парола</label>
+				<span asp-validation-for="Input.Password" class="text-danger"></span>
+			</div>
+			<div class="form-floating mb-3">
+				<input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Потвърдете паролата" />
+				<label asp-for="Input.ConfirmPassword">Потвърди паролата</label>
+				<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+			</div>
+
+			<!-- Radio Button Group for Role Selection -->
+			<div class="mb-3">
+				<label class="form-label">Роля</label>
+				<div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="role" id="participantRole" value="Participant" onchange="setRole(this.value)" />
+						<label class="form-check-label" for="participantRole">Участник</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="role" id="organizerRole" value="Organizer" onchange="setRole(this.value)" />
+						<label class="form-check-label" for="organizerRole">Организатор</label>
+					</div>
+				</div>
+			</div>
+			<input type="hidden" asp-for="Input.Role" id="roleInput" />
+
+			<button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Регистрирай се</button>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script>
+		function setRole(role) {
+			document.getElementById('roleInput').value = role;
+		}
+	</script>
+}
