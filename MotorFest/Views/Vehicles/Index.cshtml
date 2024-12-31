@@ -1,0 +1,92 @@
+﻿@model IEnumerable<MotorFest.Models.VehicleViewModel>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h1>Превозни средства</h1>
+
+<p>
+	<a asp-action="Create">Добави нов автомобил</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			@if (User.IsInRole("Administrator"))
+			{
+				<th>
+					@Html.DisplayNameFor(model => model.OwnerId)
+				</th>
+			}
+			<th>
+				@Html.DisplayNameFor(model => model.Manufacturer)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Model)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.YearOfManufacture)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Photo)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Category)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.EngineType)
+				@if (User.IsInRole("Administrator"))
+				{
+
+				<th>
+						@Html.DisplayNameFor(model => model.LastUpdate)
+				</th>
+				}
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				@if (User.IsInRole("Administrator"))
+				{
+					<td>
+						@Html.DisplayFor(modelItem => item.OwnerId)
+					</td>
+				}
+				<td>
+					@Html.DisplayFor(modelItem => item.Manufacturer)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Model)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.YearOfManufacture)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Photo)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Category.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.EngineType.Name)
+				</td>
+				@if (User.IsInRole("Administrator"))
+				{
+
+					<td>
+						@Html.DisplayFor(modelItem => item.LastUpdate)
+					</td>
+				}
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.Id">Редактирай</a> |
+					<a asp-action="Details" asp-route-id="@item.Id">Детайли за автомобила</a> |
+					<a asp-action="Delete" asp-route-id="@item.Id">Изтрий</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

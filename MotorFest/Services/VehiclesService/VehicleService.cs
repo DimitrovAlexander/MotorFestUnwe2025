@@ -1,0 +1,151 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MotorFest.Data;
+using MotorFest.Models;
+
+namespace MotorFest.Services.VehiclesService
+{
+    public class VehicleService : IVehicleService
+    {
+        private readonly MotorFestDbContext dbContext;
+
+        public VehicleService(MotorFestDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
+        public async Task<VehicleViewModel> Create(VehicleViewModel VehicleViewModel)
+        {
+            Vehicle vehicleEntity = new Vehicle
+            {
+                Id = VehicleViewModel.Id,
+                CategoryId = VehicleViewModel.CategoryId,
+                EngineTypeId = VehicleViewModel.EngineTypeId,
+                Manufacturer = VehicleViewModel.Manufacturer,
+                Model = VehicleViewModel.Model,
+                OwnerId = VehicleViewModel.OwnerId,
+                Photo = VehicleViewModel.Photo,
+                YearOfManufacture = VehicleViewModel.YearOfManufacture,
+                LastUpdate = DateTime.Now
+            };
+            await dbContext.Vehicles.AddAsync(vehicleEntity);
+            await dbContext.SaveChangesAsync();
+            return null;
+        }
+
+        public async Task<VehicleViewModel> Delete(int id)
+        {
+            var vehicle = dbContext.Vehicles.FirstOrDefault(x => x.Id == id);
+            if (vehicle != null)
+            {
+                dbContext.Vehicles.Remove(vehicle);
+                await dbContext.SaveChangesAsync();
+            }
+            return null;
+        }
+
+        public ICollection<VehicleViewModel> GetAll()
+        {
+
+            return dbContext.Vehicles
+                 .Include(x => x.EngineType)
+                 .Include(x => x.Owner)
+                 .Include(x => x.Category)
+
+                 .Select(vehicle => new VehicleViewModel
+                 {
+                     Id = vehicle.Id,
+                     Model = vehicle.Model,
+                     EngineType = new EngineTypeViewModel()
+                     {
+                         Id = vehicle.EngineTypeId,
+                         Name = vehicle.EngineType.Name
+
+                     },
+                     Manufacturer = vehicle.Manufacturer,
+                     Owner = new UserViewModel()
+                     {
+                         Id = vehicle.OwnerId,
+                         Firstname = vehicle.Owner.Firstname,
+                         Lastname = vehicle.Owner.Lastname,
+                         Identifier = vehicle.Owner.Identifier,
+
+                     },
+                     EngineTypeId = vehicle.EngineTypeId,
+                     OwnerId = vehicle.OwnerId,
+                     CategoryId = vehicle.CategoryId,
+                     Photo = vehicle.Photo,
+                     YearOfManufacture = vehicle.YearOfManufacture,
+                     LastUpdate = vehicle.LastUpdate,
+                     Category = new VehicleCategoryViewModel()
+                     {
+                         Id = vehicle.CategoryId,
+                         Name = vehicle.Category.Name,
+                         LastUpdate = vehicle.Category.LastUpdate,
+                     }
+
+
+                 }).ToList();
+        }
+
+        public async Task<VehicleViewModel> GetById(int id)
+        {
+            var vehicle = dbContext.Vehicles
+                .Include(v=>v.Owner)
+                .Include(v=>v.Category)
+                .Include(v=>v.EngineType)
+                .FirstOrDefault(x => x.Id == id);
+            return new VehicleViewModel
+            {
+                Id = vehicle.Id,
+                Model = vehicle.Model,
+                EngineType = new EngineTypeViewModel()
+                {
+                    Id = vehicle.EngineTypeId,
+                    Name = vehicle.EngineType.Name
+
+                },
+                Manufacturer = vehicle.Manufacturer,
+                Owner = new UserViewModel()
+                {
+                    Id = vehicle.OwnerId,
+                    Firstname = vehicle.Owner.Firstname,
+                    Lastname = vehicle.Owner.Lastname,
+                    Identifier = vehicle.Owner.Identifier,
+
+                },
+                EngineTypeId = vehicle.EngineTypeId,
+                OwnerId = vehicle.OwnerId,
+                CategoryId = vehicle.CategoryId,
+                Photo = vehicle.Photo,
+                YearOfManufacture = vehicle.YearOfManufacture,
+                LastUpdate = vehicle.LastUpdate,
+                Category = new VehicleCategoryViewModel()
+                {
+                    Id = vehicle.CategoryId,
+                    Name = vehicle.Category.Name,
+                    LastUpdate = vehicle.Category.LastUpdate,
+                }
+
+
+            };
+        }
+
+        public async Task<VehicleViewModel> Update(int id, VehicleViewModel vehicle)
+        {
+            var vehicleEntity = dbContext.Find<Vehicle>(id);
+            vehicleEntity.YearOfManufacture = vehicle.YearOfManufacture;
+            vehicleEntity.Photo = vehicle.Photo;
+            vehicle.CategoryId=vehicle.CategoryId;
+            vehicle.EngineTypeId=vehicleEntity.EngineTypeId;
+            vehicle.OwnerId=vehicleEntity.OwnerId;
+            vehicle.Model=vehicleEntity.Model;
+            vehicle.Manufacturer = vehicleEntity.Manufacturer;
+
+            vehicleEntity.LastUpdate = DateTime.Now;
+
+            dbContext.Update(vehicleEntity);
+            await dbContext.SaveChangesAsync();
+            return vehicle;
+        }
+    }
+}

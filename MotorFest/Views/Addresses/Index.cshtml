@@ -1,0 +1,68 @@
+﻿@model IEnumerable<MotorFest.Models.AddressViewModel>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h1>Адреси</h1>
+
+<p>
+	<a asp-action="Create">Добави адрес</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.City)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.FullAddress)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Municipality)
+			</th>
+			@if (User.IsInRole("Administrator"))
+			{
+
+				<th>
+					@Html.DisplayNameFor(model => model.LastUpdate)
+				</th>
+			}
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.City)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.FullAddress)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Municipality)
+				</td>
+				@if (User.IsInRole("Administrator"))
+				{
+
+					<td>
+						@Html.DisplayFor(modelItem => item.LastUpdate)
+					</td>
+				}
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.Id">Редактирай</a> |
+					<a asp-action="Details" asp-route-id="@item.Id">Детайли</a> |
+					<a asp-action="Delete" asp-route-id="@item.Id">Изтрий</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

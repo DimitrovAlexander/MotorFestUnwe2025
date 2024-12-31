@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using MotorFest.Data;
 using MotorFest.Data.Entities;
+using MotorFest.Services.AddressService;
+using MotorFest.Services.EngineTypeService;
+using MotorFest.Services.VehicleCategoryService;
+using MotorFest.Services.VehiclesService;
 
 namespace MotorFest
 {
@@ -13,9 +17,13 @@ namespace MotorFest
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            builder.Services.AddDbContext<MotorFestDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddScoped<IAddressService,AddressService>();
+            builder.Services.AddScoped<IVehicleService,VehicleService>();
+            builder.Services.AddScoped<IVehicleCategoryService,VehicleCategoryService>();
+            builder.Services.AddScoped<IEngineTypeService,EngineTypeService>();
 
             builder.Services.AddDefaultIdentity<MFUser>(o =>
             {
@@ -26,13 +34,13 @@ namespace MotorFest
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 6;
             }).AddRoles<IdentityRole>()
-               .AddEntityFrameworkStores<ApplicationDbContext>();
+               .AddEntityFrameworkStores<MotorFestDbContext>();
             builder.Services.AddControllersWithViews();
             
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
             {
-                var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var dbcontext = scope.ServiceProvider.GetRequiredService<MotorFestDbContext>();
 
                 dbcontext.Database.EnsureCreated();
                 if (!dbcontext.Roles.Any())

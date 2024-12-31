@@ -10,7 +10,7 @@ using MotorFest.Data;
 
 namespace MotorFest.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(MotorFestDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -394,10 +394,7 @@ namespace MotorFest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OwnerId1")
+                    b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -413,7 +410,7 @@ namespace MotorFest.Migrations
 
                     b.HasIndex("EngineTypeId");
 
-                    b.HasIndex("OwnerId1");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Vehicles", "21180022");
                 });
@@ -531,7 +528,7 @@ namespace MotorFest.Migrations
 
                     b.HasOne("MotorFest.Data.Entities.MFUser", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerId1")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

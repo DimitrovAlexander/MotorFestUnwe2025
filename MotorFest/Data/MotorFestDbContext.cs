@@ -5,9 +5,9 @@ using MotorFest.Data.Entities;
 
 namespace MotorFest.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<MFUser,IdentityRole,string>
+    public class MotorFestDbContext : IdentityDbContext<MFUser,IdentityRole,string>
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public MotorFestDbContext(DbContextOptions options) : base(options)
         {
         }
 
