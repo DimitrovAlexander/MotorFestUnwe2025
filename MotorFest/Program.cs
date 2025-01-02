@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using MotorFest.Data;
 using MotorFest.Data.Entities;
-using MotorFest.Services.AddressService;
+using MotorFest.Services.LocationService;
 using MotorFest.Services.EngineTypeService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
+
 
 namespace MotorFest
 {
@@ -20,7 +21,7 @@ namespace MotorFest
             builder.Services.AddDbContext<MotorFestDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddScoped<IAddressService,AddressService>();
+            builder.Services.AddScoped<ILocationService,LocationService>();
             builder.Services.AddScoped<IVehicleService,VehicleService>();
             builder.Services.AddScoped<IVehicleCategoryService,VehicleCategoryService>();
             builder.Services.AddScoped<IEngineTypeService,EngineTypeService>();

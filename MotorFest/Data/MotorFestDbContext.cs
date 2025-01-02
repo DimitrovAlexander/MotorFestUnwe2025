@@ -11,7 +11,7 @@ namespace MotorFest.Data
         {
         }
 
-        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
 
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
@@ -23,21 +23,39 @@ namespace MotorFest.Data
         public virtual DbSet<Vehicle> Vehicles { get; set; }
 
         public virtual DbSet<VehicleCategory> VehicleCategories { get; set; }
+        public virtual DbSet<EventVehicleCategory> EventVehicleCategories { get; set; }
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("21180022");
-            //modelBuilder.Entity<Address>(entity =>
-            //{
-            //    entity.HasKey(e => e.Id).HasName("PK__Addresse__3214EC07EAB1D04B");
 
-            //    entity.ToTable("Addresses", "21180022");
+            // Определяне на първичен ключ за таблицата EventVehicleCategory
+            modelBuilder.Entity<EventVehicleCategory>()
+    .HasKey(evc => new { evc.EventId, evc.VehicleCategoryId }); // Composite ключ
+
+            modelBuilder.Entity<EventVehicleCategory>()
+                .HasOne(evc => evc.Event)
+                .WithMany(e => e.EventVehicleCategories)
+                .HasForeignKey(evc => evc.EventId);
+
+            modelBuilder.Entity<EventVehicleCategory>()
+                .HasOne(evc => evc.VehicleCategory)
+                .WithMany(vc => vc.EventVehicleCategories)
+                .HasForeignKey(evc => evc.VehicleCategoryId);
+
+
+            modelBuilder.HasDefaultSchema("21180022");
+
+            //modelBuilder.Entity<Location>(entity =>
+            //{
+            //    entity.HasKey(e => e.Id).HasName("PK__Locatione__3214EC07EAB1D04B");
+
+            //    entity.ToTable("Locationes", "21180022");
 
             //    entity.Property(e => e.FullAddress)
             //        .HasMaxLength(100)
-            //        .HasColumnName("Address");
+            //        .HasColumnName("Location");
             //    entity.Property(e => e.City).HasMaxLength(50);
             //    entity.Property(e => e.LastUpdate)
             //        .HasDefaultValueSql("(getdate())")
@@ -84,10 +102,10 @@ namespace MotorFest.Data
             //        .HasDefaultValueSql("(getdate())")
             //        .HasColumnType("datetime");
 
-            //    entity.HasOne(d => d.Address).WithMany(p => p.Events)
-            //        .HasForeignKey(d => d.AddressId)
+            //    entity.HasOne(d => d.Location).WithMany(p => p.Events)
+            //        .HasForeignKey(d => d.LocationId)
             //        .OnDelete(DeleteBehavior.ClientSetNull)
-            //        .HasConstraintName("FK__Events__AddressI__4AB81AF0");
+            //        .HasConstraintName("FK__Events__LocationI__4AB81AF0");
 
             //    entity.HasOne(d => d.Category).WithMany(p => p.Events)
             //        .HasForeignKey(d => d.CategoryId)
@@ -100,7 +118,7 @@ namespace MotorFest.Data
             //        .HasConstraintName("FK__Events__Organize__49C3F6B7");
             //});
 
-           
+
 
             //modelBuilder.Entity<Vehicle>(entity =>
             //{
@@ -134,7 +152,7 @@ namespace MotorFest.Data
             //{
             //    entity.HasKey(e => e.Id).HasName("PK__VehicleC__3214EC072E73AF8E");
 
-            //    entity.ToTable("VehicleCategories", "21180022");
+            //    entity.ToTable("EventVehicleCategories", "21180022");
 
             //    entity.HasIndex(e => e.Name, "UQ__VehicleC__737584F6A08FB466").IsUnique();
 

@@ -7,22 +7,22 @@ namespace MotorFest.Models
     {
         public int Id { get; set; }
 
+        public string Name { get; set; }
         public int OrganizerId { get; set; }
 
-        public int AddressId { get; set; }
+        public int LocationId { get; set; }
 
         public DateTime EventDate { get; set; }
 
-        public int CategoryId { get; set; }
 
         public decimal EntranceFee { get; set; }
 
+
         public DateTime LastUpdate { get; set; } = DateTime.Now;
 
-        public virtual AddressViewModel Address { get; set; } = null!;
+        public virtual Location Location { get; set; } = null!;
 
-        public virtual VehicleCategoryViewModel Category { get; set; } = null!;
-
-        public virtual UserViewModel Organizer { get; set; } = null!;
+        public virtual MFUser Organizer { get; set; } = null!;
+        public ICollection<EventVehicleCategory> VehicleCategories { get; set; } = new List<EventVehicleCategory>();
     }
 }

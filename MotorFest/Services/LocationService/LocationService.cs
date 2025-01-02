@@ -1,21 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MotorFest.Data;
+using MotorFest.Data.Entities;
 using MotorFest.Models;
 
-namespace MotorFest.Services.AddressService
+namespace MotorFest.Services.LocationService
 {
-    public class AddressService : IAddressService
+    public class LocationService : ILocationService
     {
         private readonly MotorFestDbContext dbContext;
-        public AddressService(MotorFestDbContext dbContext)
+        public LocationService(MotorFestDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
 
-        public async Task<AddressViewModel> Create(AddressViewModel addressViewModel)
+        public async Task<LocationViewModel> Create(LocationViewModel addressViewModel)
         {
-            Address addressEntity = new Address
+            Location addressEntity = new Location
             {
                 Id = addressViewModel.Id,
                 Name = addressViewModel.Name,
@@ -24,33 +25,33 @@ namespace MotorFest.Services.AddressService
                 Events = new List<Event>(),
                 LastUpdate = DateTime.UtcNow
             };
-            await dbContext.Addresses.AddAsync(addressEntity);
+            await dbContext.Locations.AddAsync(addressEntity);
             await dbContext.SaveChangesAsync();
             return null;
         }
 
-        public async Task<AddressViewModel> Delete(int id)
+        public async Task<LocationViewModel> Delete(int id)
         {
-            var address = dbContext.Addresses.FirstOrDefault(x => x.Id == id);
+            var address = dbContext.Locations.FirstOrDefault(x => x.Id == id);
             if (address != null)
             {
-                dbContext.Addresses.Remove(address);
+                dbContext.Locations.Remove(address);
                await dbContext.SaveChangesAsync();
             }
             return null;
         }
 
-        public ICollection<AddressViewModel> GetAll()
+        public ICollection<LocationViewModel> GetAll()
         {
 
-            return dbContext.Addresses
+            return dbContext.Locations
                  .Include(address => address.Events)
-                 .ThenInclude(e=>e.Category)
+                 .ThenInclude(e=>e.EventVehicleCategories)
                  .Include(e=>e.Events)
                  .ThenInclude(e=>e.Organizer)
 
                  
-                 .Select(address => new AddressViewModel
+                 .Select(address => new LocationViewModel
                  {
                      Id = address.Id,
                      Name = address.Name,
@@ -60,26 +61,25 @@ namespace MotorFest.Services.AddressService
                      Events = address.Events.Select(eventEntity => new EventViewModel
                      {
                          Id = eventEntity.Id,
-                         CategoryId = eventEntity.CategoryId,
-                         Category=new VehicleCategoryViewModel()
+                         VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory=>new EventVehicleCategory
                          {
-                             Id = eventEntity.CategoryId,
-                             Name = eventEntity.Category.Name,
-
-                         },
+                             EventId=vehicleCategory.EventId,
+                             VehicleCategoryId=vehicleCategory.VehicleCategoryId
+                         }).ToList(),
+                        
                          EventDate = eventEntity.EventDate,
                          EntranceFee = eventEntity.EntranceFee,
-                         AddressId = eventEntity.AddressId,
+                         LocationId = eventEntity.LocationId,
                          OrganizerId = eventEntity.OrganizerId,
                          LastUpdate = eventEntity.LastUpdate
                      }).ToList()
                  }).ToList();
         }
 
-        public async Task<AddressViewModel> GetById(int id)
+        public async Task<LocationViewModel> GetById(int id)
         {
-            var address = dbContext.Addresses.FirstOrDefault(x=>x.Id== id);
-            return new AddressViewModel
+            var address = dbContext.Locations.FirstOrDefault(x=>x.Id== id);
+            return new LocationViewModel
             {
                 City = address.City,
                 FullAddress = address.FullAddress,
@@ -87,10 +87,14 @@ namespace MotorFest.Services.AddressService
                 Events = address.Events.Select(eventEntity => new EventViewModel
                 {
                     Id = eventEntity.Id,
-                    CategoryId = eventEntity.CategoryId,
+                    VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory => new EventVehicleCategory
+                    {
+                        EventId = vehicleCategory.EventId,
+                        VehicleCategoryId = vehicleCategory.VehicleCategoryId
+                    }).ToList(),
                     EventDate = eventEntity.EventDate,
                     EntranceFee = eventEntity.EntranceFee,
-                    AddressId = eventEntity.AddressId,
+                    LocationId = eventEntity.LocationId,
                     OrganizerId = eventEntity.OrganizerId,
                     LastUpdate = eventEntity.LastUpdate
                 }).ToList(),
@@ -100,9 +104,9 @@ namespace MotorFest.Services.AddressService
             };
         }
 
-        public async Task<AddressViewModel> Update(int id, AddressViewModel address)
+        public async Task<LocationViewModel> Update(int id, LocationViewModel address)
         {
-            var addressEntity = dbContext.Find<Address>(id);
+            var addressEntity = dbContext.Find<Location>(id);
             addressEntity.Municipality = address.Municipality;
             addressEntity.Name = address.Name;
             addressEntity.City = address.City;

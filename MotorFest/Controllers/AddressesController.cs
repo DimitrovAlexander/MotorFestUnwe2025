@@ -8,26 +8,29 @@ using Microsoft.EntityFrameworkCore;
 using MotorFest;
 using MotorFest.Data;
 using MotorFest.Models;
-using MotorFest.Services.AddressService;
+using MotorFest.Services.LocationService;
+
+using MotorFest.Services.LocationService;
 
 namespace MotorFest.Controllers
 {
     public class AddressesController : Controller
     {
-        private readonly IAddressService addressService;
+        private readonly ILocationService addressService;
 
-        public AddressesController(IAddressService addressService)
+        public AddressesController(ILocationService addressService)
         {
             this.addressService = addressService;
         }
 
-        // GET: Addresses
+        // GET:
+        // es
         public async Task<IActionResult> Index()
         {
             return View(addressService.GetAll());
         }
 
-        // GET: Addresses/Details/5
+        // GET: Locationes/Details/5
         public async Task<IActionResult> Details(int id)
         {
             if (id == null)
@@ -44,18 +47,18 @@ namespace MotorFest.Controllers
             return View(address);
         }
 
-        // GET: Addresses/Create
+        // GET: Locationes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Addresses/Create
+        // POST: Locationes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AddressViewModel address)
+        public async Task<IActionResult> Create(LocationViewModel address)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +68,7 @@ namespace MotorFest.Controllers
             return View(address);
         }
 
-        // GET: Addresses/Edit/5
+        // GET: Locationes/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
@@ -86,7 +89,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Municipality,LastUpdate")] AddressViewModel address)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Municipality,LastUpdate")] LocationViewModel address)
         {
             if (id != address.Id)
             {

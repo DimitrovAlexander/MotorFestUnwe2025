@@ -17,10 +17,10 @@
         public string EGNOrBulstat { get; set; }
         public string Name { get; set; }
 
-        // Address selection/creation
+        // Location selection/creation
         public int? CorrespondenceAddressId { get; set; }
         public string NewAddress { get; set; }
-        public List<Address> Addresses { get; set; }
+        public List<Location> Addresses { get; set; }
 
         public string NewAddressCity { get; set; } = null!;
 

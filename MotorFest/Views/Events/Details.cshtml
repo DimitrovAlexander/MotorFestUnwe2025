@@ -1,13 +1,13 @@
-﻿@model MotorFest.Models.LocationViewModel
+﻿@model MotorFest.Event
 
 @{
-    ViewData["Title"] = "Детайли";
+    ViewData["Title"] = "Details";
 }
 
-<h1>Детайли за</h1>
+<h1>Details</h1>
 
 <div>
-    <h4>Локация</h4>
+    <h4>Event</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -17,22 +17,22 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
+            @Html.DisplayNameFor(model => model.OrganizerId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.City)
+            @Html.DisplayFor(model => model.OrganizerId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullAddress)
+            @Html.DisplayNameFor(model => model.EventDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullAddress)
+            @Html.DisplayFor(model => model.EventDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Municipality)
+            @Html.DisplayNameFor(model => model.EntranceFee)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Municipality)
+            @Html.DisplayFor(model => model.EntranceFee)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.LastUpdate)
@@ -40,9 +40,15 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastUpdate)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Location.Id)
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Върни се назад</a>
+    <a asp-action="Index">Back to List</a>
 </div>

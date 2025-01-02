@@ -12,7 +12,7 @@ using MotorFest.Data;
 namespace MotorFest.Migrations
 {
     [DbContext(typeof(MotorFestDbContext))]
-    [Migration("20241228140831_Initial")]
+    [Migration("20250102121304_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -163,39 +163,6 @@ namespace MotorFest.Migrations
                     b.ToTable("AspNetUserTokens", "21180022");
                 });
 
-            modelBuilder.Entity("MotorFest.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("21180022_LastUpdate");
-
-                    b.Property<string>("Municipality")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Addresses", "21180022");
-                });
-
             modelBuilder.Entity("MotorFest.AuditLog", b =>
                 {
                     b.Property<int>("Id")
@@ -226,6 +193,21 @@ namespace MotorFest.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AuditLogs", "21180022");
+                });
+
+            modelBuilder.Entity("MotorFest.Data.Entities.EventVehicleCategory", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventId", "VehicleCategoryId");
+
+                    b.HasIndex("VehicleCategoryId");
+
+                    b.ToTable("EventVehicleCategories", "21180022");
                 });
 
             modelBuilder.Entity("MotorFest.Data.Entities.MFUser", b =>
@@ -338,12 +320,6 @@ namespace MotorFest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("EntranceFee")
                         .HasColumnType("decimal(18,2)");
 
@@ -354,6 +330,13 @@ namespace MotorFest.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("21180022_LastUpdate");
 
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OrganizerId")
                         .HasColumnType("int");
 
@@ -362,13 +345,44 @@ namespace MotorFest.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("OrganizerId1");
 
                     b.ToTable("Events", "21180022");
+                });
+
+            modelBuilder.Entity("MotorFest.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("21180022_LastUpdate");
+
+                    b.Property<string>("Municipality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations", "21180022");
                 });
 
             modelBuilder.Entity("MotorFest.Vehicle", b =>
@@ -397,10 +411,7 @@ namespace MotorFest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OwnerId1")
+                    b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -416,7 +427,7 @@ namespace MotorFest.Migrations
 
                     b.HasIndex("EngineTypeId");
 
-                    b.HasIndex("OwnerId1");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Vehicles", "21180022");
                 });
@@ -493,17 +504,30 @@ namespace MotorFest.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MotorFest.Event", b =>
+            modelBuilder.Entity("MotorFest.Data.Entities.EventVehicleCategory", b =>
                 {
-                    b.HasOne("MotorFest.Address", "Address")
-                        .WithMany("Events")
-                        .HasForeignKey("AddressId")
+                    b.HasOne("MotorFest.Event", "Event")
+                        .WithMany("EventVehicleCategories")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MotorFest.VehicleCategory", "Category")
+                    b.HasOne("MotorFest.VehicleCategory", "VehicleCategory")
+                        .WithMany("EventVehicleCategories")
+                        .HasForeignKey("VehicleCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("VehicleCategory");
+                });
+
+            modelBuilder.Entity("MotorFest.Event", b =>
+                {
+                    b.HasOne("MotorFest.Location", "Location")
                         .WithMany("Events")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -511,9 +535,7 @@ namespace MotorFest.Migrations
                         .WithMany()
                         .HasForeignKey("OrganizerId1");
 
-                    b.Navigation("Address");
-
-                    b.Navigation("Category");
+                    b.Navigation("Location");
 
                     b.Navigation("Organizer");
                 });
@@ -534,7 +556,7 @@ namespace MotorFest.Migrations
 
                     b.HasOne("MotorFest.Data.Entities.MFUser", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerId1")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -545,19 +567,24 @@ namespace MotorFest.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("MotorFest.Address", b =>
-                {
-                    b.Navigation("Events");
-                });
-
             modelBuilder.Entity("MotorFest.EngineType", b =>
                 {
                     b.Navigation("Vehicles");
                 });
 
-            modelBuilder.Entity("MotorFest.VehicleCategory", b =>
+            modelBuilder.Entity("MotorFest.Event", b =>
+                {
+                    b.Navigation("EventVehicleCategories");
+                });
+
+            modelBuilder.Entity("MotorFest.Location", b =>
                 {
                     b.Navigation("Events");
+                });
+
+            modelBuilder.Entity("MotorFest.VehicleCategory", b =>
+                {
+                    b.Navigation("EventVehicleCategories");
 
                     b.Navigation("Vehicles");
                 });

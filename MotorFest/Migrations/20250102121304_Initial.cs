@@ -15,24 +15,6 @@ namespace MotorFest.Migrations
                 name: "21180022");
 
             migrationBuilder.CreateTable(
-                name: "Addresses",
-                schema: "21180022",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Municipality = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 schema: "21180022",
                 columns: table => new
@@ -108,6 +90,24 @@ namespace MotorFest.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EngineTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                schema: "21180022",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Municipality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -249,10 +249,10 @@ namespace MotorFest.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrganizerId = table.Column<int>(type: "int", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    LocationId = table.Column<int>(type: "int", nullable: false),
                     EventDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     EntranceFee = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false),
                     OrganizerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -261,23 +261,16 @@ namespace MotorFest.Migrations
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalSchema: "21180022",
-                        principalTable: "Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Events_AspNetUsers_OrganizerId1",
                         column: x => x.OrganizerId1,
                         principalSchema: "21180022",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Events_VehicleCategories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Events_Locations_LocationId",
+                        column: x => x.LocationId,
                         principalSchema: "21180022",
-                        principalTable: "VehicleCategories",
+                        principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -289,22 +282,21 @@ namespace MotorFest.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerId = table.Column<int>(type: "int", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     EngineTypeId = table.Column<int>(type: "int", nullable: false),
                     Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     YearOfManufacture = table.Column<int>(type: "int", nullable: false),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false),
-                    OwnerId1 = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vehicles_AspNetUsers_OwnerId1",
-                        column: x => x.OwnerId1,
+                        name: "FK_Vehicles_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
                         principalSchema: "21180022",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -319,6 +311,33 @@ namespace MotorFest.Migrations
                     table.ForeignKey(
                         name: "FK_Vehicles_VehicleCategories_CategoryId",
                         column: x => x.CategoryId,
+                        principalSchema: "21180022",
+                        principalTable: "VehicleCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventVehicleCategories",
+                schema: "21180022",
+                columns: table => new
+                {
+                    EventId = table.Column<int>(type: "int", nullable: false),
+                    VehicleCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventVehicleCategories", x => new { x.EventId, x.VehicleCategoryId });
+                    table.ForeignKey(
+                        name: "FK_EventVehicleCategories_Events_EventId",
+                        column: x => x.EventId,
+                        principalSchema: "21180022",
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventVehicleCategories_VehicleCategories_VehicleCategoryId",
+                        column: x => x.VehicleCategoryId,
                         principalSchema: "21180022",
                         principalTable: "VehicleCategories",
                         principalColumn: "Id",
@@ -372,22 +391,22 @@ namespace MotorFest.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_AddressId",
+                name: "IX_Events_LocationId",
                 schema: "21180022",
                 table: "Events",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Events_CategoryId",
-                schema: "21180022",
-                table: "Events",
-                column: "CategoryId");
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_OrganizerId1",
                 schema: "21180022",
                 table: "Events",
                 column: "OrganizerId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventVehicleCategories_VehicleCategoryId",
+                schema: "21180022",
+                table: "EventVehicleCategories",
+                column: "VehicleCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_CategoryId",
@@ -402,10 +421,10 @@ namespace MotorFest.Migrations
                 column: "EngineTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehicles_OwnerId1",
+                name: "IX_Vehicles_OwnerId",
                 schema: "21180022",
                 table: "Vehicles",
-                column: "OwnerId1");
+                column: "OwnerId");
         }
 
         /// <inheritdoc />
@@ -436,7 +455,7 @@ namespace MotorFest.Migrations
                 schema: "21180022");
 
             migrationBuilder.DropTable(
-                name: "Events",
+                name: "EventVehicleCategories",
                 schema: "21180022");
 
             migrationBuilder.DropTable(
@@ -448,11 +467,7 @@ namespace MotorFest.Migrations
                 schema: "21180022");
 
             migrationBuilder.DropTable(
-                name: "Addresses",
-                schema: "21180022");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers",
+                name: "Events",
                 schema: "21180022");
 
             migrationBuilder.DropTable(
@@ -461,6 +476,14 @@ namespace MotorFest.Migrations
 
             migrationBuilder.DropTable(
                 name: "VehicleCategories",
+                schema: "21180022");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers",
+                schema: "21180022");
+
+            migrationBuilder.DropTable(
+                name: "Locations",
                 schema: "21180022");
         }
     }

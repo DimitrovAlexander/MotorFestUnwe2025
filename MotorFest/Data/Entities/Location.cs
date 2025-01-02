@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MotorFest;
 
-public partial class Address
+public partial class Location
 {
     public int Id { get; set; }
     public string Name { get; set; }

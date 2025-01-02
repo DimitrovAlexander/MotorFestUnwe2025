@@ -1,14 +1,14 @@
-﻿@model MotorFest.Models.LocationViewModel
+﻿@model MotorFest.Event
 
 @{
     ViewData["Title"] = "Delete";
 }
 
-<h1>Изтриване</h1>
+<h1>Delete</h1>
 
-<h3>Сигурни ли сте, че искате да изтриете локацията?</h3>
+<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Адрес</h4>
+    <h4>Event</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,22 +18,22 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
+            @Html.DisplayNameFor(model => model.OrganizerId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.City)
+            @Html.DisplayFor(model => model.OrganizerId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullAddress)
+            @Html.DisplayNameFor(model => model.EventDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullAddress)
+            @Html.DisplayFor(model => model.EventDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Municipality)
+            @Html.DisplayNameFor(model => model.EntranceFee)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Municipality)
+            @Html.DisplayFor(model => model.EntranceFee)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.LastUpdate)
@@ -41,11 +41,17 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastUpdate)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Location.Id)
+        </dd>
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Върни се назад</a>
+        <a asp-action="Index">Back to List</a>
     </form>
 </div>

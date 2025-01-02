@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MotorFest.Models
 {
-    public class AddressViewModel
+    public class LocationViewModel
     {
         public int Id { get; set; }
         [Display(Name = "Име")]
