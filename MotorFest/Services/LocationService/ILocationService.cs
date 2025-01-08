@@ -1,4 +1,4 @@
-﻿using MotorFest.Models;
+﻿using MotorFest.Models.Location;
 
 namespace MotorFest.Services.LocationService
 {

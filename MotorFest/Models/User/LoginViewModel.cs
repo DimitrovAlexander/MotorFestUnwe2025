@@ -1,4 +1,4 @@
-﻿namespace MotorFest.Models
+﻿namespace MotorFest.Models.User
 {
     public class LoginViewModel
     {

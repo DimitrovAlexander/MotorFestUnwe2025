@@ -1,54 +1,20 @@
-﻿@model MotorFest.Event
+﻿@model MotorFest.Models.Event.EventViewModel
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
+<h1>Информация за събитието</h1>
 
 <div>
-    <h4>Event</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OrganizerId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OrganizerId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EntranceFee)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EntranceFee)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastUpdate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastUpdate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location.Id)
-        </dd>
-    </dl>
+	<h3>@Model.Name</h3>
+	<p>Дата: @Model.EventDate.ToShortDateString()</p>
+	<p>Входна такса: @Model.EntranceFee</p>
+	<p>Разрешени превозни средства за участие:</p>
+	<ul>
+		@foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
+		{
+			<li>@category.CategoryName</li>
+		}
+	</ul>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<a asp-action="Index" class="btn btn-secondary">Върни се назад</a>
+<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn btn-info">Запиши се</a>
+

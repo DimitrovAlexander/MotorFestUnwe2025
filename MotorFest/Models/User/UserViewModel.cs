@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MotorFest.Models
+namespace MotorFest.Models.User
 {
     public class UserViewModel
     {

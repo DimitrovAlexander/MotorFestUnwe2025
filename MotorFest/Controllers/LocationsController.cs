@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MotorFest;
 using MotorFest.Data;
-using MotorFest.Models;
+using MotorFest.Models.Location;
 using MotorFest.Services.LocationService;
 
 using MotorFest.Services.LocationService;
 
 namespace MotorFest.Controllers
 {
-    public class AddressesController : Controller
+    public class LocationsController : Controller
     {
         private readonly ILocationService addressService;
 
-        public AddressesController(ILocationService addressService)
+        public LocationsController(ILocationService addressService)
         {
             this.addressService = addressService;
         }
@@ -84,12 +84,12 @@ namespace MotorFest.Controllers
             return View(address);
         }
 
-        // POST: Addresses/Edit/5
+        // POST: Locations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Municipality,LastUpdate")] LocationViewModel address)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryName,City,FullAddress,Municipality,LastUpdate")] LocationViewModel address)
         {
             if (id != address.Id)
             {
@@ -111,7 +111,7 @@ namespace MotorFest.Controllers
             return View(address);
         }
 
-        // GET: Addresses/Delete/5
+        // GET: Locations/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
@@ -128,7 +128,7 @@ namespace MotorFest.Controllers
             return View(address);
         }
 
-        // POST: Addresses/Delete/5
+        // POST: Locations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

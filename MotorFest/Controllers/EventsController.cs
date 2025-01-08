@@ -2,88 +2,127 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MotorFest;
 using MotorFest.Data;
+using MotorFest.Data.Entities;
+using MotorFest.Models.Event;
+using MotorFest.Models.Vehicle;
+using MotorFest.Services.EngineTypeService;
+using MotorFest.Services.EventService;
+using MotorFest.Services.EventsService;
+using MotorFest.Services.LocationService;
+using MotorFest.Services.VehicleCategoryService;
+using MotorFest.Services.VehiclesService;
 
 namespace MotorFest.Controllers
 {
     public class EventsController : Controller
     {
-        private readonly MotorFestDbContext _context;
-
-        public EventsController(MotorFestDbContext context)
+        private readonly IEventService eventService;
+        private readonly IVehicleCategoryService vehicleCategoryService;
+        private readonly IVehicleService vehicleService;
+        private readonly ILocationService locationService;
+        private readonly UserManager<MFUser> _userManager;
+        public EventsController(IEventService eventService, IVehicleCategoryService vehicleCategoryService, ILocationService locationService, UserManager<MFUser> userManager, IVehicleService vehicleService)
         {
-            _context = context;
+            this.eventService = eventService;
+            this.vehicleCategoryService = vehicleCategoryService;
+            this.locationService = locationService;
+            _userManager = userManager;
+            this.vehicleService = vehicleService;
         }
 
-        // GET: Events
         public async Task<IActionResult> Index()
         {
-            var motorFestDbContext = _context.Events.Include(e => e.Location);
-            return View(await motorFestDbContext.ToListAsync());
+            var events = eventService.GetAll();
+            return View(events);
         }
 
-        // GET: Events/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
-            if (id == null)
+            var categories = vehicleCategoryService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var model = new EventViewModel
             {
-                return NotFound();
-            }
+                VehicleCategories = categories.Select(c => new CheckBoxItem
+                {
+                    Id = c.Id,
+                    CategoryName = c.Name,
+                    IsChecked = false
+                }).ToList(),
 
-            var @event = await _context.Events
-                .Include(e => e.Location)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@event == null)
-            {
-                return NotFound();
-            }
 
-            return View(@event);
+            };
+            ViewData["allLocations"] = locationService.GetAll()
+       .Select(c => new SelectListItem
+       {
+           Value = c.Id.ToString(),
+           Text = c.Name
+       }).ToList();
+            return View(model);
         }
 
-        // GET: Events/Create
-        public IActionResult Create()
-        {
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id");
-            return View();
-        }
-
-        // POST: Events/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,OrganizerId,LocationId,EventDate,EntranceFee,LastUpdate")] Event @event)
+        public async Task<IActionResult> Create(EventViewModel model)
         {
-            if (ModelState.IsValid)
+            ModelState.Remove("Location");
+            ModelState.Remove("Organizer");
+            ModelState.Remove("OrganizerId");
+            ModelState.Remove("HasVehicles");
+            if (!ModelState.IsValid)
             {
-                _context.Add(@event);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", @event.LocationId);
-            return View(@event);
+            var user = await _userManager.GetUserAsync(User);
+            model.OrganizerId = user.Id;
+            await eventService.Create(model);
+            return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var eventDetails = await eventService.GetById(id);
+            if (eventDetails == null) return NotFound();
+            return View(eventDetails);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            await eventService.Delete(id);
+            return RedirectToAction("Index");
+        }
+        public IActionResult Calendar()
+        {
+            var events = eventService.GetAll(); // Fetch all events using the service
+            return View(events);
+        }
         // GET: Events/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var @event = await _context.Events.FindAsync(id);
-            if (@event == null)
+            var mfEvent = await eventService.GetById(id);
+            if (mfEvent == null)
             {
                 return NotFound();
             }
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", @event.LocationId);
-            return View(@event);
+            ViewData["allLocations"] = locationService.GetAll()
+      .Select(c => new SelectListItem
+      {
+          Value = c.Id.ToString(),
+          Text = c.Name
+      }).ToList();
+
+
+            return View(mfEvent);
         }
 
         // POST: Events/Edit/5
@@ -91,23 +130,25 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,OrganizerId,LocationId,EventDate,EntranceFee,LastUpdate")] Event @event)
+        public async Task<IActionResult> Edit(int id, EventViewModel eventViewModel)
         {
-            if (id != @event.Id)
+            if (id != eventViewModel.Id)
             {
                 return NotFound();
             }
-
+            ModelState.Remove("HasVehicles");
+            ModelState.Remove("Location");
+            ModelState.Remove("Organizer");
+            ModelState.Remove("OrganizerId");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(@event);
-                    await _context.SaveChangesAsync();
+                    await eventService.Update(id, eventViewModel);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EventExists(@event.Id))
+                    if (eventService.GetById(id) == null)
                     {
                         return NotFound();
                     }
@@ -118,47 +159,79 @@ namespace MotorFest.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", @event.LocationId);
-            return View(@event);
-        }
 
-        // GET: Events/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+
+            ViewData["allLocations"] = locationService.GetAll()
+     .Select(c => new SelectListItem
+     {
+         Value = c.Id.ToString(),
+         Text = c.Name
+     }).ToList();
+            return View(eventViewModel);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Subscribe(int id)
         {
-            if (id == null)
+            // Намираме събитието
+            EventViewModel evnt = await eventService.GetById(id);
+            if (evnt == null)
             {
-                return NotFound();
+                return NotFound("Събитието не е намерено.");
             }
 
-            var @event = await _context.Events
-                .Include(e => e.Location)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@event == null)
-            {
-                return NotFound();
-            }
+            // Взимаме превозните средства на потребителя
+            var userId = _userManager.GetUserId(User); // Предполагаем метод за вземане на ID на текущия потребител
+            List<VehicleViewModel> vehicles = vehicleService.GetByUserId(userId).ToList();
 
-            return View(@event);
+            // Създаваме ViewModel
+            var viewModel = new EventSubscribeViewModel
+            {
+                EventId = evnt.Id,
+                EventName = evnt.Name,
+                UserVehicles = vehicles.Select(v => new SelectListItem
+                {
+                    Value = v.Id.ToString(),
+                    Text = $"{v.Manufacturer} {v.Model} ({v.YearOfManufacture})"
+                })
+            };
+
+            return View(viewModel);
         }
 
-        // POST: Events/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> Subscribe(EventSubscribeViewModel model)
         {
-            var @event = await _context.Events.FindAsync(id);
-            if (@event != null)
+            if (!ModelState.IsValid)
             {
-                _context.Events.Remove(@event);
+                return View(model);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // Проверяваме дали превозното средство е валидно за потребителя
+            var userId = _userManager.GetUserId(User);
+            VehicleViewModel vehicle = await vehicleService.GetById(model.SelectedVehicleId);
+            if (vehicle == null || vehicle.OwnerId != userId)
+            {
+                ModelState.AddModelError("", "Избраното превозно средство не е валидно.");
+                return View(model);
+            }
+
+            // Добавяме връзка между събитието и превозното средство
+            var success = eventService.RegisterVehicleForEvent(model.EventId, vehicle.Id);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Неуспешно записване за събитието.");
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Успешно се записахте за събитието!";
+            return RedirectToAction("Details", new { id = model.EventId });
         }
 
-        private bool EventExists(int id)
+        public IActionResult MyEvents()
         {
-            return _context.Events.Any(e => e.Id == id);
+            var userId = _userManager.GetUserId(User);
+            var events = eventService.GetAllByUserParticipating(userId); 
+            return View(events);
         }
     }
 }

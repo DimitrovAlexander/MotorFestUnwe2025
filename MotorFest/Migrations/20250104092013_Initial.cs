@@ -250,22 +250,22 @@ namespace MotorFest.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganizerId = table.Column<int>(type: "int", nullable: false),
+                    OrganizerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: false),
                     EventDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EntranceFee = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false),
-                    OrganizerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_AspNetUsers_OrganizerId1",
-                        column: x => x.OrganizerId1,
+                        name: "FK_Events_AspNetUsers_OrganizerId",
+                        column: x => x.OrganizerId,
                         principalSchema: "21180022",
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Events_Locations_LocationId",
                         column: x => x.LocationId,
@@ -397,10 +397,10 @@ namespace MotorFest.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_OrganizerId1",
+                name: "IX_Events_OrganizerId",
                 schema: "21180022",
                 table: "Events",
-                column: "OrganizerId1");
+                column: "OrganizerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventVehicleCategories_VehicleCategoryId",

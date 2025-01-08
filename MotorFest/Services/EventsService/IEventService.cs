@@ -1,10 +1,11 @@
-﻿using MotorFest.Models;
+﻿using MotorFest.Models.Event;
 
 namespace MotorFest.Services.EventService
 {
     public interface IEventService : IBasicCrudService<EventViewModel>
     {
-        Task AddVehicleCategoriesToEvent(int eventId, List<int> categoryIds);
-        Task<ICollection<VehicleCategoryViewModel>> GetVehicleCategoriesByEvent(int eventId);
+        bool HasVehiclesForEvent(int eventId);
+        bool RegisterVehicleForEvent(int eventId, int vehicleId);
+        ICollection<EventViewModel> GetAllByUserParticipating(string userId);
     }
 }

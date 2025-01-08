@@ -25,6 +25,7 @@ namespace MotorFest.Data
         public virtual DbSet<VehicleCategory> VehicleCategories { get; set; }
         public virtual DbSet<EventVehicleCategory> EventVehicleCategories { get; set; }
 
+        public DbSet<EventRegistration> EventRegistrations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,12 +83,12 @@ namespace MotorFest.Data
 
             //    entity.ToTable("EngineType", "21180022");
 
-            //    entity.HasIndex(e => e.Name, "UQ__EngineTy__737584F6301C62FE").IsUnique();
+            //    entity.HasIndex(e => e.CategoryName, "UQ__EngineTy__737584F6301C62FE").IsUnique();
 
             //    entity.Property(e => e.LastUpdate)
             //        .HasDefaultValueSql("(getdate())")
             //        .HasColumnType("datetime");
-            //    entity.Property(e => e.Name).HasMaxLength(50);
+            //    entity.Property(e => e.CategoryName).HasMaxLength(50);
             //});
 
             //modelBuilder.Entity<Event>(entity =>
@@ -154,12 +155,12 @@ namespace MotorFest.Data
 
             //    entity.ToTable("EventVehicleCategories", "21180022");
 
-            //    entity.HasIndex(e => e.Name, "UQ__VehicleC__737584F6A08FB466").IsUnique();
+            //    entity.HasIndex(e => e.CategoryName, "UQ__VehicleC__737584F6A08FB466").IsUnique();
 
             //    entity.Property(e => e.LastUpdate)
             //        .HasDefaultValueSql("(getdate())")
             //        .HasColumnType("datetime");
-            //    entity.Property(e => e.Name).HasMaxLength(50);
+            //    entity.Property(e => e.CategoryName).HasMaxLength(50);
             //});
             base.OnModelCreating(modelBuilder);
 

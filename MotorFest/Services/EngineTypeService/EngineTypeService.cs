@@ -1,5 +1,5 @@
 ﻿using MotorFest.Data;
-using MotorFest.Models;
+using MotorFest.Models.EngineType;
 
 namespace MotorFest.Services.EngineTypeService
 {

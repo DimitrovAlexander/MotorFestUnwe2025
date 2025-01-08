@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MotorFest.Data;
-using MotorFest.Models;
+using MotorFest.Models.EngineType;
+using MotorFest.Models.User;
+using MotorFest.Models.Vehicle;
+using MotorFest.Models.VehicleCategories;
 
 namespace MotorFest.Services.VehiclesService
 {
@@ -51,6 +54,51 @@ namespace MotorFest.Services.VehiclesService
                  .Include(x => x.Owner)
                  .Include(x => x.Category)
 
+                 .Select(vehicle => new VehicleViewModel
+                 {
+                     Id = vehicle.Id,
+                     Model = vehicle.Model,
+                     EngineType = new EngineTypeViewModel()
+                     {
+                         Id = vehicle.EngineTypeId,
+                         Name = vehicle.EngineType.Name
+
+                     },
+                     Manufacturer = vehicle.Manufacturer,
+                     Owner = new UserViewModel()
+                     {
+                         Id = vehicle.OwnerId,
+                         Firstname = vehicle.Owner.Firstname,
+                         Lastname = vehicle.Owner.Lastname,
+                         Identifier = vehicle.Owner.Identifier,
+
+                     },
+                     EngineTypeId = vehicle.EngineTypeId,
+                     OwnerId = vehicle.OwnerId,
+                     CategoryId = vehicle.CategoryId,
+                     Photo = vehicle.Photo,
+                     YearOfManufacture = vehicle.YearOfManufacture,
+                     LastUpdate = vehicle.LastUpdate,
+                     Category = new VehicleCategoryViewModel()
+                     {
+                         Id = vehicle.CategoryId,
+                         Name = vehicle.Category.Name,
+                         LastUpdate = vehicle.Category.LastUpdate,
+                     }
+
+
+                 }).ToList();
+        }
+
+
+        public ICollection<VehicleViewModel> GetByUserId(string userId)
+        {
+
+            return dbContext.Vehicles
+                 .Include(x => x.EngineType)
+                 .Include(x => x.Owner)
+                 .Include(x => x.Category)
+                 .Where(x=>x.OwnerId== userId)
                  .Select(vehicle => new VehicleViewModel
                  {
                      Id = vehicle.Id,

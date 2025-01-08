@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using MotorFest.Data;
 using MotorFest.Data.Entities;
-using MotorFest.Models;
+using MotorFest.Models.Event;
+using MotorFest.Models.Location;
 
 namespace MotorFest.Services.LocationService
 {
@@ -22,6 +23,7 @@ namespace MotorFest.Services.LocationService
                 Name = addressViewModel.Name,
                 City = addressViewModel.City,
                 FullAddress = addressViewModel.FullAddress,
+                Municipality = addressViewModel.Municipality,
                 Events = new List<Event>(),
                 LastUpdate = DateTime.UtcNow
             };
@@ -61,11 +63,11 @@ namespace MotorFest.Services.LocationService
                      Events = address.Events.Select(eventEntity => new EventViewModel
                      {
                          Id = eventEntity.Id,
-                         VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory=>new EventVehicleCategory
-                         {
-                             EventId=vehicleCategory.EventId,
-                             VehicleCategoryId=vehicleCategory.VehicleCategoryId
-                         }).ToList(),
+                         //VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory=>new EventVehicleCategory
+                         //{
+                         //    EventId=vehicleCategory.EventId,
+                         //    VehicleCategoryId=vehicleCategory.VehicleCategoryId
+                         //}).ToList(),
                         
                          EventDate = eventEntity.EventDate,
                          EntranceFee = eventEntity.EntranceFee,
@@ -87,11 +89,11 @@ namespace MotorFest.Services.LocationService
                 Events = address.Events.Select(eventEntity => new EventViewModel
                 {
                     Id = eventEntity.Id,
-                    VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory => new EventVehicleCategory
-                    {
-                        EventId = vehicleCategory.EventId,
-                        VehicleCategoryId = vehicleCategory.VehicleCategoryId
-                    }).ToList(),
+                    //VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory => new EventVehicleCategory
+                    //{
+                    //    EventId = vehicleCategory.EventId,
+                    //    VehicleCategoryId = vehicleCategory.VehicleCategoryId
+                    //}).ToList(),
                     EventDate = eventEntity.EventDate,
                     EntranceFee = eventEntity.EntranceFee,
                     LocationId = eventEntity.LocationId,

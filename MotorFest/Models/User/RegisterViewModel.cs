@@ -1,4 +1,4 @@
-﻿namespace MotorFest.Models
+﻿namespace MotorFest.Models.User
 {
     public class RegisterViewModel
     {
@@ -20,7 +20,7 @@
         // Location selection/creation
         public int? CorrespondenceAddressId { get; set; }
         public string NewAddress { get; set; }
-        public List<Location> Addresses { get; set; }
+        public List<MotorFest.Location> Locations { get; set; }
 
         public string NewAddressCity { get; set; } = null!;
 

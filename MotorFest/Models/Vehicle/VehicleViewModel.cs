@@ -1,8 +1,11 @@
 ﻿using MotorFest.Data.Entities;
+using MotorFest.Models.EngineType;
+using MotorFest.Models.User;
+using MotorFest.Models.VehicleCategories;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MotorFest.Models
+namespace MotorFest.Models.Vehicle
 {
     public class VehicleViewModel
     {

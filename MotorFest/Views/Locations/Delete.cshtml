@@ -1,13 +1,14 @@
-﻿@model MotorFest.Models.LocationViewModel
+﻿@model MotorFest.Models.Location.LocationViewModel
 
 @{
-    ViewData["Title"] = "Детайли";
+    ViewData["Title"] = "Delete";
 }
 
-<h1>Детайли за</h1>
+<h1>Изтриване</h1>
 
+<h3>Сигурни ли сте, че искате да изтриете локацията?</h3>
 <div>
-    <h4>Локация</h4>
+    <h4>Адрес</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -41,8 +42,10 @@
             @Html.DisplayFor(model => model.LastUpdate)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Върни се назад</a>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Върни се назад</a>
+    </form>
 </div>

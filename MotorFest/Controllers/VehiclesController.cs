@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using MotorFest;
 using MotorFest.Data;
 using MotorFest.Data.Entities;
-using MotorFest.Models;
+using MotorFest.Models.Vehicle;
 using MotorFest.Services.EngineTypeService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
@@ -218,7 +218,7 @@ namespace MotorFest.Controllers
             
             return RedirectToAction(nameof(Index));
         }
-
        
+
     }
 }

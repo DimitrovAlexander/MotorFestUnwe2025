@@ -1,57 +1,39 @@
-﻿@model MotorFest.Event
+﻿@model MotorFest.Models.Event.EventViewModel
 
-@{
-    ViewData["Title"] = "Create";
-}
+<h1>Създай Събитие</h1>
 
-<h1>Create</h1>
-
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OrganizerId" class="control-label"></label>
-                <input asp-for="OrganizerId" class="form-control" />
-                <span asp-validation-for="OrganizerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocationId" class="control-label"></label>
-                <select asp-for="LocationId" class ="form-control" asp-items="ViewBag.LocationId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventDate" class="control-label"></label>
-                <input asp-for="EventDate" class="form-control" />
-                <span asp-validation-for="EventDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EntranceFee" class="control-label"></label>
-                <input asp-for="EntranceFee" class="form-control" />
-                <span asp-validation-for="EntranceFee" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastUpdate" class="control-label"></label>
-                <input asp-for="LastUpdate" class="form-control" />
-                <span asp-validation-for="LastUpdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Име на събитието</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-</div>
+    <div class="form-group">
+        <label asp-for="EventDate">Дата на събитието</label>
+        <input asp-for="EventDate" type="date" class="form-control" />
+        <span asp-validation-for="EventDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EntranceFee">Входна такса</label>
+        <input asp-for="EntranceFee" class="form-control" />
+        <span asp-validation-for="EntranceFee" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LocationId" class="control-label">Локация</label>
+        <select asp-for="LocationId" class="form-control" asp-items="ViewBag.allLocations"></select>
+    </div>
+    <div class="form-group">
+        <label>Категории превозни средства:</label>
+        @for (int i = 0; i < Model.VehicleCategories.Count; i++)
+        {
+            <div>
+                <input type="hidden" asp-for="VehicleCategories[@i].Id" />
+                <input type="checkbox" asp-for="VehicleCategories[@i].IsChecked" />
+                <input type="hidden" asp-for="VehicleCategories[@i].CategoryName" />
+                <label>@Model.VehicleCategories[i].CategoryName</label>
+            </div>
+        }
+    </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <button type="submit" class="btn btn-primary">Създай събитието</button>
+</form>

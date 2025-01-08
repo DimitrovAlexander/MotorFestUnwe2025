@@ -31,4 +31,5 @@ public partial class Vehicle
     public virtual EngineType EngineType { get; set; } = null!;
 
     public virtual MFUser Owner { get; set; } = null!;
+    public ICollection<EventRegistration> EventRegistration { get; set; } = new HashSet<EventRegistration>();
 }

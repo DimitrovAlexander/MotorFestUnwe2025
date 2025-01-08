@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MotorFest.Models.Event;
 
-namespace MotorFest.Models
+namespace MotorFest.Models.Location
 {
     public class LocationViewModel
     {

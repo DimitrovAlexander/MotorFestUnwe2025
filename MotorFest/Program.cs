@@ -6,6 +6,8 @@ using MotorFest.Services.LocationService;
 using MotorFest.Services.EngineTypeService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
+using MotorFest.Services.EventService;
+using MotorFest.Services.EventsService;
 
 
 namespace MotorFest
@@ -25,6 +27,7 @@ namespace MotorFest
             builder.Services.AddScoped<IVehicleService,VehicleService>();
             builder.Services.AddScoped<IVehicleCategoryService,VehicleCategoryService>();
             builder.Services.AddScoped<IEngineTypeService,EngineTypeService>();
+            builder.Services.AddScoped<IEventService,EventService>();
 
             builder.Services.AddDefaultIdentity<MFUser>(o =>
             {

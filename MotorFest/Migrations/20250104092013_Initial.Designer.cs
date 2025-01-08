@@ -12,7 +12,7 @@ using MotorFest.Data;
 namespace MotorFest.Migrations
 {
     [DbContext(typeof(MotorFestDbContext))]
-    [Migration("20250102121304_Initial")]
+    [Migration("20250104092013_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -337,17 +337,15 @@ namespace MotorFest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrganizerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrganizerId1")
+                    b.Property<string>("OrganizerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("OrganizerId1");
+                    b.HasIndex("OrganizerId");
 
                     b.ToTable("Events", "21180022");
                 });
@@ -533,7 +531,9 @@ namespace MotorFest.Migrations
 
                     b.HasOne("MotorFest.Data.Entities.MFUser", "Organizer")
                         .WithMany()
-                        .HasForeignKey("OrganizerId1");
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Location");
 

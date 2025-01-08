@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MotorFest.Data;
 
@@ -11,9 +12,11 @@ using MotorFest.Data;
 namespace MotorFest.Migrations
 {
     [DbContext(typeof(MotorFestDbContext))]
-    partial class MotorFestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250105111151_EventRegistrations")]
+    partial class EventRegistrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

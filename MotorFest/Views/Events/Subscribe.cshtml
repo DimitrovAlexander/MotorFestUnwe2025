@@ -1,0 +1,17 @@
+﻿@model MotorFest.Models.Event.EventSubscribeViewModel
+
+<h1>Записване за събитие: @Model.EventName</h1>
+
+<form asp-action="Subscribe" method="post">
+    <input type="hidden" asp-for="EventId" />
+
+    <div class="form-group">
+        <label for="SelectedVehicleId">Изберете превозно средство:</label>
+        <select asp-for="SelectedVehicleId" asp-items="Model.UserVehicles" class="form-control"></select>
+    </div>
+    <input type="hidden" asp-for="EventName" />
+    <input type="hidden" asp-for="UserVehicles" />
+    <input type="hidden" asp-for="EventId" />
+    <button type="submit" class="btn btn-primary">Запиши се</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</form>

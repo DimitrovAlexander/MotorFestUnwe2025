@@ -1,5 +1,5 @@
 ﻿using MotorFest.Data;
-using MotorFest.Models;
+using MotorFest.Models.VehicleCategories;
 
 namespace MotorFest.Services.VehicleCategoryService
 {

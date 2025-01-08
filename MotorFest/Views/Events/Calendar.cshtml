@@ -1,0 +1,58 @@
+﻿<!-- Calendar.cshtml -->
+@model IEnumerable<MotorFest.Models.Event.EventViewModel>
+
+<h1>Календар на събитията</h1>
+
+<div class="calendar-container">
+	@foreach (var eventGroup in Model.GroupBy(e => e.EventDate.Date))
+	{
+		<div class="day-events">
+			<h3>@eventGroup.Key.ToString("dd MMM yyyy")</h3>
+			<ul>
+				@foreach (var ev in eventGroup)
+				{
+					<li>
+						@if (ev.EntranceFee == 0)
+						{
+
+							<a asp-action="Details" asp-route-id="@ev.Id" class="event-link">
+								@ev.Name - Вход свободен
+							</a>
+						}
+						else{
+							<a asp-action="Details" asp-route-id="@ev.Id" class="event-link">
+								@ev.Name - Вход: @ev.EntranceFee лв.
+							</a>
+						}
+					</li>
+				}
+			</ul>
+		</div>
+	}
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Назад</a>
+
+<style>
+	.calendar-container {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.day-events {
+		border: 1px solid #ccc;
+		padding: 10px;
+		border-radius: 5px;
+		background-color: #f9f9f9;
+	}
+
+	.event-link {
+		text-decoration: none;
+		color: #007bff;
+	}
+
+		.event-link:hover {
+			text-decoration: underline;
+		}
+</style>

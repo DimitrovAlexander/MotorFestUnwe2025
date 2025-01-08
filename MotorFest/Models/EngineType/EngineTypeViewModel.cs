@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using MotorFest.Models.Vehicle;
 
-namespace MotorFest.Models
+namespace MotorFest.Models.EngineType
 {
-    public class VehicleCategoryViewModel
+    public class EngineTypeViewModel
     {
         public int Id { get; set; }
 
@@ -10,7 +11,6 @@ namespace MotorFest.Models
 
 
         public DateTime LastUpdate { get; set; } = DateTime.Now;
-        public virtual ICollection<EventViewModel> Events { get; set; } = new List<EventViewModel>();
 
         public virtual ICollection<VehicleViewModel> Vehicles { get; set; } = new List<VehicleViewModel>();
     }
