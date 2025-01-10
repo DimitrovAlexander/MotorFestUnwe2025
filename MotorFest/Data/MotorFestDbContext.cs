@@ -24,8 +24,9 @@ namespace MotorFest.Data
 
         public virtual DbSet<VehicleCategory> VehicleCategories { get; set; }
         public virtual DbSet<EventVehicleCategory> EventVehicleCategories { get; set; }
+        public virtual DbSet<EventEngineType> EventEngineTypes { get; set; }
 
-        public DbSet<EventRegistration> EventRegistrations { get; set; }
+        public virtual DbSet<EventRegistration> EventRegistrations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,7 +44,19 @@ namespace MotorFest.Data
             modelBuilder.Entity<EventVehicleCategory>()
                 .HasOne(evc => evc.VehicleCategory)
                 .WithMany(vc => vc.EventVehicleCategories)
-                .HasForeignKey(evc => evc.VehicleCategoryId);
+                .HasForeignKey(evc => evc.VehicleCategoryId); 
+            modelBuilder.Entity<EventEngineType>()
+    .HasKey(evc => new { evc.EventId, evc.EngineTypeId }); // Composite ключ
+
+            modelBuilder.Entity<EventEngineType>()
+                .HasOne(evc => evc.Event)
+                .WithMany(e => e.EventEngineTypes)
+                .HasForeignKey(evc => evc.EventId);
+
+            modelBuilder.Entity<EventEngineType>()
+                .HasOne(evc => evc.EngineType)
+                .WithMany(et => et.EventEngineTypes)
+                .HasForeignKey(evc => evc.EngineTypeId);
 
 
             modelBuilder.HasDefaultSchema("21180022");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using MotorFest.Data.Entities;
 
 namespace MotorFest;
 
@@ -14,4 +15,5 @@ public partial class EngineType
     public DateTime LastUpdate { get; set; } = DateTime.Now;
 
     public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+    public virtual ICollection<EventEngineType> EventEngineTypes { get; set; } = new List<EventEngineType>();
 }

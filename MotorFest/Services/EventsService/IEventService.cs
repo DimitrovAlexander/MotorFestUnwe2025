@@ -1,4 +1,5 @@
 ﻿using MotorFest.Models.Event;
+using MotorFest.Models.Vehicle;
 
 namespace MotorFest.Services.EventService
 {
@@ -7,5 +8,6 @@ namespace MotorFest.Services.EventService
         bool HasVehiclesForEvent(int eventId);
         bool RegisterVehicleForEvent(int eventId, int vehicleId);
         ICollection<EventViewModel> GetAllByUserParticipating(string userId);
+        ICollection<VehicleViewModel> GetRegisteredVehiclesForEvent(int eventId);
     }
 }

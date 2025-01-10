@@ -27,13 +27,15 @@ namespace MotorFest.Controllers
         private readonly IVehicleService vehicleService;
         private readonly ILocationService locationService;
         private readonly UserManager<MFUser> _userManager;
-        public EventsController(IEventService eventService, IVehicleCategoryService vehicleCategoryService, ILocationService locationService, UserManager<MFUser> userManager, IVehicleService vehicleService)
+        private readonly IEngineTypeService engineTypeService;
+        public EventsController(IEventService eventService, IVehicleCategoryService vehicleCategoryService, ILocationService locationService, UserManager<MFUser> userManager, IVehicleService vehicleService, IEngineTypeService engineTypeService)
         {
             this.eventService = eventService;
             this.vehicleCategoryService = vehicleCategoryService;
             this.locationService = locationService;
             _userManager = userManager;
             this.vehicleService = vehicleService;
+            this.engineTypeService = engineTypeService;
         }
 
         public async Task<IActionResult> Index()
@@ -45,7 +47,9 @@ namespace MotorFest.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+
             var categories = vehicleCategoryService.GetAll();
+            var engineTypes = engineTypeService.GetAll();
             var user = await _userManager.GetUserAsync(User);
             var model = new EventViewModel
             {
@@ -55,7 +59,12 @@ namespace MotorFest.Controllers
                     CategoryName = c.Name,
                     IsChecked = false
                 }).ToList(),
-
+                EngineTypes = engineTypes.Select(e => new CheckBoxItem
+                {
+                    Id = e.Id,
+                    CategoryName = e.Name,
+                    IsChecked = false
+                }).ToList()
 
             };
             ViewData["allLocations"] = locationService.GetAll()
@@ -88,6 +97,17 @@ namespace MotorFest.Controllers
         {
             var eventDetails = await eventService.GetById(id);
             if (eventDetails == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            var isOrganizer = eventDetails.OrganizerId == userId;
+            var isAdmin = User.IsInRole("Administrator");
+
+            if (isOrganizer || isAdmin)
+            {
+                var registeredVehicles = eventService.GetRegisteredVehiclesForEvent(id);
+                ViewData["RegisteredVehicles"] = registeredVehicles;
+            }
+
             return View(eventDetails);
         }
 

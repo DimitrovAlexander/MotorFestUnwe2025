@@ -11,7 +11,7 @@ namespace MotorFest.Services.VehicleCategoryService
             this.dbContext = dbContext;
         }
 
-        public async Task<VehicleCategoryViewModel> Create(VehicleCategoryViewModel vehicleCategoryViewModel)
+        public async Task<bool> Create(VehicleCategoryViewModel vehicleCategoryViewModel)
         {
             VehicleCategory vehicleCategoryEntity = new VehicleCategory
             {
@@ -22,18 +22,19 @@ namespace MotorFest.Services.VehicleCategoryService
             };
             await dbContext.VehicleCategories.AddAsync(vehicleCategoryEntity);
             await dbContext.SaveChangesAsync();
-            return null;
+            return true;
         }
 
-        public async Task<VehicleCategoryViewModel> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var vehicleCategory = dbContext.VehicleCategories.FirstOrDefault(x => x.Id == id);
             if (vehicleCategory != null)
             {
                 dbContext.VehicleCategories.Remove(vehicleCategory);
                 await dbContext.SaveChangesAsync();
+                return true;
             }
-            return null;
+            return false;
         }
 
         public ICollection<VehicleCategoryViewModel> GetAll()
@@ -62,7 +63,7 @@ namespace MotorFest.Services.VehicleCategoryService
             };
         }
 
-        public async Task<VehicleCategoryViewModel> Update(int id, VehicleCategoryViewModel vehicleCategory)
+        public async Task<bool> Update(int id, VehicleCategoryViewModel vehicleCategory)
         {
             var vehicleCategoryEntity = dbContext.Find<VehicleCategory>(id);
 
@@ -72,7 +73,7 @@ namespace MotorFest.Services.VehicleCategoryService
 
             dbContext.Update(vehicleCategoryEntity);
             await dbContext.SaveChangesAsync();
-            return vehicleCategory;
+            return true;
         }
     }
 }

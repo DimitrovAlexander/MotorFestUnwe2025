@@ -24,8 +24,12 @@ public partial class Event
     public virtual Location Location { get; set; } = null!;
 
     public virtual MFUser Organizer { get; set; } = null!;
-    public ICollection<EventVehicleCategory> EventVehicleCategories { get; set; } = new List<EventVehicleCategory>();
-    public ICollection<EventRegistration> EventRegistration { get; set; } = new HashSet<EventRegistration>();
+    public int? MinYearOfManufacture { get; set; }
+    public int? MaxYearOfManufacture { get; set; }
+    public virtual ICollection<EventEngineType> EventEngineTypes { get; set; } = new List<EventEngineType>();
+
+    public virtual ICollection<EventVehicleCategory> EventVehicleCategories { get; set; } = new List<EventVehicleCategory>();
+    public virtual ICollection<EventRegistration> EventRegistration { get; set; } = new HashSet<EventRegistration>();
 
 
 

@@ -11,7 +11,7 @@ namespace MotorFest.Services.EngineTypeService
             this.dbContext = dbContext;
         }
 
-        public async Task<EngineTypeViewModel> Create(EngineTypeViewModel engineTypeViewModel)
+        public async Task<bool> Create(EngineTypeViewModel engineTypeViewModel)
         {
             EngineType engineTypeEntity = new EngineType
             {
@@ -22,18 +22,20 @@ namespace MotorFest.Services.EngineTypeService
             };
             await dbContext.EngineTypes.AddAsync(engineTypeEntity);
             await dbContext.SaveChangesAsync();
-            return null;
+            return true;
         }
 
-        public async Task<EngineTypeViewModel> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var engineType = dbContext.EngineTypes.FirstOrDefault(x => x.Id == id);
             if (engineType != null)
             {
                 dbContext.EngineTypes.Remove(engineType);
                 await dbContext.SaveChangesAsync();
+                return true;
+
             }
-            return null;
+            return false;
         }
 
         public ICollection<EngineTypeViewModel> GetAll()
@@ -62,7 +64,7 @@ namespace MotorFest.Services.EngineTypeService
             };
         }
 
-        public async Task<EngineTypeViewModel> Update(int id, EngineTypeViewModel engineType)
+        public async Task<bool> Update(int id, EngineTypeViewModel engineType)
         {
             var engineTypeEntity = dbContext.Find<EngineType>(id);
 
@@ -72,7 +74,7 @@ namespace MotorFest.Services.EngineTypeService
 
             dbContext.Update(engineTypeEntity);
             await dbContext.SaveChangesAsync();
-            return engineType;
+            return true;
         }
     }
 }

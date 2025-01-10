@@ -17,13 +17,22 @@ namespace MotorFest.Models.Vehicle
         [Display(Name = "Тип на двигателя")]
         public int EngineTypeId { get; set; }
         [Display(Name = "Производител")]
-        public string Manufacturer { get; set; } = null!;
+        [Required(ErrorMessage = "Производителят е задължителен.")]
+        [MinLength(4, ErrorMessage = "Производителят трябва да бъде минимум 4 символа.")]
+        public string Manufacturer { get; set; }
+
         [Display(Name = "Модел")]
-        public string Model { get; set; } = null!;
+        [Required(ErrorMessage = "Моделът е задължителен.")]
+        [MinLength(3, ErrorMessage = "Моделът трябва да бъде минимум 3 символа.")]
+        public string Model { get; set; }
+
         [Display(Name = "Година на производство")]
+        [Range(1800, int.MaxValue, ErrorMessage = "Годината на производство трябва да бъде между 1800 и настоящата година.")]
         public int YearOfManufacture { get; set; }
+
         [Display(Name = "Снимка на МПС")]
-        public string? Photo { get; set; }
+        [Required(ErrorMessage = "Снимката е задължителна.")]
+        public string Photo { get; set; }
         [Display(Name = "Последна промяна")]
 
         public DateTime LastUpdate { get; set; } = DateTime.Now;

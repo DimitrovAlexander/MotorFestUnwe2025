@@ -1,8 +1,47 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@{
+    ViewData["Title"] = "Начало";
+}
 
-<div class="text-center">
-    <h1 class="display-4">Добре дошли в МоторФест</h1>
-    <p>Вашето място за организиране и намиране на Вашето авто и мото събитие.</p>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4">Добре дошли в MotorFest!</h1>
+        <p class="lead">Вашето място за организиране и участие в автомобилни събития.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-event-fill display-1 text-primary"></i>
+                    <h5 class="card-title mt-3">Събития</h5>
+                    <p class="card-text">Разгледайте предстоящите събития и се запишете за участие.</p>
+                    <a href="@Url.Action("Index", "Events")" class="btn btn-primary" style="background-color: #38385E">Виж събития</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-car-front-fill display-1 text-success"></i>
+                    <h5 class="card-title mt-3">Превозни средства</h5>
+                    <p class="card-text">Управлявайте вашите превозни средства и добавяйте нови.</p>
+                    <a href="@Url.Action("Index", "Vehicles")" class="btn btn-success" style="background-color: #38385E">Управлявай превозни средства</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-geo-alt-fill display-1 text-danger"></i>
+                    <h5 class="card-title mt-3">Локации</h5>
+                    <p class="card-text">Разгледайте и управлявайте локациите на събитията.</p>
+                    <a href="@Url.Action("Index", "Locations")" class="btn btn-danger" style="background-color: #38385E">Виж локации</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

@@ -2,9 +2,9 @@
 {
     public interface IBasicCrudService<T>
     {
-      Task<T> Create(T entity);
-        Task<T>  Update(int id, T entity);
-        Task<T> Delete(int id);
+      Task<bool> Create(T entity);
+        Task<bool>  Update(int id, T entity);
+        Task<bool> Delete(int id);
         Task<T> GetById(int id);
         ICollection<T> GetAll();
     }

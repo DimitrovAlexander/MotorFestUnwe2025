@@ -4,6 +4,8 @@ using MotorFest.Services.EventService;
 using Microsoft.EntityFrameworkCore;
 using MotorFest.Models.Event;
 using MotorFest.Models.EventVehicleCategory;
+using MotorFest.Models.User;
+using MotorFest.Models.Vehicle;
 
 namespace MotorFest.Services.EventsService
 {
@@ -20,6 +22,8 @@ namespace MotorFest.Services.EventsService
         {
             var events = _context.Events
         .Include(e => e.Location)
+        .Include(e => e.EventEngineTypes)
+        .Include(e => e.EventVehicleCategories)
         .Select(e => new EventViewModel
         {
             Id = e.Id,
@@ -57,6 +61,7 @@ namespace MotorFest.Services.EventsService
         public async Task<EventViewModel> GetById(int id)
         {
             var eventEntity = await _context.Events
+                .Include(e => e.EventEngineTypes)
                 .Include(e => e.EventVehicleCategories)
                 .ThenInclude(ec => ec.VehicleCategory)
                 .FirstOrDefaultAsync(e => e.Id == id);
@@ -80,7 +85,7 @@ namespace MotorFest.Services.EventsService
             };
         }
 
-        public async Task<EventViewModel> Create(EventViewModel model)
+        public async Task<bool> Create(EventViewModel model)
         {
             var newEvent = new Event
             {
@@ -88,7 +93,9 @@ namespace MotorFest.Services.EventsService
                 OrganizerId = model.OrganizerId,
                 LocationId = model.LocationId,
                 EventDate = model.EventDate,
-                EntranceFee = model.EntranceFee
+                EntranceFee = model.EntranceFee,
+                MinYearOfManufacture = model.MinYearOfManufacture,
+                MaxYearOfManufacture = model.MaxYearOfManufacture,
             };
 
             _context.Events.Add(newEvent);
@@ -101,24 +108,33 @@ namespace MotorFest.Services.EventsService
                     EventId = newEvent.Id,
                     VehicleCategoryId = vc.Id
                 });
+            var eventEngineTypes = model.EngineTypes
+            .Where(et => et.IsChecked)
+            .Select(et => new EventEngineType
+            {
+                EventId= newEvent.Id,
+                EngineTypeId = et.Id
+            });
 
             _context.EventVehicleCategories.AddRange(eventCategories);
+            _context.EventEngineTypes.AddRange(eventEngineTypes);
             await _context.SaveChangesAsync();
-            return null;
+            return true;
         }
 
-        public async Task<EventViewModel> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var eventEntity = await _context.Events.FindAsync(id);
             if (eventEntity != null)
             {
                 _context.Events.Remove(eventEntity);
                 await _context.SaveChangesAsync();
+                return true;
             }
-            return null;
+            return false;
         }
 
-        public Task<EventViewModel> Update(int id, EventViewModel entity)
+        public async Task<bool> Update(int id, EventViewModel entity)
         {
             var eventEntity =  _context.Events
              .Include(e => e.EventVehicleCategories)
@@ -126,7 +142,7 @@ namespace MotorFest.Services.EventsService
 
             if (eventEntity == null)
             {
-                return null;
+                return false;
             }
             eventEntity.Name = entity.Name;
             
@@ -144,11 +160,21 @@ namespace MotorFest.Services.EventsService
                     EventId = entity.Id,
                     VehicleCategoryId = vc.Id
                 });
+            var existingEngineTypes = eventEntity.EventEngineTypes;
+            _context.EventEngineTypes.RemoveRange(existingEngineTypes);
 
-             _context.EventVehicleCategories.AddRangeAsync(newCategories);
+            var newEngineTypes = entity.EngineTypes
+                .Where(vc => vc.IsChecked)
+                .Select(et => new EventEngineType
+                {
+                    EventId = entity.Id,
+                    EngineTypeId = et.Id
+                });
 
-             _context.SaveChangesAsync();
-            return null;
+            await _context.EventEngineTypes.AddRangeAsync(newEngineTypes);
+
+            await _context.SaveChangesAsync();
+            return true;
         }
         public bool HasVehiclesForEvent(int eventId)
         {
@@ -159,12 +185,17 @@ namespace MotorFest.Services.EventsService
         }
         public bool RegisterVehicleForEvent(int eventId, int vehicleId)
         {
+            var vehicle = _context.Vehicles.FirstOrDefault(v => v.Id==vehicleId);
+            var evnt = _context.Events.FirstOrDefault(e => e.Id==eventId);
             // Извличаме категорията на превозното средство
             var vehicleCategoryId = _context.Vehicles
                 .Where(v => v.Id == vehicleId)
                 .Select(v => v.CategoryId)
                 .FirstOrDefault();
-
+            var vehicleEngineType = _context.Vehicles
+                .Where(v => v.Id == vehicleId)
+                .Select(v => v.EngineTypeId)
+                .FirstOrDefault();
             if (vehicleCategoryId == 0)
             {
                 return false; // Превозното средство не съществува
@@ -175,6 +206,19 @@ namespace MotorFest.Services.EventsService
                 .Any(evc => evc.EventId == eventId && evc.VehicleCategoryId == vehicleCategoryId);
 
             if (!isCategorySupported)
+            {
+                return false; // Категорията на превозното средство не е свързана със събитието
+            } // Проверяваме дали събитието поддържа тази категория
+            var isEngineTypeSupported = _context.EventEngineTypes
+                .Any(evc => evc.EventId == eventId && evc.EngineTypeId == vehicleEngineType);
+
+            if (!isEngineTypeSupported)
+            {
+                return false; // Категорията на превозното средство не е свързана със събитието
+            } // Проверяваме дали събитието поддържа тази категория
+            var isYearOfProductionSupported = vehicle.YearOfManufacture > evnt.MinYearOfManufacture && vehicle.YearOfManufacture < evnt.MaxYearOfManufacture;
+
+            if (!isYearOfProductionSupported)
             {
                 return false; // Категорията на превозното средство не е свързана със събитието
             }
@@ -242,6 +286,24 @@ namespace MotorFest.Services.EventsService
 
             return events;
         }
-
+        public ICollection<VehicleViewModel> GetRegisteredVehiclesForEvent(int eventId)
+        {
+            return _context.EventRegistrations
+                .Where(er => er.EventId == eventId)
+                .Include(er => er.Vehicle)
+                .ThenInclude(v => v.Owner)
+                .Select(er => new VehicleViewModel
+                {
+                    Id = er.Vehicle.Id,
+                    Manufacturer = er.Vehicle.Manufacturer,
+                    Model = er.Vehicle.Model,
+                    YearOfManufacture = er.Vehicle.YearOfManufacture,
+                    Owner = new UserViewModel
+                    {
+                        Firstname = er.Vehicle.Owner.Firstname,
+                        Lastname = er.Vehicle.Owner.Lastname
+                    }
+                }).ToList();
+        }
     }
 }

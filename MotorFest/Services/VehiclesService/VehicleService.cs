@@ -16,7 +16,7 @@ namespace MotorFest.Services.VehiclesService
             this.dbContext = dbContext;
         }
 
-        public async Task<VehicleViewModel> Create(VehicleViewModel VehicleViewModel)
+        public async Task<bool> Create(VehicleViewModel VehicleViewModel)
         {
             Vehicle vehicleEntity = new Vehicle
             {
@@ -32,18 +32,19 @@ namespace MotorFest.Services.VehiclesService
             };
             await dbContext.Vehicles.AddAsync(vehicleEntity);
             await dbContext.SaveChangesAsync();
-            return null;
+            return true;
         }
 
-        public async Task<VehicleViewModel> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var vehicle = dbContext.Vehicles.FirstOrDefault(x => x.Id == id);
             if (vehicle != null)
             {
                 dbContext.Vehicles.Remove(vehicle);
                 await dbContext.SaveChangesAsync();
+            return true;
             }
-            return null;
+            return false;
         }
 
         public ICollection<VehicleViewModel> GetAll()
@@ -178,7 +179,7 @@ namespace MotorFest.Services.VehiclesService
             };
         }
 
-        public async Task<VehicleViewModel> Update(int id, VehicleViewModel vehicle)
+        public async Task<bool> Update(int id, VehicleViewModel vehicle)
         {
             var vehicleEntity = dbContext.Find<Vehicle>(id);
             vehicleEntity.YearOfManufacture = vehicle.YearOfManufacture;
@@ -193,7 +194,7 @@ namespace MotorFest.Services.VehiclesService
 
             dbContext.Update(vehicleEntity);
             await dbContext.SaveChangesAsync();
-            return vehicle;
+            return true;
         }
     }
 }

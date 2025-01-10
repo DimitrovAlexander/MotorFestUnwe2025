@@ -15,7 +15,7 @@ namespace MotorFest.Services.LocationService
             this.dbContext = dbContext;
         }
 
-        public async Task<LocationViewModel> Create(LocationViewModel addressViewModel)
+        public async Task<bool> Create(LocationViewModel addressViewModel)
         {
             Location addressEntity = new Location
             {
@@ -29,18 +29,19 @@ namespace MotorFest.Services.LocationService
             };
             await dbContext.Locations.AddAsync(addressEntity);
             await dbContext.SaveChangesAsync();
-            return null;
+            return true;
         }
 
-        public async Task<LocationViewModel> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var address = dbContext.Locations.FirstOrDefault(x => x.Id == id);
             if (address != null)
             {
                 dbContext.Locations.Remove(address);
                await dbContext.SaveChangesAsync();
+                return true;
             }
-            return null;
+            return false;
         }
 
         public ICollection<LocationViewModel> GetAll()
@@ -106,7 +107,7 @@ namespace MotorFest.Services.LocationService
             };
         }
 
-        public async Task<LocationViewModel> Update(int id, LocationViewModel address)
+        public async Task<bool> Update(int id, LocationViewModel address)
         {
             var addressEntity = dbContext.Find<Location>(id);
             addressEntity.Municipality = address.Municipality;
@@ -118,7 +119,7 @@ namespace MotorFest.Services.LocationService
 
             dbContext.Update(addressEntity);
              await dbContext.SaveChangesAsync();
-            return address;
+            return true;
         }
     }
 }

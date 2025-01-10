@@ -13,6 +13,40 @@
 			<li>@category.CategoryName</li>
 		}
 	</ul>
+	<p>Разрешен вид гориво за превозните средства:</p>
+	<ul>
+		@foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
+		{
+			<li>@type.CategoryName</li>
+		}
+	</ul>
+
+    @if (ViewData["RegisteredVehicles"] != null)
+    {
+        <h3>Registered Vehicles</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicle in (IEnumerable<MotorFest.Models.Vehicle.VehicleViewModel>)ViewData["RegisteredVehicles"])
+                {
+                    <tr>
+                        <td>@vehicle.Manufacturer</td>
+                        <td>@vehicle.Model</td>
+                        <td>@vehicle.YearOfManufacture</td>
+                        <td>@vehicle.Owner.Firstname @vehicle.Owner.Lastname</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
 </div>
 
 <a asp-action="Index" class="btn btn-secondary">Върни се назад</a>

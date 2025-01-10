@@ -1,12 +1,13 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
+
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
@@ -16,9 +17,14 @@ html {
   position: relative;
   min-height: 100%;
 }
+.custom-btn {
+    background-color: #38385E;
+    color: #fff;
+}
 
 body {
-  margin-bottom: 60px;
+    color: #38385E;
+    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -29,3 +35,48 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+.small-image {
+    width: 100px; 
+    height: auto; 
+    object-fit: cover; 
+}
+.navbar {
+    background-color: #333; /* Тъмен фон */
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лека сянка */
+}
+
+.navbar {
+    background-color: #333; /* Dark background color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #fff; 
+}
+
+.navbar-nav .nav-link {
+    color: #f2f2f2; /* Light text color for links */
+    transition: color 0.3s; /* Smooth transition for hover effect */
+}
+
+    .navbar-nav .nav-link:hover {
+        color: #E9E9FF; /* Green color on hover */
+    }
+
+.navbar-toggler {
+    border-color: #fff; /* White border for the toggler */
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.footer {
+    background-color: #333;
+    color: #38385E;
+    padding: 10px 0;
+    text-align: center;
+}
+

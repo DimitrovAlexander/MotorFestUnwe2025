@@ -82,18 +82,39 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VehicleViewModel vehicle)
+        public async Task<IActionResult> Create(VehicleViewModel vehicle, IFormFile photo)
         {
             ModelState.Remove("Owner");
             ModelState.Remove("OwnerId");
             ModelState.Remove("Category");
             ModelState.Remove("EngineType");
+            ModelState.Remove("Photo");
             if (ModelState.IsValid)
             {
+                if (photo != null && photo.Length > 0)
+                {
+                    var fileName = Path.GetFileName(photo.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(stream);
+                    }
+
+                    vehicle.Photo = "/images/" + fileName;
+                }
+                else
+                {
+                    ModelState.AddModelError("Photo", "Снимката е задължителна.");
+                    return View(vehicle);
+                }
                 var user = await _userManager.GetUserAsync(User);
                 vehicle.OwnerId = user.Id;
-                await vehicleService.Create(vehicle);
+                if(await vehicleService.Create(vehicle))
+                {
+                    TempData.Add("successMessage", "Успешно добавихте превозно средство");
                 return RedirectToAction(nameof(Index));
+                };
             }
             ViewData["allCategories"] = categoryService.GetAll()
          .Select(c => new SelectListItem
@@ -145,7 +166,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,EngineTypeId,Manufacturer,Model,YearOfManufacture,Photo")] VehicleViewModel vehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,EngineTypeId,Manufacturer,Model,YearOfManufacture,Photo")] VehicleViewModel vehicle,IFormFile photo)
         {
             if (id != vehicle.Id)
             {
@@ -154,9 +175,30 @@ namespace MotorFest.Controllers
 
             if (ModelState.IsValid)
             {
+                if (photo != null && photo.Length > 0)
+                {
+                    var fileName = Path.GetFileName(photo.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(stream);
+                    }
+
+                    vehicle.Photo = "/images/" + fileName;
+                }
+                else if (string.IsNullOrEmpty(vehicle.Photo))
+                {
+                    ModelState.AddModelError("Photo", "Снимката е задължителна.");
+                    return View(vehicle);
+                }
+
                 try
                 {
-                    await vehicleService.Update(id, vehicle);
+                await vehicleService.Update(id, vehicle);
+                TempData["successMessage"] = "Успешно редактирахте превозното средство";
+                return RedirectToAction(nameof(Index));
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -169,7 +211,7 @@ namespace MotorFest.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
             ViewData["allCategories"] = categoryService.GetAll()
                     .Select(c => new SelectListItem
