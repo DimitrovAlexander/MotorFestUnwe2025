@@ -8,6 +8,7 @@ using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
 using MotorFest.Services.EventService;
 using MotorFest.Services.EventsService;
+using Microsoft.Extensions.Options;
 
 
 namespace MotorFest
@@ -37,6 +38,7 @@ namespace MotorFest
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 6;
+                o.User.RequireUniqueEmail = true;
             }).AddRoles<IdentityRole>()
                .AddEntityFrameworkStores<MotorFestDbContext>();
             builder.Services.AddControllersWithViews();

@@ -1,7 +1,7 @@
 ﻿<div class="container mt-5">
     <h2 class="mb-4">Списък с Локации</h2>
-    <a asp-action="Create" class="btn btn-success mb-3">Добави Нова Локация</a>
-    <table class="table table-striped table-hover" style="color:mediumpurple">
+    <a asp-action="Create" class="btn custom-btn mb-3">Добави Нова Локация</a>
+    <table class="table table-striped table-hover" >
         <thead>
             <tr>
                 <th>Име</th>
@@ -20,9 +20,9 @@
                     <td>@location.FullAddress</td>
                     <td>@location.Municipality</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@location.Id" class="btn btn-warning btn-sm">Редактирай</a>
-                        <a asp-action="Details" asp-route-id="@location.Id" class="btn btn-info btn-sm">Детайли</a>
-                        <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-danger btn-sm">Изтрий</a>
+                        <a asp-action="Edit" asp-route-id="@location.Id" class="btn custom-btn btn-sm">Редактирай</a>
+                        <a asp-action="Details" asp-route-id="@location.Id" class="btn custom-btn btn-sm">Детайли</a>
+                        <a asp-action="Delete" asp-route-id="@location.Id" class="btn custom-btn btn-sm">Изтрий</a>
                     </td>
                 </tr>
             }

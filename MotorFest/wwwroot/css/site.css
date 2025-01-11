@@ -21,6 +21,9 @@ html {
     background-color: #38385E;
     color: #fff;
 }
+container{
+    color:#fff;
+}
 
 body {
     color: #38385E;
@@ -40,14 +43,10 @@ body {
     height: auto; 
     object-fit: cover; 
 }
-.navbar {
-    background-color: #333; /* Тъмен фон */
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Лека сянка */
-}
+
 
 .navbar {
-    background-color: #333; /* Dark background color */
+    background-color: #fff; /* Dark background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
@@ -72,11 +71,13 @@ body {
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
-
 .footer {
-    background-color: #333;
-    color: #38385E;
-    padding: 10px 0;
+    background-color: #38385E; /* Ensure the background color is consistent */
+    color: #fff; /* Set the text color to white */
+    padding: 10px 0; /* Optional: Add padding for better spacing */
+    text-align: center; /* Optional: Center the text */
+}
+.year-column {
+    width: 80px;
     text-align: center;
 }
-

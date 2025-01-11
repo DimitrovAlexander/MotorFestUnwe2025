@@ -2,13 +2,15 @@
 
 <h1>Моите събития</h1>
 
-<table class="table">
+<a asp-action="Create" class="btn custom-btn">Добави събитие</a>
+
+<table class=" table table-striped table-hover">
 	<thead>
 		<tr>
 			<th>Име на събитието</th>
 			<th>Дата на събитието</th>
 			<th>Входна такса</th>
-			<th>Има ли записани участници вече?</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,17 +22,16 @@
 				<td>@item.EntranceFee</td>
 
 				<td>
+					<a asp-action="Details" asp-route-id="@item.Id" class="btn custom-btn">Детайли</a>
+					<a asp-action="Delete" asp-route-id="@item.Id" class="btn custom-btn">Изтрий</a>
 					@if (!item.HasVehicles)
 					{
-						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info">Редактирай</a>
+						<a asp-action="Edit" asp-route-id="@item.Id" class="btn custom-btn">Редактирай</a>
 					}
-					<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Детайли</a>
-					<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Изтрий</a>
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Create New Event</a>
 

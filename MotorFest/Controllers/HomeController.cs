@@ -17,16 +17,11 @@ namespace MotorFest.Controllers
         public IActionResult Index()
         {
 
-        // Пример за използване
-        bool isPasswordValid = VerifyPassword("AQAAAAIAAYagAAAAEEa4wODr+uoRihazwhLHiWVCQD+XxIzgc6G+rjeUxZbWrLXd29UjOID1F5jtNSL9MA==", "123123");
+
+        
             return View();
         }
-        private bool VerifyPassword(string hashedPassword, string providedPassword)
-        {
-            var passwordHasher = new PasswordHasher<IdentityUser>();
-            var result = passwordHasher.VerifyHashedPassword(new IdentityUser(), hashedPassword, providedPassword);
-            return result == PasswordVerificationResult.Success;
-        }
+        
         public IActionResult Privacy()
         {
             return View();
