@@ -23,9 +23,9 @@
 
 				<td>
 					<a asp-action="Details" asp-route-id="@item.Id" class="btn custom-btn">Детайли</a>
-					<a asp-action="Delete" asp-route-id="@item.Id" class="btn custom-btn">Изтрий</a>
 					@if (!item.HasVehicles)
 					{
+						<a asp-action="Delete" asp-route-id="@item.Id" class="btn custom-btn">Изтрий</a>
 						<a asp-action="Edit" asp-route-id="@item.Id" class="btn custom-btn">Редактирай</a>
 					}
 				</td>

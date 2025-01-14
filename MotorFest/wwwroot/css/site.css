@@ -21,6 +21,10 @@ html {
     background-color: #38385E;
     color: #fff;
 }
+custom-item {
+    background-color: #38385E;
+    color: #fff;
+}
 container{
     color:#fff;
 }
@@ -76,6 +80,14 @@ body {
     color: #fff; /* Set the text color to white */
     padding: 10px 0; /* Optional: Add padding for better spacing */
     text-align: center; /* Optional: Center the text */
+    position: relative;
+}
+#footer {
+    background-color: #38385E; /* Ensure the background color is consistent */
+    color: #fff; /* Set the text color to white */
+    padding: 10px 0; /* Optional: Add padding for better spacing */
+    text-align: center; /* Optional: Center the text */
+    position: relative;
 }
 .year-column {
     width: 80px;
