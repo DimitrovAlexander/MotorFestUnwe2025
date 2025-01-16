@@ -17,6 +17,7 @@ using MotorFest.Services.EventsService;
 using MotorFest.Services.LocationService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
+using X.PagedList.Extensions;
 
 namespace MotorFest.Controllers
 {
@@ -38,10 +39,27 @@ namespace MotorFest.Controllers
             this.engineTypeService = engineTypeService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
             var events = eventService.GetAll();
-            return View(events);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                events = events.Where(e => e.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                           e.Location.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                           e.EventDate.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                            e.VehicleCategories.Any(vc => vc.CategoryName != null && vc.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                                            
+                                           e.EngineTypes.Any(et => et.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                                          ).ToList();
+            }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedEvents = events.ToPagedList(pageNumber, pageSize);
+
+            ViewData["CurrentFilter"] = searchString;
+            return View(pagedEvents);
         }
 
         [HttpGet]

@@ -11,8 +11,10 @@ using MotorFest.Data;
 using MotorFest.Data.Entities;
 using MotorFest.Models.Vehicle;
 using MotorFest.Services.EngineTypeService;
+using MotorFest.Services.LocationService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
+using X.PagedList.Extensions;
 
 namespace MotorFest.Controllers
 {
@@ -31,14 +33,33 @@ namespace MotorFest.Controllers
             _userManager = userManager;
         }
 
-
-
-
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
-            var applicationDbContext = vehicleService.GetAll();
-            return View(applicationDbContext);
+
+            var allVehicles = vehicleService.GetAll();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                allVehicles = allVehicles.Where(v =>
+                    v.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    v.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    v.YearOfManufacture.ToString().Contains(searchString) ||
+                    v.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    v.EngineType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+            }
+
+            Dictionary<int, bool> isVehicleInEvent = new Dictionary<int, bool>();
+            foreach (var vehicle in allVehicles)
+            {
+                isVehicleInEvent.Add(vehicle.Id, vehicleService.IsParticipatingInFutureEvents(vehicle.Id));
+            }
+            ViewData["carDictionary"] = isVehicleInEvent;
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(allVehicles.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Vehicles/Details/5

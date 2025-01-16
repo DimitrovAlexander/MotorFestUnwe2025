@@ -11,6 +11,7 @@ using MotorFest.Models.Location;
 using MotorFest.Services.LocationService;
 
 using MotorFest.Services.LocationService;
+using X.PagedList.Extensions;
 
 namespace MotorFest.Controllers
 {
@@ -25,9 +26,27 @@ namespace MotorFest.Controllers
 
         // GET:
         // es
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
-            return View(addressService.GetAll());
+            ViewData["CurrentFilter"] = searchString;
+
+            var locations = addressService.GetAll();
+
+            // Filter by search string
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                locations = locations.Where(l =>
+                    l.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    l.City.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    l.Municipality.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Paginate the results
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedLocations = locations.ToPagedList(pageNumber, pageSize);
+
+            return View(pagedLocations);
         }
 
         // GET: Locationes/Details/5
@@ -119,7 +138,7 @@ namespace MotorFest.Controllers
                 return NotFound();
             }
 
-            var address = addressService.GetById(id);
+            var address = await addressService.GetById(id);
             if (address == null)
             {
                 return NotFound();

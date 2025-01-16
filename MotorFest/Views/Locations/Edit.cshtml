@@ -4,46 +4,35 @@
     ViewData["Title"] = "Редактиране";
 }
 
-<h1>Редактиране на </h1>
-
-<h4>Локация</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Име на адреса</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label">Град </label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FullAddress" class="control-label"> Пълен адрес</label>
-                <input asp-for="FullAddress" class="form-control" />
-                <span asp-validation-for="FullAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Municipality" class="control-label">Община</label>
-                <input asp-for="Municipality" class="form-control" />
-                <span asp-validation-for="Municipality" class="text-danger"></span>
-            </div>
-           
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="container mt-5">
+    <h2 class="mb-4">Редактирай</h2>
+    <form asp-action="Edit">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Име на Локация</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="City" class="form-label">Град</label>
+            <input asp-for="City" class="form-control" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FullAddress" class="form-label">Пълен Адрес</label>
+            <input asp-for="FullAddress" class="form-control" />
+            <span asp-validation-for="FullAddress" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Municipality" class="form-label">Община</label>
+            <input asp-for="Municipality" class="form-control" />
+            <span asp-validation-for="Municipality" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn custom-btn">Запази</button>
+        <a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Върни се назад</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

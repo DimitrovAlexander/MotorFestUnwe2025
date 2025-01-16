@@ -3,53 +3,41 @@
 	ViewData["Title"] = "Добави";
 
 }
-
-<h1>Добави</h1>
-
-<h4>МПС</h4>
-<hr />
-<div class="row">
-	<div class="col-md-4">
-		<form asp-action="Create" enctype="multipart/form-data">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="CategoryId" class="control-label">Категория МПС</label>
-				<select asp-for="CategoryId" class="form-control" asp-items="ViewBag.allCategories"></select>
-			</div>
-			<div class="form-group">
-				<label asp-for="EngineTypeId" class="control-label">Вид на двигателя</label>
-				<select asp-for="EngineTypeId" class="form-control" asp-items="ViewBag.allEngineTypes"></select>
-			</div>
-			<div class="form-group">
-				<label asp-for="Manufacturer" class="control-label">Производител</label>
-				<input asp-for="Manufacturer" class="form-control" />
-				<span asp-validation-for="Manufacturer" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Model" class="control-label">Модел</label>
-				<input asp-for="Model" class="form-control" />
-				<span asp-validation-for="Model" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="YearOfManufacture" class="control-label">Година на производство</label>
-				<input asp-for="YearOfManufacture" class="form-control" />
-				<span asp-validation-for="YearOfManufacture" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Photo" class="control-label">Снимка на МПС</label>
-				<input asp-for="Photo" type="file" class="form-control" />
-				<span asp-validation-for="Photo" class="text-danger"></span>
-			</div>
-
-			<div class="form-group">
-				<input type="submit" value="Добави" class="btn custom-btn" />
-			</div>
-		</form>
-	</div>
-</div>
-
-<div>
-	<a asp-action="Index">Back to List</a>
+<div class="container mt-5">
+	<h2 class="mb-4">Добави МПС</h2>
+	<form asp-action="Create">
+		<div class="mb-3">
+			<label asp-for="CategoryId" class="control-label">Категория МПС</label>
+			<select asp-for="CategoryId" class="form-control" asp-items="ViewBag.allCategories"></select>
+		</div>
+		<div class="mb-3">
+			<label asp-for="EngineTypeId" class="control-label">Вид на двигателя</label>
+			<select asp-for="EngineTypeId" class="form-control" asp-items="ViewBag.allEngineTypes"></select>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Manufacturer" class="control-label">Производител</label>
+			<input asp-for="Manufacturer" class="form-control" />
+			<span asp-validation-for="Manufacturer" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Model" class="control-label">Модел</label>
+			<input asp-for="Model" class="form-control" />
+			<span asp-validation-for="Model" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="YearOfManufacture" class="control-label">Година на производство</label>
+			<input asp-for="YearOfManufacture" class="form-control" />
+			<span asp-validation-for="YearOfManufacture" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Photo" class="control-label">Снимка на МПС</label>
+			<input asp-for="Photo" type="file" class="form-control" />
+			<span asp-validation-for="Photo" class="text-danger"></span>
+		</div>
+		
+		<button type="submit" class="btn custom-btn">Добави</button>
+		<a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
+	</form>
 </div>
 
 @section Scripts {

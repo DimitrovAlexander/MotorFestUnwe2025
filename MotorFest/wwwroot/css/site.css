@@ -1,51 +1,54 @@
 ﻿html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 18px;
-  }
+    html {
+        font-size: 18px;
+    }
 }
 
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
+
 .custom-btn {
     background-color: #38385E;
     color: #fff;
 }
+
 custom-item {
     background-color: #38385E;
     color: #fff;
 }
-container{
-    color:#fff;
+
+container {
+    color: #fff;
 }
 
 body {
     color: #38385E;
-    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
+
 .small-image {
-    width: 100px; 
-    height: auto; 
-    object-fit: cover; 
+    width: 100px;
+    height: auto;
+    object-fit: cover;
 }
 
 
@@ -56,7 +59,7 @@ body {
 
 .navbar-brand {
     font-weight: bold;
-    color: #fff; 
+    color: #fff;
 }
 
 .navbar-nav .nav-link {
@@ -75,20 +78,38 @@ body {
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.5%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
+.nav-pills .nav-link.active {
+    color: #fff!important;
+    background-color: #38385E;
+}
+/*.nav-link {
+    color: #38385E;
+    background-color: #fff;
+}*/
 .footer {
     background-color: #38385E; /* Ensure the background color is consistent */
     color: #fff; /* Set the text color to white */
     padding: 10px 0; /* Optional: Add padding for better spacing */
     text-align: center; /* Optional: Center the text */
-    position: relative;
+    position: static !important;
 }
-#footer {
-    background-color: #38385E; /* Ensure the background color is consistent */
-    color: #fff; /* Set the text color to white */
-    padding: 10px 0; /* Optional: Add padding for better spacing */
-    text-align: center; /* Optional: Center the text */
-    position: relative;
+
+.screen{
+    min-height: 90vh;
 }
+.page-link {
+    background-color: #38385E !important;
+    border: #fff !important;
+    color: #fff !important;
+
+}
+    .page-link.active, .active > .page-link {
+
+        color: #38385E !important;
+        background-color: #fff !important;
+        border: 2px solid #38385E !important;
+    }
+
 .year-column {
     width: 80px;
     text-align: center;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MotorFest.Data;
 using MotorFest.Models.EngineType;
 using MotorFest.Models.User;
@@ -40,6 +41,8 @@ namespace MotorFest.Services.VehiclesService
             var vehicle = dbContext.Vehicles.FirstOrDefault(x => x.Id == id);
             if (vehicle != null)
             {
+                var registrations = dbContext.EventRegistrations.Where(x => x.VehicleId == vehicle.Id);
+                dbContext.EventRegistrations.RemoveRange(registrations);
                 dbContext.Vehicles.Remove(vehicle);
                 await dbContext.SaveChangesAsync();
             return true;
@@ -195,6 +198,15 @@ namespace MotorFest.Services.VehiclesService
             dbContext.Update(vehicleEntity);
             await dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public bool IsParticipatingInFutureEvents(int id)
+        {
+            return dbContext.EventRegistrations
+                .Include(e=>e.Event)
+                .Include(v => v.Vehicle)
+            .ThenInclude(vc => vc.Owner)
+                .Any(vr => vr.VehicleId == id&&vr.Event.EventDate>DateTime.Now);
         }
     }
 }
