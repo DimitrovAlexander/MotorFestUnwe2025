@@ -1,54 +1,85 @@
 ﻿@model MotorFest.Models.Event.EventViewModel
 
-<h1>Информация за събитието</h1>
-
-<div>
-	<h3>@Model.Name</h3>
-	<p>Дата: @Model.EventDate.ToShortDateString()</p>
-	<p>Входна такса: @Model.EntranceFee</p>
-	<p>Разрешени превозни средства за участие:</p>
-	<ul>
-		@foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
-		{
-			<li>@category.CategoryName</li>
-		}
-	</ul>
-	<p>Разрешен вид гориво за превозните средства:</p>
-	<ul>
-		@foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
-		{
-			<li>@type.CategoryName</li>
-		}
-	</ul>
-
-    @if (ViewData["RegisteredVehicles"] != null)
-    {
-        <h3>Registered Vehicles</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Manufacturer</th>
-                    <th>Model</th>
-                    <th>Year</th>
-                    <th>Owner</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var vehicle in (IEnumerable<MotorFest.Models.Vehicle.VehicleViewModel>)ViewData["RegisteredVehicles"])
-                {
-                    <tr>
-                        <td>@vehicle.Manufacturer</td>
-                        <td>@vehicle.Model</td>
-                        <td>@vehicle.YearOfManufacture</td>
-                        <td>@vehicle.Owner.Firstname @vehicle.Owner.Lastname</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-
+<div class="container mt-5">
+	<h2 class="mb-4">Детайли за МПС</h2>
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">@Model.Name</h5>
+			<p class="card-text"><strong>Модел:</strong> @Model.EventDate</p>
+			<p class="card-text"><strong>Година на производство:</strong> @Model.MinYearOfManufacture</p>
+			<p class="card-text"><strong>Година на производство:</strong> @Model.MaxYearOfManufacture</p>
+			<div class="card-table">
+				<ul>
+					@foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
+					{
+						<li>@category.CategoryName</li>
+					}
+				</ul>
+			</div>
+			<div class="card-table">
+				<ul>
+					@foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
+					{
+						<li>@type.CategoryName</li>
+					}
+				</ul>
+			</div>
+			<div class="card-table">
+				<h5>Категории на превозни средства:</h5>
+				<ul>
+					@foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
+					{
+						<li>@category.CategoryName</li>
+					}
+				</ul>
+			</div>
+			<div class="card-table">
+				<h5>Типове двигатели:</h5>
+				<ul>
+					@foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
+					{
+						<li>@type.CategoryName</li>
+					}
+				</ul>
+			</div>
+			<a asp-action="Edit" asp-route-id="@Model.Id" class="btn custom-btn">Редактирай</a>
+			<a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
+		</div>
+	</div>
 </div>
 
+
+@if (ViewData["RegisteredVehicles"] != null)
+{
+	<h3>Записани участници</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Производител</th>
+				<th>Модел</th>
+				<th>Година</th>
+				<th>Собственик</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var vehicle in (IEnumerable<MotorFest.Models.Vehicle.VehicleViewModel>)ViewData["RegisteredVehicles"])
+			{
+				<tr>
+					<td>@vehicle.Manufacturer</td>
+					<td>@vehicle.Model</td>
+					<td>@vehicle.YearOfManufacture</td>
+					<td>@vehicle.Owner.Firstname @vehicle.Owner.Lastname</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+
+
 <a asp-action="Index" class="btn btn-secondary">Върни се назад</a>
-<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn btn-info">Запиши се</a>
+@if (!(bool)ViewData["IsRegistered"])
+{
+	<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn btn-info">Запиши се</a>
+}
 

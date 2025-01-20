@@ -126,6 +126,9 @@ namespace MotorFest.Controllers
                 ViewData["RegisteredVehicles"] = registeredVehicles;
             }
 
+            bool isRegistered = eventService.IsUserRegisteredForEvent(userId, id);
+            ViewData["IsRegistered"] = isRegistered;
+
             return View(eventDetails);
         }
 

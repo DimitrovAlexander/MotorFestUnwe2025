@@ -5,7 +5,7 @@
 }
 <div class="container mt-5">
 	<h2 class="mb-4">Добави МПС</h2>
-	<form asp-action="Create">
+	<form asp-action="Create" enctype="multipart/form-data">
 		<div class="mb-3">
 			<label asp-for="CategoryId" class="control-label">Категория МПС</label>
 			<select asp-for="CategoryId" class="form-control" asp-items="ViewBag.allCategories"></select>

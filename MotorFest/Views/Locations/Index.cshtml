@@ -19,6 +19,10 @@
 				<th>Пълен Адрес</th>
 				<th>Община</th>
 				<th>Действия</th>
+				@if (User.IsInRole("Administrator"))
+				{
+					<th>Последна промяна</th>
+				}
 			</tr>
 		</thead>
 		<tbody>
@@ -34,6 +38,10 @@
 						<a asp-action="Delete" asp-route-id="@location.Id" class="btn custom-btn btn-sm">Изтрий</a>
 						<a asp-action="Edit" asp-route-id="@location.Id" class="btn custom-btn btn-sm">Редактирай</a>
 					</td>
+					@if (User.IsInRole("Administrator"))
+					{
+						<td>@location.LastUpdate</td>
+					}
 				</tr>
 			}
 		</tbody>

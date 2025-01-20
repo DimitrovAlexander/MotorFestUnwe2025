@@ -193,7 +193,11 @@ namespace MotorFest.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("Owner");
+            ModelState.Remove("OwnerId");
+            ModelState.Remove("Category");
+            ModelState.Remove("EngineType");
+            ModelState.Remove("Photo");
             if (ModelState.IsValid)
             {
                 if (photo != null && photo.Length > 0)
@@ -208,11 +212,11 @@ namespace MotorFest.Controllers
 
                     vehicle.Photo = "/images/" + fileName;
                 }
-                else if (string.IsNullOrEmpty(vehicle.Photo))
-                {
-                    ModelState.AddModelError("Photo", "Снимката е задължителна.");
-                    return View(vehicle);
-                }
+                //else if (string.IsNullOrEmpty(vehicle.Photo))
+                //{
+                //    ModelState.AddModelError("Photo", "Снимката е задължителна.");
+                //    return View(vehicle);
+                //}
 
                 try
                 {

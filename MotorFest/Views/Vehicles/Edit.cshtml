@@ -31,11 +31,17 @@
 		</div>
 		<div class="mb-3">
 			<label asp-for="Photo" class="control-label">Снимка на МПС</label>
-			<input asp-for="Photo" type="file" class="form-control" />
-			<span asp-validation-for="Photo" class="text-danger"></span>
+			<!-- Display the current photo -->
+			<img src="@Model.Photo" alt="Текуща снимка на МПС" class="img-thumbnail small-image" />
+			<input asp-for="Photo" type="hidden" class="form-control" />
+			
 		</div>
 
 		<button type="submit" class="btn custom-btn">Добави</button>
+		<input asp-for="Owner" type="hidden" class="form-control" />
+		<input asp-for="OwnerId" type="hidden" class="form-control" />
+		<input asp-for="EngineType" type="hidden" class="form-control" />
+		<input asp-for="Category" type="hidden" class="form-control" />
 		<a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
 	</form>
 </div>

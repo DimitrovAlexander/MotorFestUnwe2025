@@ -9,5 +9,6 @@ namespace MotorFest.Services.EventService
         bool RegisterVehicleForEvent(int eventId, int vehicleId);
         ICollection<EventViewModel> GetAllByUserParticipating(string userId);
         ICollection<VehicleViewModel> GetRegisteredVehiclesForEvent(int eventId);
+        bool IsUserRegisteredForEvent(string userId, int eventId);
     }
 }

@@ -57,7 +57,18 @@ namespace MotorFest.Data
                 .HasOne(evc => evc.EngineType)
                 .WithMany(et => et.EventEngineTypes)
                 .HasForeignKey(evc => evc.EngineTypeId);
+            modelBuilder.Entity<EventRegistration>()
+    .HasKey(evc => new { evc.EventId, evc.VehicleId }); // Composite ключ
 
+            modelBuilder.Entity<EventRegistration>()
+                .HasOne(evc => evc.Event)
+                .WithMany(evc => evc.EventRegistration)
+                .HasForeignKey(evc => evc.EventId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EventRegistration>()
+                .HasOne(evc => evc.Vehicle)
+                .WithMany(et => et.EventRegistration)
+                .HasForeignKey(evc => evc.VehicleId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.HasDefaultSchema("21180022");
 

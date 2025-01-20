@@ -305,5 +305,10 @@ namespace MotorFest.Services.EventsService
                     }
                 }).ToList();
         }
+        public bool IsUserRegisteredForEvent(string userId, int eventId)
+        {
+            return _context.EventRegistrations.Any(er => er.EventId == eventId && er.Vehicle.OwnerId == userId);
+        }
+
     }
 }
