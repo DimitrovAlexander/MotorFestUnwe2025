@@ -60,24 +60,6 @@ namespace MotorFest.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AuditLogs",
-                schema: "21180022",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TableName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RecordId = table.Column<int>(type: "int", nullable: false),
-                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false),
-                    ChangedData = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EngineTypes",
                 schema: "21180022",
                 columns: table => new
@@ -108,6 +90,23 @@ namespace MotorFest.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Locations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "log_21180022",
+                schema: "21180022",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TableName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OperationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OperationDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_log_21180022", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,7 +253,9 @@ namespace MotorFest.Migrations
                     LocationId = table.Column<int>(type: "int", nullable: false),
                     EventDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EntranceFee = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false)
+                    _21180022_LastUpdate = table.Column<DateTime>(name: "21180022_LastUpdate", type: "datetime2", nullable: false),
+                    MinYearOfManufacture = table.Column<int>(type: "int", nullable: true),
+                    MaxYearOfManufacture = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -318,6 +319,33 @@ namespace MotorFest.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EventEngineTypes",
+                schema: "21180022",
+                columns: table => new
+                {
+                    EventId = table.Column<int>(type: "int", nullable: false),
+                    EngineTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventEngineTypes", x => new { x.EventId, x.EngineTypeId });
+                    table.ForeignKey(
+                        name: "FK_EventEngineTypes_EngineTypes_EngineTypeId",
+                        column: x => x.EngineTypeId,
+                        principalSchema: "21180022",
+                        principalTable: "EngineTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventEngineTypes_Events_EventId",
+                        column: x => x.EventId,
+                        principalSchema: "21180022",
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EventVehicleCategories",
                 schema: "21180022",
                 columns: table => new
@@ -342,6 +370,35 @@ namespace MotorFest.Migrations
                         principalTable: "VehicleCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventRegistrations",
+                schema: "21180022",
+                columns: table => new
+                {
+                    EventId = table.Column<int>(type: "int", nullable: false),
+                    VehicleId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventRegistrations", x => new { x.EventId, x.VehicleId });
+                    table.ForeignKey(
+                        name: "FK_EventRegistrations_Events_EventId",
+                        column: x => x.EventId,
+                        principalSchema: "21180022",
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EventRegistrations_Vehicles_VehicleId",
+                        column: x => x.VehicleId,
+                        principalSchema: "21180022",
+                        principalTable: "Vehicles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -389,6 +446,18 @@ namespace MotorFest.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventEngineTypes_EngineTypeId",
+                schema: "21180022",
+                table: "EventEngineTypes",
+                column: "EngineTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventRegistrations_VehicleId",
+                schema: "21180022",
+                table: "EventRegistrations",
+                column: "VehicleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_LocationId",
@@ -451,7 +520,11 @@ namespace MotorFest.Migrations
                 schema: "21180022");
 
             migrationBuilder.DropTable(
-                name: "AuditLogs",
+                name: "EventEngineTypes",
+                schema: "21180022");
+
+            migrationBuilder.DropTable(
+                name: "EventRegistrations",
                 schema: "21180022");
 
             migrationBuilder.DropTable(
@@ -459,11 +532,15 @@ namespace MotorFest.Migrations
                 schema: "21180022");
 
             migrationBuilder.DropTable(
-                name: "Vehicles",
+                name: "log_21180022",
                 schema: "21180022");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles",
+                schema: "21180022");
+
+            migrationBuilder.DropTable(
+                name: "Vehicles",
                 schema: "21180022");
 
             migrationBuilder.DropTable(

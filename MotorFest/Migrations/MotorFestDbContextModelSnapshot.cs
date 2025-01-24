@@ -160,38 +160,6 @@ namespace MotorFest.Migrations
                     b.ToTable("AspNetUserTokens", "21180022");
                 });
 
-            modelBuilder.Entity("MotorFest.AuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ChangedData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("21180022_LastUpdate");
-
-                    b.Property<int>("RecordId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TableName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AuditLogs", "21180022");
-                });
-
             modelBuilder.Entity("MotorFest.Data.Entities.EventEngineType", b =>
                 {
                     b.Property<int>("EventId")
@@ -209,24 +177,19 @@ namespace MotorFest.Migrations
 
             modelBuilder.Entity("MotorFest.Data.Entities.EventRegistration", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("EventId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("VehicleId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("EventId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
+                    b.HasKey("EventId", "VehicleId");
 
                     b.HasIndex("VehicleId");
 
@@ -495,6 +458,34 @@ namespace MotorFest.Migrations
                     b.ToTable("VehicleCategories", "21180022");
                 });
 
+            modelBuilder.Entity("MotorFest.log_21180022", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("21180022_LastUpdate");
+
+                    b.Property<DateTime>("OperationDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OperationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("log_21180022", "21180022");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -570,13 +561,13 @@ namespace MotorFest.Migrations
                     b.HasOne("MotorFest.Event", "Event")
                         .WithMany("EventRegistration")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("MotorFest.Vehicle", "Vehicle")
                         .WithMany("EventRegistration")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Event");

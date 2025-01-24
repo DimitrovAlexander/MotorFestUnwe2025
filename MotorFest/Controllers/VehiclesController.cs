@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,6 +19,7 @@ using X.PagedList.Extensions;
 
 namespace MotorFest.Controllers
 {
+    [Authorize(Roles = "Administrator,Participant")]
     public class VehiclesController : Controller
     {
         private readonly IVehicleCategoryService categoryService;
@@ -37,29 +39,41 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> Index(string searchString, int? page)
         {
 
-            var allVehicles = vehicleService.GetAll();
+                var allVehicles = GetVehicles();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                allVehicles = allVehicles.Where(v =>
-                    v.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                    v.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                    v.YearOfManufacture.ToString().Contains(searchString) ||
-                    v.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                    v.EngineType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    allVehicles = allVehicles.Where(v =>
+                        v.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                        v.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                        v.YearOfManufacture.ToString().Contains(searchString) ||
+                        v.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                        v.EngineType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                    ).ToList();
+                }
+
+                Dictionary<int, bool> isVehicleInEvent = new Dictionary<int, bool>();
+                foreach (var vehicle in allVehicles)
+                {
+                    isVehicleInEvent.Add(vehicle.Id, vehicleService.IsParticipatingInFutureEvents(vehicle.Id));
+                }
+                ViewData["carDictionary"] = isVehicleInEvent;
+
+                int pageSize = 5;
+                int pageNumber = (page ?? 1);
+                return View(allVehicles.ToPagedList(pageNumber, pageSize));
             }
 
-            Dictionary<int, bool> isVehicleInEvent = new Dictionary<int, bool>();
-            foreach (var vehicle in allVehicles)
+        private IEnumerable<VehicleViewModel> GetVehicles()
+        {
+            if (User.IsInRole("Administrator"))
             {
-                isVehicleInEvent.Add(vehicle.Id, vehicleService.IsParticipatingInFutureEvents(vehicle.Id));
+                return vehicleService.GetAll();
             }
-            ViewData["carDictionary"] = isVehicleInEvent;
-
-            int pageSize = 5;
-            int pageNumber = (page ?? 1);
-            return View(allVehicles.ToPagedList(pageNumber, pageSize));
+            else
+            {
+                return vehicleService.GetByUserId(User.Identity.Name);
+            }
         }
 
         // GET: Vehicles/Details/5
@@ -131,10 +145,10 @@ namespace MotorFest.Controllers
                 }
                 var user = await _userManager.GetUserAsync(User);
                 vehicle.OwnerId = user.Id;
-                if(await vehicleService.Create(vehicle))
+                if (await vehicleService.Create(vehicle))
                 {
                     TempData.Add("successMessage", "Успешно добавихте превозно средство");
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
                 };
             }
             ViewData["allCategories"] = categoryService.GetAll()
@@ -187,7 +201,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,EngineTypeId,Manufacturer,Model,YearOfManufacture,Photo")] VehicleViewModel vehicle,IFormFile photo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryId,EngineTypeId,Manufacturer,Model,YearOfManufacture,Photo")] VehicleViewModel vehicle, IFormFile photo)
         {
             if (id != vehicle.Id)
             {
@@ -220,14 +234,14 @@ namespace MotorFest.Controllers
 
                 try
                 {
-                await vehicleService.Update(id, vehicle);
-                TempData["successMessage"] = "Успешно редактирахте превозното средство";
-                return RedirectToAction(nameof(Index));
+                    await vehicleService.Update(id, vehicle);
+                    TempData["successMessage"] = "Успешно редактирахте превозното средство";
+                    return RedirectToAction(nameof(Index));
 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (vehicleService.GetById(id)==null)
+                    if (vehicleService.GetById(id) == null)
                     {
                         return NotFound();
                     }
@@ -282,10 +296,10 @@ namespace MotorFest.Controllers
                 await vehicleService.Delete(id);
             }
 
-            
+
             return RedirectToAction(nameof(Index));
         }
-       
+
 
     }
 }

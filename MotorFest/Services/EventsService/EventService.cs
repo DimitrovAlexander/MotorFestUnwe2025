@@ -57,7 +57,46 @@ namespace MotorFest.Services.EventsService
 
             return events;
         }
+        public ICollection<EventViewModel> GetAllByOrganizer(string userId)
+        {
+            var events = _context.Events
+        .Include(e => e.Location)
+        .Include(e => e.EventEngineTypes)
+        .Include(e => e.EventVehicleCategories)
+        .Select(e => new EventViewModel
+        {
+            Id = e.Id,
+            Name = e.Name,
+            OrganizerId = e.OrganizerId,
+            LocationId = e.LocationId,
+            EventDate = e.EventDate,
+            EntranceFee = e.EntranceFee,
+            VehicleCategories = e.EventVehicleCategories.Select(evc => new CheckBoxItem
+            {
+                Id = evc.VehicleCategoryId,
+                IsChecked = true
+            }).ToList(),
+            Location = new Models.Location.LocationViewModel()
+            {
+                Id = e.Location.Id,
+                Name = e.Location.Name,
+                Municipality = e.Location.Municipality,
+                City = e.Location.City,
+                FullAddress = e.Location.FullAddress,
+                LastUpdate = e.Location.LastUpdate,
+            }
+        })
+        .Where(x=>x.OrganizerId.Equals(userId))
+        .ToList(); // Тук материализираме данните
 
+            // Добавяме информацията за това дали има записани превозни средства
+            foreach (var ev in events)
+            {
+                ev.HasVehicles = HasVehiclesForEvent(ev.Id);
+            }
+
+            return events;
+        }
         public async Task<EventViewModel> GetById(int id)
         {
             var eventEntity = await _context.Events

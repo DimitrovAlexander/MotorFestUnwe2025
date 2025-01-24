@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -39,9 +40,10 @@ namespace MotorFest.Controllers
             this.engineTypeService = engineTypeService;
         }
 
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Index(string searchString, int? page)
         {
-            var events = eventService.GetAll();
+            ICollection<EventViewModel> events = GetEvents();
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -49,7 +51,7 @@ namespace MotorFest.Controllers
                                            e.Location.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                                            e.EventDate.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                                             e.VehicleCategories.Any(vc => vc.CategoryName != null && vc.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
-                                            
+
                                            e.EngineTypes.Any(et => et.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                                           ).ToList();
             }
@@ -62,6 +64,19 @@ namespace MotorFest.Controllers
             return View(pagedEvents);
         }
 
+        private ICollection<EventViewModel> GetEvents()
+        {
+            if (User.IsInRole("Administrator"))
+            {
+                return eventService.GetAll();
+            }
+            else
+            {
+                return eventService.GetAllByOrganizer(User.Identity.Name);
+            }
+        }
+
+        [Authorize(Roles = "Administrator,Organizer")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -93,7 +108,7 @@ namespace MotorFest.Controllers
        }).ToList();
             return View(model);
         }
-
+        [Authorize(Roles = "Administrator,Organizer")]
         [HttpPost]
         public async Task<IActionResult> Create(EventViewModel model)
         {
@@ -131,7 +146,7 @@ namespace MotorFest.Controllers
 
             return View(eventDetails);
         }
-
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Delete(int id)
         {
             await eventService.Delete(id);
@@ -143,6 +158,7 @@ namespace MotorFest.Controllers
             return View(events);
         }
         // GET: Events/Edit/5
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
@@ -171,6 +187,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Edit(int id, EventViewModel eventViewModel)
         {
             if (id != eventViewModel.Id)
@@ -211,6 +228,7 @@ namespace MotorFest.Controllers
             return View(eventViewModel);
         }
         [HttpGet]
+        [Authorize(Roles = "Administrator,Participant")]
         public async Task<IActionResult> Subscribe(int id)
         {
             // Намираме събитието
@@ -240,6 +258,7 @@ namespace MotorFest.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator,Participant")]
         public async Task<IActionResult> Subscribe(EventSubscribeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -267,7 +286,7 @@ namespace MotorFest.Controllers
             TempData["SuccessMessage"] = "Успешно се записахте за събитието!";
             return RedirectToAction("Details", new { id = model.EventId });
         }
-
+        [Authorize(Roles = "Administrator,Participant")]
         public IActionResult MyEvents()
         {
             var userId = _userManager.GetUserId(User);

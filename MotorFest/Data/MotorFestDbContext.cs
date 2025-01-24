@@ -13,7 +13,7 @@ namespace MotorFest.Data
 
         public virtual DbSet<Location> Locations { get; set; }
 
-        public virtual DbSet<AuditLog> AuditLogs { get; set; }
+        public virtual DbSet<log_21180022> log_21180022 { get; set; }
 
         public virtual DbSet<EngineType> EngineTypes { get; set; }
 
@@ -37,11 +37,13 @@ namespace MotorFest.Data
     .HasKey(evc => new { evc.EventId, evc.VehicleCategoryId }); // Composite ключ
 
             modelBuilder.Entity<EventVehicleCategory>()
+                .ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(evc => evc.Event)
                 .WithMany(e => e.EventVehicleCategories)
                 .HasForeignKey(evc => evc.EventId);
 
             modelBuilder.Entity<EventVehicleCategory>()
+                                .ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(evc => evc.VehicleCategory)
                 .WithMany(vc => vc.EventVehicleCategories)
                 .HasForeignKey(evc => evc.VehicleCategoryId); 
@@ -49,11 +51,13 @@ namespace MotorFest.Data
     .HasKey(evc => new { evc.EventId, evc.EngineTypeId }); // Composite ключ
 
             modelBuilder.Entity<EventEngineType>()
+                                .ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(evc => evc.Event)
                 .WithMany(e => e.EventEngineTypes)
                 .HasForeignKey(evc => evc.EventId);
 
             modelBuilder.Entity<EventEngineType>()
+                                .ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(evc => evc.EngineType)
                 .WithMany(et => et.EventEngineTypes)
                 .HasForeignKey(evc => evc.EngineTypeId);
@@ -61,16 +65,25 @@ namespace MotorFest.Data
     .HasKey(evc => new { evc.EventId, evc.VehicleId }); // Composite ключ
 
             modelBuilder.Entity<EventRegistration>()
+                                .ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(evc => evc.Event)
                 .WithMany(evc => evc.EventRegistration)
                 .HasForeignKey(evc => evc.EventId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EventRegistration>()
+                                .ToTable(tb => tb.UseSqlOutputClause(false))
                 .HasOne(evc => evc.Vehicle)
                 .WithMany(et => et.EventRegistration)
                 .HasForeignKey(evc => evc.VehicleId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.HasDefaultSchema("21180022");
+            modelBuilder.Entity<Location>()
+                    .ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<Vehicle>()
+        .ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<Event>()
+        .ToTable(tb => tb.UseSqlOutputClause(false));
+            
 
             //modelBuilder.Entity<Location>(entity =>
             //{
