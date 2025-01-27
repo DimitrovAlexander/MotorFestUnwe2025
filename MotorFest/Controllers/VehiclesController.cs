@@ -72,7 +72,7 @@ namespace MotorFest.Controllers
             }
             else
             {
-                return vehicleService.GetByUserId(User.Identity.Name);
+                return vehicleService.GetByUserId(User.Claims.FirstOrDefault().Value);
             }
         }
 

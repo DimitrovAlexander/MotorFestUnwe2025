@@ -1,0 +1,22 @@
+﻿@model MotorFest.Models.Location.LocationViewModel
+
+@{
+	ViewData["Title"] = "Delete";
+}
+
+<div class="container mt-5">
+	<h2 class="mb-4">Детайли за Локация</h2>
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">@Model.Name</h5>
+			<p class="card-text"><strong>Град:</strong> @Model.City</p>
+			<p class="card-text"><strong>Пълен Адрес:</strong> @Model.FullAddress</p>
+			<p class="card-text"><strong>Община:</strong> @Model.Municipality</p>
+			<input type="submit" value="Delete" class="btn btn-danger" /> |
+			<a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
+			<input type="hidden" asp-for="Id" />
+		</div>
+	</div>
+
+</div>
+

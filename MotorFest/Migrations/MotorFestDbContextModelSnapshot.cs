@@ -18,7 +18,7 @@ namespace MotorFest.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("21180022")
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

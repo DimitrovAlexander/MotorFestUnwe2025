@@ -77,9 +77,9 @@
 
 
 
-<a asp-action="Index" class="btn btn-secondary">Върни се назад</a>
+<a asp-action="Index" class="btn custom-btn">Върни се назад</a>
 @if (!(bool)ViewData["IsRegistered"])
 {
-	<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn btn-info">Запиши се</a>
+	<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn custom-btn">Запиши се</a>
 }
 

@@ -72,7 +72,7 @@ namespace MotorFest.Controllers
             }
             else
             {
-                return eventService.GetAllByOrganizer(User.Identity.Name);
+                return eventService.GetAllByOrganizer(User.Claims.FirstOrDefault().Value);
             }
         }
 
@@ -290,7 +290,7 @@ namespace MotorFest.Controllers
         public IActionResult MyEvents()
         {
             var userId = _userManager.GetUserId(User);
-            var events = eventService.GetAllByUserParticipating(userId); 
+            var events = eventService.GetAllByUserParticipating(userId);
             return View(events);
         }
     }

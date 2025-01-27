@@ -41,9 +41,7 @@
 							<li class="nav-item">
 								<a class="nav-link" asp-area="" asp-controller="Events" asp-action="Index">Събития</a>
 							</li>
-							<li class="nav-item">
-								<a class="nav-link" asp-area="" asp-controller="Events" asp-action="Calendar">Календар на събитията</a>
-							</li>
+							
 						}
 						@if (User.IsInRole("Participant") || User.IsInRole("Administrator"))
 						{
