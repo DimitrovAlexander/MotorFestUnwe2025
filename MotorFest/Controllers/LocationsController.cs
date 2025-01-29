@@ -10,8 +10,6 @@ using MotorFest;
 using MotorFest.Data;
 using MotorFest.Models.Location;
 using MotorFest.Services.LocationService;
-
-using MotorFest.Services.LocationService;
 using X.PagedList.Extensions;
 
 namespace MotorFest.Controllers
@@ -31,7 +29,7 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> Index(string searchString, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
-
+            ViewData["ShowLoadingScreen"] = true;
             var locations = addressService.GetAll();
 
             // Filter by search string

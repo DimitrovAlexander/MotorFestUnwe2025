@@ -17,16 +17,12 @@ namespace MotorFest.Controllers
         public IActionResult Index()
         {
 
+            ViewData["ShowLoadingScreen"] = true;
 
-        
             return View();
         }
         
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
+       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

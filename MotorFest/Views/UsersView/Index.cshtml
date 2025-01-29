@@ -1,0 +1,61 @@
+﻿@using X.PagedList
+@model IPagedList<MotorFest.Models.User.UsersViewViewModel>
+
+<div class="container mt-5">
+	<h2 class="mb-4">Списък с Потребители</h2>
+
+	<!-- Search Form -->
+	<form asp-action="Index" method="get" class="form-inline mb-3">
+		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
+		<button type="submit" class="btn custom-btn mt-1">Търсене</button>
+	</form>
+
+	
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Име</th>
+				<th>Имейл</th>
+				<th>Роля</th>	
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var user in Model)
+			{
+				<tr>
+					<td>@user.UserId</td>
+					<td>@user.FullName</td>
+					<td>@user.Email</td>
+					@if(user.RoleName=="Administrator"){
+						<td>Администратор</td>
+					}
+					else if(user.RoleName=="Participant"){
+						<td>Участник</td>
+
+					}
+					else if(user.RoleName=="Organizer"){
+						<td>Организатор</td>
+
+					}
+					<td>
+						<a asp-action="Details" asp-route-id="@user.UserId" class="btn custom-btn btn-sm">Детайли</a>
+						
+					</td>
+					
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<!-- Pagination Controls -->
+	<div class="pagination justify-content-center">
+		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
+					new PagedListRenderOptions
+		{
+				UlElementClasses = new List<string> { "pagination" },
+		LiElementClasses = new List<string> { "page-item" },
+		PageClasses = new List<string> { "page-link" }
+		})
+	</div>
+</div>

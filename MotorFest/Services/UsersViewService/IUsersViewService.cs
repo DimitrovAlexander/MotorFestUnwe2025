@@ -2,9 +2,8 @@
 
 namespace MotorFest.Services.UsersViewService
 {
-    public interface IUsersViewService
+    public interface IUsersViewService :IGenericViewModelService<UsersViewViewModel,string>
     {
-        public ICollection<UsersViewViewModel> GetAll();
-        public Task<UsersViewViewModel> GetById(string id);
+        
     }
 }

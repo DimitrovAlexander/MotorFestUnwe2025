@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MotorFest.Data.Entities;
+using MotorFest.Models.Event;
 
 namespace MotorFest.Data
 {
@@ -29,6 +30,7 @@ namespace MotorFest.Data
 
         public virtual DbSet<EventRegistration> EventRegistrations { get; set; }
         public virtual DbSet<UsersView> UsersView { get; set; }
+        public virtual DbSet<EventsView> EventsView { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -92,6 +94,11 @@ namespace MotorFest.Data
             {
                 entity.HasNoKey(); // View нямат първичен ключ
                 entity.ToView("UsersView"); // Свържете модела с View-то
+            });
+            modelBuilder.Entity<EventsView>(entity =>
+            {
+                entity.HasNoKey(); // View нямат първичен ключ
+                entity.ToView("EventsView"); // Свържете модела с View-то
             });
             modelBuilder.HasDefaultSchema("21180022");
 

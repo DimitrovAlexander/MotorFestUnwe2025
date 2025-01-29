@@ -22,17 +22,32 @@ namespace MotorFest.Services.UsersViewService
             {
                 UserId = user.UserId,
                 Email = user.Email,
-                EventCount = user.EventCount,
+                ParticipatedEventsCount = user.ParticipatedEventsCount,
+                OrganizedEventsCount = user.OrganizedEventsCount,
                 VehicleCount = user.VehicleCount,
                 FullName = user.FullName,
-                LastUpdate = user.LastUpdate,
+
                 RoleName = user.RoleName
             }).ToList();
         }
 
-        public Task<UsersViewViewModel> GetById(string id)
+        public async Task<UsersViewViewModel> GetById(string id)
         {
-            throw new NotImplementedException();
+            var user = dbContext.UsersView.FirstOrDefault(x => x.UserId == id);
+            var userViewModel = new UsersViewViewModel
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+
+                ParticipatedEventsCount = user.ParticipatedEventsCount,
+                OrganizedEventsCount = user.OrganizedEventsCount,
+                VehicleCount = user.VehicleCount,
+                FullName = user.FullName,
+
+                RoleName = user.RoleName
+            };
+
+            return userViewModel;
         }
 
         public Task<bool> Update(int id, UsersViewViewModel entity)
