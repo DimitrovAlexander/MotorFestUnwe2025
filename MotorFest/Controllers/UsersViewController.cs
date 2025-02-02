@@ -21,7 +21,7 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> Index(string searchString, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
-
+            ViewData["ShowLoadingScreen"] = true;
             var users = usersViewService.GetAll();
 
             // Filter by search string

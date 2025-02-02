@@ -23,8 +23,9 @@ namespace MotorFest.Models.Event
         [DataType(DataType.Date)]
         [CustomValidation(typeof(EventViewModel), nameof(ValidateEventDate))]
         public DateTime EventDate { get; set; } = DateTime.Now;
-
+        [Required(ErrorMessage = "Входната такса е задължителна.")]
         [Range(0, double.MaxValue, ErrorMessage = "Входната такса трябва да бъде 0 или положително число.")]
+ 
         public decimal EntranceFee { get; set; }
 
         public bool HasVehicles { get; set; }
@@ -42,7 +43,7 @@ namespace MotorFest.Models.Event
         [Required(ErrorMessage = "Трябва да има поне един тип гориво.")]
         public List<CheckBoxItem> EngineTypes { get; set; } = new List<CheckBoxItem>();
 
-        public DateTime LastUpdate { get; set; } = DateTime.Now;
+        public DateTime LastUpdate { get; set; }
 
         public virtual LocationViewModel Location { get; set; } = null!;
         public virtual MFUser Organizer { get; set; } = null!;

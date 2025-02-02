@@ -38,31 +38,31 @@ namespace MotorFest.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Index(string searchString, int? page)
         {
+            ViewData["ShowLoadingScreen"] = true;
+            var allVehicles = GetVehicles();
 
-                var allVehicles = GetVehicles();
-
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    allVehicles = allVehicles.Where(v =>
-                        v.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                        v.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                        v.YearOfManufacture.ToString().Contains(searchString) ||
-                        v.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                        v.EngineType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-                    ).ToList();
-                }
-
-                Dictionary<int, bool> isVehicleInEvent = new Dictionary<int, bool>();
-                foreach (var vehicle in allVehicles)
-                {
-                    isVehicleInEvent.Add(vehicle.Id, vehicleService.IsParticipatingInFutureEvents(vehicle.Id));
-                }
-                ViewData["carDictionary"] = isVehicleInEvent;
-
-                int pageSize = 5;
-                int pageNumber = (page ?? 1);
-                return View(allVehicles.ToPagedList(pageNumber, pageSize));
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                allVehicles = allVehicles.Where(v =>
+                    v.Manufacturer.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    v.Model.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    v.YearOfManufacture.ToString().Contains(searchString) ||
+                    v.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    v.EngineType.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
             }
+
+            Dictionary<int, bool> isVehicleInEvent = new Dictionary<int, bool>();
+            foreach (var vehicle in allVehicles)
+            {
+                isVehicleInEvent.Add(vehicle.Id, vehicleService.IsParticipatingInFutureEvents(vehicle.Id));
+            }
+            ViewData["carDictionary"] = isVehicleInEvent;
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(allVehicles.ToPagedList(pageNumber, pageSize));
+        }
 
         private IEnumerable<VehicleViewModel> GetVehicles()
         {
@@ -214,18 +214,18 @@ namespace MotorFest.Controllers
             ModelState.Remove("Photo");
             if (ModelState.IsValid)
             {
-                if (photo != null && photo.Length > 0)
-                {
-                    var fileName = Path.GetFileName(photo.FileName);
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                //if (photo != null && photo.Length > 0)
+                //{
+                //    var fileName = Path.GetFileName(photo.FileName);
+                //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await photo.CopyToAsync(stream);
-                    }
+                //    using (var stream = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        await photo.CopyToAsync(stream);
+                //    }
 
-                    vehicle.Photo = "/images/" + fileName;
-                }
+                //    vehicle.Photo = "/images/" + fileName;
+                //}
                 //else if (string.IsNullOrEmpty(vehicle.Photo))
                 //{
                 //    ModelState.AddModelError("Photo", "Снимката е задължителна.");

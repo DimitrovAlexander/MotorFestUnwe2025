@@ -10,6 +10,8 @@ using MotorFest.Services.EventService;
 using MotorFest.Services.EventsService;
 using Microsoft.Extensions.Options;
 using MotorFest.Services.UsersViewService;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 
 namespace MotorFest
@@ -31,8 +33,23 @@ namespace MotorFest
             builder.Services.AddScoped<IEngineTypeService,EngineTypeService>();
             builder.Services.AddScoped<IEventService,EventService>();
             builder.Services.AddScoped<IUsersViewService,UsersViewService>();
+            var supportedCultures = new[] { new CultureInfo("bg-BG") }; // или "bg-BG" ако искаш запетая
+            builder.Services.AddControllersWithViews()
+    .AddMvcOptions(options =>
+    {
+        var provider = options.ModelBindingMessageProvider;
 
-
+        provider.SetAttemptedValueIsInvalidAccessor((x, y) => $"Стойността \"{x}\" не е валидна за {y}.");
+        provider.SetMissingBindRequiredValueAccessor(x => $"Полето {x} е задължително.");
+        provider.SetMissingKeyOrValueAccessor(() => "Това поле е задължително.");
+        provider.SetNonPropertyAttemptedValueIsInvalidAccessor(x => $"Стойността \"{x}\" не е валидна.");
+        provider.SetNonPropertyUnknownValueIsInvalidAccessor(() => "Въведена е невалидна стойност.");
+        provider.SetNonPropertyValueMustBeANumberAccessor(() => "Трябва да бъде число.");
+        provider.SetUnknownValueIsInvalidAccessor(x => $"Стойността за {x} е невалидна.");
+        provider.SetValueIsInvalidAccessor(x => $"Стойността за {x} е невалидна.");
+        provider.SetValueMustBeANumberAccessor(x => $"Полето {x} трябва да бъде число.");
+        provider.SetValueMustNotBeNullAccessor(x => $"Полето {x} не може да бъде празно.");
+    });
             builder.Services.AddDefaultIdentity<MFUser>(o =>
             {
                 // configure identity options
@@ -47,6 +64,12 @@ namespace MotorFest
             builder.Services.AddControllersWithViews();
             
             var app = builder.Build();
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("bg-BG"),
+                SupportedCultures = new List<CultureInfo> { new CultureInfo("bg-BG") },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo("bg-BG") }
+            });
             using (var scope = app.Services.CreateScope())
             {
                 var dbcontext = scope.ServiceProvider.GetRequiredService<MotorFestDbContext>();

@@ -43,6 +43,7 @@ namespace MotorFest.Controllers
         [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Index(string searchString, int? page)
         {
+            ViewData["ShowLoadingScreen"] = true;
             ICollection<EventViewModel> events = GetEvents();
 
             if (!string.IsNullOrEmpty(searchString))

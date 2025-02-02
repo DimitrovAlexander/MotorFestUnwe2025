@@ -45,7 +45,9 @@ namespace MotorFest.Services.EventsService
                 City = e.Location.City,
                 FullAddress = e.Location.FullAddress,
                 LastUpdate = e.Location.LastUpdate,
-            }
+            },
+            LastUpdate = e.LastUpdate
+
         })
         .ToList(); // Тук материализираме данните
 
@@ -84,7 +86,8 @@ namespace MotorFest.Services.EventsService
                 City = e.Location.City,
                 FullAddress = e.Location.FullAddress,
                 LastUpdate = e.Location.LastUpdate,
-            }
+            },
+            LastUpdate = e.LastUpdate
         })
         .Where(x=>x.OrganizerId.Equals(userId))
         .ToList(); // Тук материализираме данните
@@ -120,7 +123,8 @@ namespace MotorFest.Services.EventsService
                     Id = evc.VehicleCategoryId,
                     CategoryName = evc.VehicleCategory.Name,
                     IsChecked = true
-                }).ToList()
+                }).ToList(),
+                LastUpdate = eventEntity.LastUpdate
             };
         }
 
@@ -135,6 +139,7 @@ namespace MotorFest.Services.EventsService
                 EntranceFee = model.EntranceFee,
                 MinYearOfManufacture = model.MinYearOfManufacture,
                 MaxYearOfManufacture = model.MaxYearOfManufacture,
+                LastUpdate = DateTime.Now
             };
 
             _context.Events.Add(newEvent);
@@ -188,7 +193,7 @@ namespace MotorFest.Services.EventsService
             eventEntity.LocationId = entity.LocationId;
             eventEntity.EventDate = entity.EventDate;
             eventEntity.EntranceFee = entity.EntranceFee;
-
+            eventEntity.LastUpdate = DateTime.Now;
             var existingCategories = eventEntity.EventVehicleCategories;
             _context.EventVehicleCategories.RemoveRange(existingCategories);
 
@@ -211,7 +216,7 @@ namespace MotorFest.Services.EventsService
                 });
 
             await _context.EventEngineTypes.AddRangeAsync(newEngineTypes);
-
+             _context.Update(eventEntity);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -237,41 +242,41 @@ namespace MotorFest.Services.EventsService
                 .FirstOrDefault();
             if (vehicleCategoryId == 0)
             {
-                return false; // Превозното средство не съществува
+                return false; 
             }
 
-            // Проверяваме дали събитието поддържа тази категория
+
             var isCategorySupported = _context.EventVehicleCategories
                 .Any(evc => evc.EventId == eventId && evc.VehicleCategoryId == vehicleCategoryId);
 
             if (!isCategorySupported)
             {
-                return false; // Категорията на превозното средство не е свързана със събитието
-            } // Проверяваме дали събитието поддържа тази категория
+                return false; 
+            } 
             var isEngineTypeSupported = _context.EventEngineTypes
                 .Any(evc => evc.EventId == eventId && evc.EngineTypeId == vehicleEngineType);
 
             if (!isEngineTypeSupported)
             {
-                return false; // Категорията на превозното средство не е свързана със събитието
-            } // Проверяваме дали събитието поддържа тази категория
+                return false; 
+            } 
             var isYearOfProductionSupported = vehicle.YearOfManufacture > evnt.MinYearOfManufacture && vehicle.YearOfManufacture < evnt.MaxYearOfManufacture;
 
             if (!isYearOfProductionSupported)
             {
-                return false; // Категорията на превозното средство не е свързана със събитието
+                return false; 
             }
 
-            // Проверяваме дали превозното средство вече е записано за това събитие
+            
             var isVehicleAlreadyRegistered = _context.EventRegistrations
                 .Any(er => er.EventId == eventId && er.VehicleId == vehicleId);
 
             if (isVehicleAlreadyRegistered)
             {
-                return false; // Превозното средство вече е записано
+                return false; 
             }
 
-            // Създаваме нов запис за регистрация на превозното средство към събитието
+            
             _context.EventRegistrations.Add(new EventRegistration
             {
                 EventId = eventId,
@@ -281,17 +286,17 @@ namespace MotorFest.Services.EventsService
 
             _context.SaveChanges();
 
-            return true; // Успешна регистрация
+            return true; 
         }
         public ICollection<EventViewModel> GetAllByUserParticipating(string userId)
         {
             var events = _context.EventRegistrations
                 .Where(er => _context.Vehicles
-                    .Any(v => v.Id == er.VehicleId && v.OwnerId == userId)) // Филтрираме регистрациите на събития по превозни средства на потребителя
-                .Select(er => er.Event) // Връзката към събитие
-                .Distinct() // Премахваме дублираните записи, ако едно събитие има повече от една регистрация за дадения потребител
-                .Include(e => e.Location) // Зареждаме локацията
-                .Include(e => e.EventVehicleCategories) // Зареждаме категориите на събитията
+                    .Any(v => v.Id == er.VehicleId && v.OwnerId == userId)) 
+                .Select(er => er.Event) 
+                .Distinct() 
+                .Include(e => e.Location) 
+                .Include(e => e.EventVehicleCategories) 
                 .Select(e => new EventViewModel
                 {
                     Id = e.Id,
@@ -317,7 +322,7 @@ namespace MotorFest.Services.EventsService
                 })
                 .ToList();
 
-            // Добавяме информацията за това дали има записани превозни средства
+            
             foreach (var ev in events)
             {
                 ev.HasVehicles = HasVehiclesForEvent(ev.Id);

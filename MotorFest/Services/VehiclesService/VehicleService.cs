@@ -186,12 +186,12 @@ namespace MotorFest.Services.VehiclesService
         {
             var vehicleEntity = dbContext.Find<Vehicle>(id);
             vehicleEntity.YearOfManufacture = vehicle.YearOfManufacture;
-            vehicleEntity.Photo = vehicle.Photo;
-            vehicle.CategoryId=vehicle.CategoryId;
-            vehicle.EngineTypeId=vehicleEntity.EngineTypeId;
-            vehicle.OwnerId=vehicleEntity.OwnerId;
-            vehicle.Model=vehicleEntity.Model;
-            vehicle.Manufacturer = vehicleEntity.Manufacturer;
+            //vehicleEntity.Photo = vehicle.Photo;
+            vehicleEntity.CategoryId=vehicle.CategoryId;
+            vehicleEntity.EngineTypeId=vehicle.EngineTypeId;
+            //vehicleEntity.OwnerId=vehicle.OwnerId;
+            vehicleEntity.Model=vehicle.Model;
+            vehicleEntity.Manufacturer = vehicle.Manufacturer;
 
             vehicleEntity.LastUpdate = DateTime.Now;
 

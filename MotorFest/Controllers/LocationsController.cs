@@ -108,7 +108,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryName,City,FullAddress,Municipality,LastUpdate")] LocationViewModel address)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Municipality,LastUpdate")] LocationViewModel address)
         {
             if (id != address.Id)
             {

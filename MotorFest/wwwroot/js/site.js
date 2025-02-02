@@ -20,3 +20,14 @@ document.addEventListener("DOMContentLoaded", function () {
         fadeContainer.style.opacity = "1";
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (!sessionStorage.getItem("site_visited")) {
+
+        var toastEl = document.getElementById("welcomeToast");
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        sessionStorage.setItem("site_visited", "true");
+    }
+});
