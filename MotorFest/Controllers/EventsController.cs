@@ -15,7 +15,9 @@ using MotorFest.Models.Vehicle;
 using MotorFest.Services.EngineTypeService;
 using MotorFest.Services.EventService;
 using MotorFest.Services.EventsService;
+using MotorFest.Services.EventsViewService;
 using MotorFest.Services.LocationService;
+using MotorFest.Services.UsersViewService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
 using X.PagedList.Extensions;
@@ -30,7 +32,9 @@ namespace MotorFest.Controllers
         private readonly ILocationService locationService;
         private readonly UserManager<MFUser> _userManager;
         private readonly IEngineTypeService engineTypeService;
-        public EventsController(IEventService eventService, IVehicleCategoryService vehicleCategoryService, ILocationService locationService, UserManager<MFUser> userManager, IVehicleService vehicleService, IEngineTypeService engineTypeService)
+        private readonly IEventsViewService eventsViewService;
+
+        public EventsController(IEventService eventService, IVehicleCategoryService vehicleCategoryService, ILocationService locationService, UserManager<MFUser> userManager, IVehicleService vehicleService, IEngineTypeService engineTypeService, IEventsViewService eventsViewService)
         {
             this.eventService = eventService;
             this.vehicleCategoryService = vehicleCategoryService;
@@ -38,6 +42,7 @@ namespace MotorFest.Controllers
             _userManager = userManager;
             this.vehicleService = vehicleService;
             this.engineTypeService = engineTypeService;
+            this.eventsViewService = eventsViewService;
         }
 
         [Authorize(Roles = "Administrator,Organizer")]
@@ -293,6 +298,46 @@ namespace MotorFest.Controllers
             var userId = _userManager.GetUserId(User);
             var events = eventService.GetAllByUserParticipating(userId);
             return View(events);
+        }
+        // GET: UsersViewController
+        [Authorize(Roles = "Administrator,Organizer")]
+
+        public async Task<IActionResult> Statistics(string searchString, int? page)
+        {
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["ShowLoadingScreen"] = true;
+            List<EventsViewViewModel> events = new List<EventsViewViewModel>();
+            if (User.IsInRole("Organizer"))
+            {
+             events = eventsViewService.EventsByOrganizer(User.Claims.FirstOrDefault().Value).ToList();
+
+            }
+            else
+            {
+                events = eventsViewService.GetAll().ToList();
+
+            }
+
+            // Filter by search string
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                events = events.Where(e =>
+                    $"{e.EntranceFee}".Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.EventDate.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.ExpectedRevenue.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.EventId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.AllowedEngineTypesCount.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.AllowedVehicleCategoriesCount.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.OrganizerFullName.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    e.EventName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Paginate the results
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var pagedLocations = events.ToPagedList(pageNumber, pageSize);
+
+            return View(pagedLocations);
         }
     }
 }

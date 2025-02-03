@@ -117,11 +117,21 @@
 							</li>
 							@if (User.IsInRole("Organizer") || User.IsInRole("Administrator"))
 							{
-								<li class="nav-item">
-									<a class="nav-link" asp-area="" asp-controller="Events" asp-action="Index">
-										<i class="bi bi-calendar-event"></i> Събития
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="eventMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="bi bi-gear"></i> Събития
 									</a>
+									<ul class="dropdown-menu" aria-labelledby="eventMenu">
+										<li style="margin-top:1px">
+
+											<a class="btn dropdown-btn" asp-area="" asp-controller="Events" asp-action="Index">Събития</a>
+											<a class="btn dropdown-btn" asp-area="" asp-controller="Events" asp-action="Statistics">Статистика</a>
+										</li>
+									</ul>
 								</li>
+								@* 								<li class="nav-item">
+									<i class="bi bi-calendar-event"></i> Събития
+								</li> *@
 							}
 							@if (User.IsInRole("Organizer") || User.IsInRole("Participant") || User.IsInRole("Administrator"))
 							{
@@ -155,8 +165,10 @@
 										<i class="bi bi-gear"></i> Админ панел
 									</a>
 									<ul class="dropdown-menu" aria-labelledby="adminMenu">
-										<li><a class="btn dropdown-btn" asp-area="" asp-controller="UsersView" asp-action="Index">Потребители</a></li>
-									</ul>
+										<li style="margin-top:1px">
+											<a class="btn dropdown-btn" asp-area="" asp-controller="UsersView" asp-action="Index">Потребители</a>
+
+										</li>
 								</li>
 							}
 						</ul>

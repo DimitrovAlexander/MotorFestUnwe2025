@@ -1,0 +1,62 @@
+﻿@using X.PagedList
+@model IPagedList<MotorFest.Models.Event.EventsViewViewModel>
+
+<div class="container mt-5">
+	<h2 class="mb-4">Статистика на събитията</h2>
+
+	<!-- Search Form -->
+	<form asp-action="Index" method="get" class="form-inline mb-3">
+		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
+		<button type="submit" class="btn custom-btn mt-1">Търсене</button>
+	</form>
+
+
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Име на организатора</th>
+				<th>Име на събитието</th>
+				<th>Локация</th>
+				<th>Дата</th>
+				<th>Входна такса</th>
+				<th>Регистрирани участници</th>
+				<th>Очаквани приходи</th>
+				
+
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var evnt in Model)
+			{
+				<tr>
+					<td>@evnt.EventId</td>
+					<td>@evnt.OrganizerFullName</td>
+					<td>@evnt.EventName</td>
+					<td>@evnt.LocationName</td>
+					<td>@evnt.EventDate</td>
+					<td>@evnt.EntranceFee</td>
+					<td>@evnt.RegisteredParticipantsCount</td>
+					<td>@evnt.ExpectedRevenue</td>
+					
+					@* <td>
+						<a asp-action="Details" asp-route-id="@eve.UserId" class="btn custom-btn btn-sm">Детайли</a>
+
+					</td> *@
+
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<!-- Pagination Controls -->
+	<div class="pagination justify-content-center">
+		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
+					new PagedListRenderOptions
+		{
+			UlElementClasses = new List<string> { "pagination" },
+			LiElementClasses = new List<string> { "page-item" },
+			PageClasses = new List<string> { "page-link" }
+		})
+	</div>
+</div>

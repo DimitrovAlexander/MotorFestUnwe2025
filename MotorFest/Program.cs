@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using MotorFest.Services.UsersViewService;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using MotorFest.Services.EventsViewService;
 
 
 namespace MotorFest
@@ -33,6 +34,7 @@ namespace MotorFest
             builder.Services.AddScoped<IEngineTypeService,EngineTypeService>();
             builder.Services.AddScoped<IEventService,EventService>();
             builder.Services.AddScoped<IUsersViewService,UsersViewService>();
+            builder.Services.AddScoped<IEventsViewService,EventsViewService>();
             var supportedCultures = new[] { new CultureInfo("bg-BG") }; // или "bg-BG" ако искаш запетая
             builder.Services.AddControllersWithViews()
     .AddMvcOptions(options =>
