@@ -31,3 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
         sessionStorage.setItem("site_visited", "true");
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("svg").forEach(svg => {
+        svg.style.visibility = "visible";
+    });
+});

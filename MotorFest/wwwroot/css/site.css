@@ -203,12 +203,17 @@ body {
     }
 
 svg {
+    width: 5%;
+    height: 5%;
+    visibility: hidden;
+}
+.loading-svg {
     width: 30%;
     height: 30%;
     visibility: hidden;
 }
-/* Fade-in/Fade-out for all pages */
-.fade-container {
+    /* Fade-in/Fade-out for all pages */
+    .fade-container {
     opacity: 0;
     animation: fadeIn 0.4s ease-in-out forwards;
 }

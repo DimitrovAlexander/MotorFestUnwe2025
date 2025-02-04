@@ -31,7 +31,17 @@
                 <tr>
                     <td>@item.Name</td>
                     <td>@item.EventDate.ToShortDateString()</td>
-                    <td>@item.EntranceFee</td>
+                    @if (item.EntranceFee == 0)
+                    {
+
+                        <td>Вход свободен</td>
+                             
+                    }
+                    else
+                    {
+                        <td>@item.EntranceFee лв</td>
+                    }
+
                     <td>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn custom-btn btn-sm">Детайли</a>
                         @if (!item.HasVehicles)

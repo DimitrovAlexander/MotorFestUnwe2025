@@ -14,7 +14,7 @@
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
-				<th>Id</th>
+
 				<th>Име на организатора</th>
 				<th>Име на събитието</th>
 				<th>Локация</th>
@@ -30,14 +30,22 @@
 			@foreach (var evnt in Model)
 			{
 				<tr>
-					<td>@evnt.EventId</td>
 					<td>@evnt.OrganizerFullName</td>
 					<td>@evnt.EventName</td>
 					<td>@evnt.LocationName</td>
-					<td>@evnt.EventDate</td>
-					<td>@evnt.EntranceFee</td>
+					<td>@evnt.EventDate.ToShortDateString()</td>
+					@if (evnt.EntranceFee == 0)
+					{
+
+						<td>Вход свободен</td>
+
+					}
+					else
+					{
+						<td>@evnt.EntranceFee лв</td>
+					}
 					<td>@evnt.RegisteredParticipantsCount</td>
-					<td>@evnt.ExpectedRevenue</td>
+					<td>@evnt.ExpectedRevenue лв</td>
 					
 					@* <td>
 						<a asp-action="Details" asp-route-id="@eve.UserId" class="btn custom-btn btn-sm">Детайли</a>

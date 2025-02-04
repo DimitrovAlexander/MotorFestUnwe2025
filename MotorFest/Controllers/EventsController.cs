@@ -295,6 +295,8 @@ namespace MotorFest.Controllers
         [Authorize(Roles = "Administrator,Participant")]
         public IActionResult MyEvents()
         {
+
+
             var userId = _userManager.GetUserId(User);
             var events = eventService.GetAllByUserParticipating(userId);
             return View(events);
