@@ -12,6 +12,9 @@
 				@foreach (var ev in eventGroup)
 				{
 					<li>
+						@if(ev.IsCanceled){
+							ev.Name = $"{ev.Name} - ОТМЕНЕНО";
+						}
 						@if (ev.EntranceFee == 0)
 						{
 
@@ -31,9 +34,4 @@
 		</div>
 	}
 </div>
-</br>
-<a asp-action="Index" class="btn custom-btn">Назад</a>
 
-<style>
-	
-</style>

@@ -152,15 +152,23 @@ namespace MotorFest.Controllers
 
             return View(eventDetails);
         }
+
         [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Delete(int id)
+        {
+            var mfEvent = await eventService.GetById(id);
+            return View(mfEvent);
+        }
+        [Authorize(Roles = "Administrator,Organizer")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, EventViewModel eventViewModel)
         {
             await eventService.Delete(id);
             return RedirectToAction("Index");
         }
         public IActionResult Calendar()
         {
-            var events = eventService.GetAll(); // Fetch all events using the service
+            var events = eventService.GetAll().Where(x => x.IsCanceled == false); // Fetch all events using the service
             return View(events);
         }
         // GET: Events/Edit/5
@@ -172,11 +180,27 @@ namespace MotorFest.Controllers
                 return NotFound();
             }
 
+            var categories = vehicleCategoryService.GetAll();
+            var engineTypes = engineTypeService.GetAll();
             var mfEvent = await eventService.GetById(id);
             if (mfEvent == null)
             {
                 return NotFound();
             }
+            mfEvent.VehicleCategories = categories.Select(c => new CheckBoxItem
+            {
+                Id = c.Id,
+                CategoryName = c.Name,
+                IsChecked =mfEvent.VehicleCategories.Any(x=>x.CategoryName==c.Name)
+                
+            }).ToList();
+            mfEvent.EngineTypes = engineTypes.Select(e => new CheckBoxItem
+            {
+                Id = e.Id,
+                CategoryName = e.Name,
+                IsChecked= mfEvent.EngineTypes.Any(x => x.CategoryName == e.Name)
+
+            }).ToList();
             ViewData["allLocations"] = locationService.GetAll()
       .Select(c => new SelectListItem
       {
@@ -208,7 +232,12 @@ namespace MotorFest.Controllers
             {
                 try
                 {
-                    await eventService.Update(id, eventViewModel);
+                    var succeed = await eventService.Update(id, eventViewModel);
+                    if (succeed)
+                    {
+                        return RedirectToAction(nameof(Index));
+
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -221,7 +250,6 @@ namespace MotorFest.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
 
 
@@ -311,7 +339,7 @@ namespace MotorFest.Controllers
             List<EventsViewViewModel> events = new List<EventsViewViewModel>();
             if (User.IsInRole("Organizer"))
             {
-             events = eventsViewService.EventsByOrganizer(User.Claims.FirstOrDefault().Value).ToList();
+                events = eventsViewService.EventsByOrganizer(User.Claims.FirstOrDefault().Value).ToList();
 
             }
             else
@@ -340,6 +368,11 @@ namespace MotorFest.Controllers
             var pagedLocations = events.ToPagedList(pageNumber, pageSize);
 
             return View(pagedLocations);
+        }
+        public async Task<IActionResult> Cancel(int id)
+        {
+            await eventService.Cancel(id);
+            return RedirectToAction("Index");
         }
     }
 }

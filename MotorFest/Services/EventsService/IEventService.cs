@@ -11,5 +11,6 @@ namespace MotorFest.Services.EventService
         ICollection<VehicleViewModel> GetRegisteredVehiclesForEvent(int eventId);
         bool IsUserRegisteredForEvent(string userId, int eventId);
         ICollection<EventViewModel> GetAllByOrganizer(string userId);
+        Task Cancel(int id);
     }
 }

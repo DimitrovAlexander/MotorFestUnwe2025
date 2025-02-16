@@ -1,14 +1,16 @@
 ﻿@model MotorFest.Models.Event.EventViewModel
 
 <div class="container mt-5">
-	<h2 class="mb-4">Детайли за МПС</h2>
+	<h2 class="mb-4">Детайли за събитие</h2>
 	<div class="card">
 		<div class="card-body">
 			<h5 class="card-title">@Model.Name</h5>
-			<p class="card-text"><strong>Модел:</strong> @Model.EventDate</p>
-			<p class="card-text"><strong>Година на производство:</strong> @Model.MinYearOfManufacture</p>
-			<p class="card-text"><strong>Година на производство:</strong> @Model.MaxYearOfManufacture</p>
+			<p class="card-text"><strong>Дата на събитието:</strong> @Model.EventDate</p>
+			<p class="card-text"><strong>Минимална разрешена година на производство:</strong> @Model.MinYearOfManufacture</p>
+			<p class="card-text"><strong>Максимална разрешена година на производство:</strong> @Model.MaxYearOfManufacture</p>
+			
 			<div class="card-table">
+				<h5>Разрешени категории на превозни средства:</h5>
 				<ul>
 					@foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
 					{
@@ -17,24 +19,7 @@
 				</ul>
 			</div>
 			<div class="card-table">
-				<ul>
-					@foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
-					{
-						<li>@type.CategoryName</li>
-					}
-				</ul>
-			</div>
-			<div class="card-table">
-				<h5>Категории на превозни средства:</h5>
-				<ul>
-					@foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
-					{
-						<li>@category.CategoryName</li>
-					}
-				</ul>
-			</div>
-			<div class="card-table">
-				<h5>Типове двигатели:</h5>
+				<h5>Разрешени типове двигатели:</h5>
 				<ul>
 					@foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
 					{

@@ -8,6 +8,8 @@
 	<form asp-action="Index" method="get" class="form-inline mb-3">
 		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, град или община" value="@ViewData["CurrentFilter"]" />
 		<button type="submit" class="btn custom-btn mt-1">Търсене</button>
+		<a asp-action="Index" class="btn custom-btn">Изчисти търсенето</a>
+
 	</form>
 
 	<a asp-action="Create" class="btn custom-btn mb-3">Добави Нова Локация</a>

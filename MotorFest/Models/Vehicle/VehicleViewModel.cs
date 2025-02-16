@@ -18,7 +18,7 @@ namespace MotorFest.Models.Vehicle
         public int EngineTypeId { get; set; }
         [Display(Name = "Производител")]
         [Required(ErrorMessage = "Производителят е задължителен.")]
-        [MinLength(4, ErrorMessage = "Производителят трябва да бъде минимум 4 символа.")]
+        [MinLength(3, ErrorMessage = "Производителят трябва да бъде минимум 3 символа.")]
         public string Manufacturer { get; set; }
 
         [Display(Name = "Модел")]

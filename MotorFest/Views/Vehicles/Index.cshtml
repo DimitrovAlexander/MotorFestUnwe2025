@@ -13,6 +13,8 @@
     <form asp-action="Index" method="get" class="form-inline mb-3">
         <input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по модел, марка, година, категория или вид на двигателя" value="@ViewData["CurrentFilter"]" />
         <button type="submit" class="btn custom-btn mt-1">Търсене</button>
+        <a asp-action="Index" class="btn custom-btn">Изчисти търсенето</a>
+
     </form>
 
     @if (!string.IsNullOrEmpty(TempData["successMessage"]?.ToString()))

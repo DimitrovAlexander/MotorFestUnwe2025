@@ -47,6 +47,7 @@ namespace MotorFest.Models.Event
 
         public virtual LocationViewModel Location { get; set; } = null!;
         public virtual MFUser Organizer { get; set; } = null!;
+        public bool IsCanceled { get; set; }
         public virtual ICollection<EventRegistrationViewModel> EventRegistration { get; set; } = new HashSet<EventRegistrationViewModel>();
 
         // Custom validation methods

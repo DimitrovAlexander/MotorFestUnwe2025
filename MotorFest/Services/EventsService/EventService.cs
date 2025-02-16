@@ -46,6 +46,7 @@ namespace MotorFest.Services.EventsService
                 FullAddress = e.Location.FullAddress,
                 LastUpdate = e.Location.LastUpdate,
             },
+            IsCanceled = e.IsCanceled,
             LastUpdate = e.LastUpdate
 
         })
@@ -87,6 +88,7 @@ namespace MotorFest.Services.EventsService
                 FullAddress = e.Location.FullAddress,
                 LastUpdate = e.Location.LastUpdate,
             },
+            IsCanceled = e.IsCanceled,
             LastUpdate = e.LastUpdate
         })
         .Where(x=>x.OrganizerId.Equals(userId))
@@ -104,6 +106,7 @@ namespace MotorFest.Services.EventsService
         {
             var eventEntity = await _context.Events
                 .Include(e => e.EventEngineTypes)
+                .ThenInclude(e => e.EngineType)
                 .Include(e => e.EventVehicleCategories)
                 .ThenInclude(ec => ec.VehicleCategory)
                 .FirstOrDefaultAsync(e => e.Id == id);
@@ -118,12 +121,21 @@ namespace MotorFest.Services.EventsService
                 LocationId = eventEntity.LocationId,
                 EventDate = eventEntity.EventDate,
                 EntranceFee = eventEntity.EntranceFee,
+                MinYearOfManufacture=eventEntity.MinYearOfManufacture,
+                MaxYearOfManufacture = eventEntity.MaxYearOfManufacture,
                 VehicleCategories = eventEntity.EventVehicleCategories.Select(evc => new CheckBoxItem
                 {
                     Id = evc.VehicleCategoryId,
                     CategoryName = evc.VehicleCategory.Name,
                     IsChecked = true
                 }).ToList(),
+                EngineTypes = eventEntity.EventEngineTypes.Select(eet=>new CheckBoxItem
+                {
+                    Id=eet.EngineTypeId,
+                    CategoryName=eet.EngineType.Name,
+                    IsChecked = true
+                }).ToList(),
+                IsCanceled = eventEntity.IsCanceled,
                 LastUpdate = eventEntity.LastUpdate
             };
         }
@@ -180,7 +192,9 @@ namespace MotorFest.Services.EventsService
 
         public async Task<bool> Update(int id, EventViewModel entity)
         {
-            var eventEntity =  _context.Events
+            var eventEntity = _context.Events
+             .Include(e => e.EventVehicleCategories)
+             .Include(e => e.EventEngineTypes)
              .Include(e => e.EventVehicleCategories)
              .FirstOrDefault(e => e.Id == entity.Id);
 
@@ -206,6 +220,7 @@ namespace MotorFest.Services.EventsService
                 });
             var existingEngineTypes = eventEntity.EventEngineTypes;
             _context.EventEngineTypes.RemoveRange(existingEngineTypes);
+            await _context.SaveChangesAsync();
 
             var newEngineTypes = entity.EngineTypes
                 .Where(vc => vc.IsChecked)
@@ -218,6 +233,7 @@ namespace MotorFest.Services.EventsService
             await _context.EventEngineTypes.AddRangeAsync(newEngineTypes);
              _context.Update(eventEntity);
             await _context.SaveChangesAsync();
+
             return true;
         }
         public bool HasVehiclesForEvent(int eventId)
@@ -354,5 +370,11 @@ namespace MotorFest.Services.EventsService
             return _context.EventRegistrations.Any(er => er.EventId == eventId && er.Vehicle.OwnerId == userId);
         }
 
+        public async Task Cancel(int id)
+        {
+            var evnt = _context.Events.FirstOrDefault(e => e.Id == id);
+            evnt.IsCanceled= !evnt.IsCanceled;
+            await _context.SaveChangesAsync();
+        }
     }
 }

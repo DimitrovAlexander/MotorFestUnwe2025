@@ -26,6 +26,7 @@ public partial class Event
     public virtual MFUser Organizer { get; set; } = null!;
     public int? MinYearOfManufacture { get; set; }
     public int? MaxYearOfManufacture { get; set; }
+    public bool IsCanceled { get; set; } = false;
     public virtual ICollection<EventEngineType> EventEngineTypes { get; set; } = new List<EventEngineType>();
 
     public virtual ICollection<EventVehicleCategory> EventVehicleCategories { get; set; } = new List<EventVehicleCategory>();
