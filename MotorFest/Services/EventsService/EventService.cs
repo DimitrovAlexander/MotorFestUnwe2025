@@ -299,7 +299,7 @@ namespace MotorFest.Services.EventsService
                 VehicleId = vehicleId,
                 RegistrationDate = DateTime.Now
             });
-
+            
             _context.SaveChanges();
 
             return true; 
@@ -334,7 +334,9 @@ namespace MotorFest.Services.EventsService
                         City = e.Location.City,
                         FullAddress = e.Location.FullAddress,
                         LastUpdate = e.Location.LastUpdate,
-                    }
+                    },
+                    IsCanceled = e.IsCanceled
+                    
                 })
                 .ToList();
 
@@ -374,6 +376,7 @@ namespace MotorFest.Services.EventsService
         {
             var evnt = _context.Events.FirstOrDefault(e => e.Id == id);
             evnt.IsCanceled= !evnt.IsCanceled;
+            evnt.LastUpdate=DateTime.Now;
             await _context.SaveChangesAsync();
         }
     }
