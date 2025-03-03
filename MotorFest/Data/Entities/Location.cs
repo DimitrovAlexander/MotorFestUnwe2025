@@ -12,7 +12,7 @@ public partial class Location
 
     public string FullAddress { get; set; } = null!;
 
-    public string Municipality { get; set; } = null!;
+    public string Country { get; set; } = null!;
     [Column("21180022_LastUpdate")]
     public DateTime LastUpdate { get; set; } =DateTime.Now;
 

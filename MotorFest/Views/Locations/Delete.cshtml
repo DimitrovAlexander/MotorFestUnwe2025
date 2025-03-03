@@ -11,9 +11,9 @@
 			<h5 class="card-title">@Model.Name</h5>
 			<p class="card-text"><strong>Град:</strong> @Model.City</p>
 			<p class="card-text"><strong>Пълен Адрес:</strong> @Model.FullAddress</p>
-			<p class="card-text"><strong>Община:</strong> @Model.Municipality</p>
+			<p class="card-text"><strong>Община:</strong> @Model.Country</p>
 			<input type="submit" value="Delete" class="btn btn-danger" /> |
-			<a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
+			<a asp-action="Index" class="btn custom-primary-btn">Назад към списъка</a>
 			<input type="hidden" asp-for="Id" />
 		</div>
 	</div>

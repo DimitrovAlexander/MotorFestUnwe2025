@@ -28,6 +28,7 @@ namespace MotorFest.Services.EventsService
         {
             Id = e.Id,
             Name = e.Name,
+            Description = e.Description,
             OrganizerId = e.OrganizerId,
             LocationId = e.LocationId,
             EventDate = e.EventDate,
@@ -41,16 +42,18 @@ namespace MotorFest.Services.EventsService
             {
                 Id = e.Location.Id,
                 Name = e.Location.Name,
-                Municipality = e.Location.Municipality,
+                Country = e.Location.Country,
                 City = e.Location.City,
                 FullAddress = e.Location.FullAddress,
                 LastUpdate = e.Location.LastUpdate,
             },
+            EventPhotos = e.EventPhotos,
+            EventLogo = e.EventLogo,
             IsCanceled = e.IsCanceled,
             LastUpdate = e.LastUpdate
 
         })
-        .ToList(); // Тук материализираме данните
+        .OrderBy(x=>x.EventDate).ToList(); // Тук материализираме данните
 
             // Добавяме информацията за това дали има записани превозни средства
             foreach (var ev in events)
@@ -83,15 +86,19 @@ namespace MotorFest.Services.EventsService
             {
                 Id = e.Location.Id,
                 Name = e.Location.Name,
-                Municipality = e.Location.Municipality,
+                Country = e.Location.Country,
                 City = e.Location.City,
                 FullAddress = e.Location.FullAddress,
                 LastUpdate = e.Location.LastUpdate,
             },
+            Description = e.Description,
+            EventPhotos = e.EventPhotos,
+            EventLogo = e.EventLogo,
             IsCanceled = e.IsCanceled,
             LastUpdate = e.LastUpdate
         })
-        .Where(x=>x.OrganizerId.Equals(userId))
+        .Where(x => x.OrganizerId.Equals(userId))
+        .OrderBy(x => x.EventDate)
         .ToList(); // Тук материализираме данните
 
             // Добавяме информацията за това дали има записани превозни средства
@@ -109,6 +116,7 @@ namespace MotorFest.Services.EventsService
                 .ThenInclude(e => e.EngineType)
                 .Include(e => e.EventVehicleCategories)
                 .ThenInclude(ec => ec.VehicleCategory)
+                .Include(e => e.Location)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (eventEntity == null) return null;
@@ -121,7 +129,7 @@ namespace MotorFest.Services.EventsService
                 LocationId = eventEntity.LocationId,
                 EventDate = eventEntity.EventDate,
                 EntranceFee = eventEntity.EntranceFee,
-                MinYearOfManufacture=eventEntity.MinYearOfManufacture,
+                MinYearOfManufacture = eventEntity.MinYearOfManufacture,
                 MaxYearOfManufacture = eventEntity.MaxYearOfManufacture,
                 VehicleCategories = eventEntity.EventVehicleCategories.Select(evc => new CheckBoxItem
                 {
@@ -129,15 +137,88 @@ namespace MotorFest.Services.EventsService
                     CategoryName = evc.VehicleCategory.Name,
                     IsChecked = true
                 }).ToList(),
-                EngineTypes = eventEntity.EventEngineTypes.Select(eet=>new CheckBoxItem
+                EngineTypes = eventEntity.EventEngineTypes.Select(eet => new CheckBoxItem
                 {
-                    Id=eet.EngineTypeId,
-                    CategoryName=eet.EngineType.Name,
+                    Id = eet.EngineTypeId,
+                    CategoryName = eet.EngineType.Name,
                     IsChecked = true
                 }).ToList(),
+                Location = new Models.Location.LocationViewModel
+                {
+                    City = eventEntity.Location.City,
+                    FullAddress = eventEntity.Location.FullAddress,
+                    Id = eventEntity.Location.Id,
+                    LastUpdate = eventEntity.Location.LastUpdate,
+                    Country = eventEntity.Location.Country,
+                    Name = eventEntity.Location.Name
+                },
+
+                Description = eventEntity.Description,
+                EventPhotos = eventEntity.EventPhotos,
+                EventLogo = eventEntity.EventLogo,
                 IsCanceled = eventEntity.IsCanceled,
                 LastUpdate = eventEntity.LastUpdate
             };
+        }
+        public ICollection<EventViewModel> GetUpcomingEvent()
+        {
+            var upcomingEvents =  _context.Events
+                .Include(e => e.Location)
+                .Include(e => e.EventVehicleCategories)
+                .ThenInclude(evc => evc.VehicleCategory)
+                .Include(e => e.EventEngineTypes)
+                .ThenInclude(eet => eet.EngineType)
+                .Where(e => e.EventDate >= DateTime.UtcNow)
+                .OrderBy(e => e.EventDate)
+                .ToList();
+
+            if (!upcomingEvents.Any()) return new List<EventViewModel>();
+
+            var closestDate = upcomingEvents.First().EventDate;
+
+            var nextEvents = upcomingEvents
+                .Where(e => e.EventDate == closestDate)
+                .Select(e => new EventViewModel
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    OrganizerId = e.OrganizerId,
+                    LocationId = e.LocationId,
+                    EventDate = e.EventDate,
+                    EntranceFee = e.EntranceFee,
+                    MinYearOfManufacture = e.MinYearOfManufacture,
+                    MaxYearOfManufacture = e.MaxYearOfManufacture,
+                    VehicleCategories = e.EventVehicleCategories?.Select(evc => new CheckBoxItem
+                    {
+                        Id = evc.VehicleCategoryId,
+                        CategoryName = evc.VehicleCategory?.Name ?? "Неизвестна категория",
+                        IsChecked = true
+                    }).ToList() ?? new List<CheckBoxItem>(),
+                    EngineTypes = e.EventEngineTypes?.Select(eet => new CheckBoxItem
+                    {
+                        Id = eet.EngineTypeId,
+                        CategoryName = eet.EngineType?.Name ?? "Неизвестен двигател",
+                        IsChecked = true
+                    }).ToList() ?? new List<CheckBoxItem>(),
+                    Location = e.Location != null ? new Models.Location.LocationViewModel
+                    {
+                        City = e.Location.City,
+                        FullAddress = e.Location.FullAddress,
+                        Id = e.Location.Id,
+                        LastUpdate = e.Location.LastUpdate,
+                        Country = e.Location.Country,
+                        Name = e.Location.Name
+                    } : null,
+                    Description = e.Description,
+                    EventPhotos = e.EventPhotos,
+                    EventLogo = e.EventLogo,
+                    IsCanceled = e.IsCanceled,
+                    LastUpdate = e.LastUpdate
+                })
+                .OrderBy(x => x.EventDate)
+                .ToList();
+
+            return nextEvents;
         }
 
         public async Task<bool> Create(EventViewModel model)
@@ -151,6 +232,9 @@ namespace MotorFest.Services.EventsService
                 EntranceFee = model.EntranceFee,
                 MinYearOfManufacture = model.MinYearOfManufacture,
                 MaxYearOfManufacture = model.MaxYearOfManufacture,
+                Description = model.Description,
+                EventPhotos = model.EventPhotos,
+                EventLogo = model.EventLogo,
                 LastUpdate = DateTime.Now
             };
 
@@ -168,7 +252,7 @@ namespace MotorFest.Services.EventsService
             .Where(et => et.IsChecked)
             .Select(et => new EventEngineType
             {
-                EventId= newEvent.Id,
+                EventId = newEvent.Id,
                 EngineTypeId = et.Id
             });
 
@@ -203,7 +287,7 @@ namespace MotorFest.Services.EventsService
                 return false;
             }
             eventEntity.Name = entity.Name;
-            
+
             eventEntity.LocationId = entity.LocationId;
             eventEntity.EventDate = entity.EventDate;
             eventEntity.EntranceFee = entity.EntranceFee;
@@ -231,7 +315,7 @@ namespace MotorFest.Services.EventsService
                 });
 
             await _context.EventEngineTypes.AddRangeAsync(newEngineTypes);
-             _context.Update(eventEntity);
+            _context.Update(eventEntity);
             await _context.SaveChangesAsync();
 
             return true;
@@ -241,12 +325,12 @@ namespace MotorFest.Services.EventsService
             return _context.EventRegistrations
                 .Include(v => v.Vehicle)
                 .ThenInclude(vc => vc.Owner)
-                .Any(vr=>vr.EventId==eventId);
+                .Any(vr => vr.EventId == eventId);
         }
         public bool RegisterVehicleForEvent(int eventId, int vehicleId)
         {
-            var vehicle = _context.Vehicles.FirstOrDefault(v => v.Id==vehicleId);
-            var evnt = _context.Events.FirstOrDefault(e => e.Id==eventId);
+            var vehicle = _context.Vehicles.FirstOrDefault(v => v.Id == vehicleId);
+            var evnt = _context.Events.FirstOrDefault(e => e.Id == eventId);
             // Извличаме категорията на превозното средство
             var vehicleCategoryId = _context.Vehicles
                 .Where(v => v.Id == vehicleId)
@@ -258,7 +342,7 @@ namespace MotorFest.Services.EventsService
                 .FirstOrDefault();
             if (vehicleCategoryId == 0)
             {
-                return false; 
+                return false;
             }
 
 
@@ -267,52 +351,52 @@ namespace MotorFest.Services.EventsService
 
             if (!isCategorySupported)
             {
-                return false; 
-            } 
+                return false;
+            }
             var isEngineTypeSupported = _context.EventEngineTypes
                 .Any(evc => evc.EventId == eventId && evc.EngineTypeId == vehicleEngineType);
 
             if (!isEngineTypeSupported)
             {
-                return false; 
-            } 
+                return false;
+            }
             var isYearOfProductionSupported = vehicle.YearOfManufacture > evnt.MinYearOfManufacture && vehicle.YearOfManufacture < evnt.MaxYearOfManufacture;
 
             if (!isYearOfProductionSupported)
             {
-                return false; 
+                return false;
             }
 
-            
+
             var isVehicleAlreadyRegistered = _context.EventRegistrations
                 .Any(er => er.EventId == eventId && er.VehicleId == vehicleId);
 
             if (isVehicleAlreadyRegistered)
             {
-                return false; 
+                return false;
             }
 
-            
+
             _context.EventRegistrations.Add(new EventRegistration
             {
                 EventId = eventId,
                 VehicleId = vehicleId,
                 RegistrationDate = DateTime.Now
             });
-            
+
             _context.SaveChanges();
 
-            return true; 
+            return true;
         }
         public ICollection<EventViewModel> GetAllByUserParticipating(string userId)
         {
             var events = _context.EventRegistrations
                 .Where(er => _context.Vehicles
-                    .Any(v => v.Id == er.VehicleId && v.OwnerId == userId)) 
-                .Select(er => er.Event) 
-                .Distinct() 
-                .Include(e => e.Location) 
-                .Include(e => e.EventVehicleCategories) 
+                    .Any(v => v.Id == er.VehicleId && v.OwnerId == userId))
+                .Select(er => er.Event)
+                .Distinct()
+                .Include(e => e.Location)
+                .Include(e => e.EventVehicleCategories)
                 .Select(e => new EventViewModel
                 {
                     Id = e.Id,
@@ -330,17 +414,17 @@ namespace MotorFest.Services.EventsService
                     {
                         Id = e.Location.Id,
                         Name = e.Location.Name,
-                        Municipality = e.Location.Municipality,
+                        Country = e.Location.Country,
                         City = e.Location.City,
                         FullAddress = e.Location.FullAddress,
                         LastUpdate = e.Location.LastUpdate,
                     },
                     IsCanceled = e.IsCanceled
-                    
+
                 })
                 .ToList();
 
-            
+
             foreach (var ev in events)
             {
                 ev.HasVehicles = HasVehiclesForEvent(ev.Id);
@@ -375,8 +459,8 @@ namespace MotorFest.Services.EventsService
         public async Task Cancel(int id)
         {
             var evnt = _context.Events.FirstOrDefault(e => e.Id == id);
-            evnt.IsCanceled= !evnt.IsCanceled;
-            evnt.LastUpdate=DateTime.Now;
+            evnt.IsCanceled = !evnt.IsCanceled;
+            evnt.LastUpdate = DateTime.Now;
             await _context.SaveChangesAsync();
         }
     }

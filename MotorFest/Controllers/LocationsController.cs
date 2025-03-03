@@ -38,7 +38,7 @@ namespace MotorFest.Controllers
                 locations = locations.Where(l =>
                     l.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                     l.City.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                    l.Municipality.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+                    l.Country.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             // Paginate the results
@@ -108,7 +108,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Municipality,LastUpdate")] LocationViewModel address)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Country,LastUpdate")] LocationViewModel address)
         {
             if (id != address.Id)
             {

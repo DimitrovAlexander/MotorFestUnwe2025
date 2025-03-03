@@ -1,47 +1,116 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-}
-@{
-    ViewData["Title"] = "Начало";
+	ViewData["Title"] = "Начало";
+	var upcomingEvents = ViewData["UpcomingEvents"] as List<MotorFest.Models.Event.EventViewModel>;
 }
 
 <div class="container mt-5">
-    <div class="text-center mb-4">
-        <h1 class="display-4">Добре дошли в MotorFest!</h1>
-        <p class="lead">Вашето място за организиране и участие в автомобилни събития.</p>
-    </div>
+	<div class="text-center mb-4">
+		<h1 class="display-4">Добре дошли в MotorFest!</h1>
+		<p class="lead">Вашето място за организиране и участие в авто и мото събития.</p>
+	</div>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-calendar-event-fill display-1 text-primary"></i>
-                    <h5 class="card-title mt-3">Събития</h5>
-                    <p class="card-text">Разгледайте предстоящите събития и се запишете за участие.</p>
-                    <a href="@Url.Action("Index", "Events")" class="btn custom-btn">Виж събития</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-car-front-fill display-1 text-success"></i>
-                    <h5 class="card-title mt-3">Превозни средства</h5>
-                    <p class="card-text">Управлявайте вашите превозни средства и добавяйте нови.</p>
-                    <a href="@Url.Action("Index", "Vehicles")" class="btn custom-btn" >Управлявай превозни средства</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <i class="bi bi-geo-alt-fill display-1 text-danger"></i>
-                    <h5 class="card-title mt-3">Локации</h5>
-                    <p class="card-text">Разгледайте и управлявайте локациите на събитията.</p>
-                    <a href="@Url.Action("Index", "Locations")" class="btn custom-btn">Виж локации</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<div id="cardsCarousel" class="carousel slide" data-bs-ride="carousel">
+		<div class="carousel-inner">
+
+			<div class="carousel-item active">
+				<div class="card shadow-sm text-center p-4">
+					<i class="bi bi-calendar-event-fill display-1 text-primary"></i>
+					<h5 class="card-title mt-3">Участие в Събития</h5>
+					<p class="card-text">Разгледайте предстоящите събития и се запишете за участие.</p>
+					@if (User.IsInRole("Participant") || User.IsInRole("Organizer") || User.IsInRole("Administrator"))
+					{
+						<a href="@Url.Action("Calendar", "Events")" class="btn custom-primary-btn btn-sm d-inline-block mx-auto ">Виж събития</a>
+					}
+				</div>
+			</div>
+
+			<div class="carousel-item">
+				<div class="card shadow-sm text-center p-4">
+					<i class="bi bi-car-front-fill display-1 text-success"></i>
+					<h5 class="card-title mt-3">Превозни средства</h5>
+					<p class="card-text">Като Участник управлявайте вашите превозни средства и добавяйте нови.</p>
+					@if (User.IsInRole("Participant") || User.IsInRole("Organizer") || User.IsInRole("Administrator"))
+					{
+						<a href="@Url.Action("Index", "Vehicles")" class="btn custom-primary-btn btn-sm d-inline-block mx-auto ">Управлявай превозни средства</a>
+					}
+				</div>
+			</div>
+
+			<div class="carousel-item">
+				<div class="card shadow-sm text-center p-4">
+					<i class="bi bi-geo-alt-fill display-1 text-danger"></i>
+					<h5 class="card-title mt-3">Организиране на събития</h5>
+					<p class="card-text">Като Организатор можете бързо да организирате и администрирате събития.</p>
+					@if (User.IsInRole("Participant") || User.IsInRole("Organizer") || User.IsInRole("Administrator"))
+					{
+						<a href="@Url.Action("Index", "Events")" class="btn custom-primary-btn btn-sm d-inline-block mx-auto ">Виж локации</a>
+					}
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Контроли за карусела -->
+		<button class="carousel-control-prev" type="button" data-bs-target="#cardsCarousel" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Предишна</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#cardsCarousel" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Следваща</span>
+		</button>
+	</div>
+		@if (User.IsInRole("Participant") || User.IsInRole("Organizer") || User.IsInRole("Administrator"))
+		{
+
+
+		}
+		else
+		{
+
+			<div class="d-flex justify-content-center mt-4">
+				<a href="/Identity/Account/Login" class="btn custom-primary-btn me-3">Влез в профила си</a>
+				<a href="/Identity/Account/Register" class="btn custom-primary-btn">Регистрирай се</a>
+			</div>
+
+		}
+		@if (upcomingEvents != null && upcomingEvents.Any())
+		{
+			<div class="card shadow m-3">
+				<div class="card-header">
+					<h4 class="mb-0">Скорошни събития</h4>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						@foreach (var ev in upcomingEvents)
+						{
+							<div class="col-md-6 col-lg-4 mb-3">
+								<div class="card event-card">
+									<img src="@ev.EventLogo" class="card-img-top img-fluid rounded-top" alt="Снимка на събитието">
+									<div class="card-body">
+										<h5 class="card-title">@ev.Name</h5>
+										<p class="card-text">
+											@if (ev.EntranceFee == 0)
+											{
+												<span class="text-success">Вход свободен</span>
+											}
+											else
+											{
+												<span class="text-danger">Вход: @ev.EntranceFee лв.</span>
+											}
+										</p>
+										<a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="btn btn-primary w-100">Детайли</a>
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		}
+		else
+		{
+			<p class="text-center text-muted">Няма предстоящи събития.</p>
+		}
+	</div>
 

@@ -1,14 +1,39 @@
-﻿@model MotorFest.Models.Event.EventViewModel
+﻿@* @model MotorFest.Models.Event.EventViewModel
 
 <div class="container mt-5">
 	<h2 class="mb-4">Детайли за събитие</h2>
 	<div class="card">
 		<div class="card-body">
 			<h5 class="card-title">@Model.Name</h5>
+			<img src="@Model.EventLogo" alt="Снимка на събитието" class="img-thumbnail medium-image" />
+			
 			<p class="card-text"><strong>Дата на събитието:</strong> @Model.EventDate</p>
 			<p class="card-text"><strong>Минимална разрешена година на производство:</strong> @Model.MinYearOfManufacture</p>
 			<p class="card-text"><strong>Максимална разрешена година на производство:</strong> @Model.MaxYearOfManufacture</p>
-			
+			@if (Model.EventPhotos != null && Model.EventPhotos.Any())
+			{
+				<div id="eventCarousel" class="carousel slide mx-auto" data-bs-ride="carousel">
+					<div class="carousel-inner text-center">
+						@{
+							var photosList = Model.EventPhotos.ToList();
+						}
+						@for (int i = 0; i < photosList.Count; i++)
+						{
+							<div class="carousel-item @(i == 0 ? "active" : "")">
+								<img src="@photosList[i]" class="img-thumbnail huge-image d-block mx-auto" alt="Снимка от събитието">
+							</div>
+						}
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Предишна</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Следваща</span>
+					</button>
+				</div>
+			}
 			<div class="card-table">
 				<h5>Разрешени категории на превозни средства:</h5>
 				<ul>
@@ -27,11 +52,16 @@
 					}
 				</ul>
 			</div>
-			<a asp-action="Edit" asp-route-id="@Model.Id" class="btn custom-btn">Редактирай</a>
-			<a asp-action="Index" class="btn custom-btn">Назад към списъка</a>
+			@if(User.IsInRole("Administrator")||User.IsInRole("Organizer"))
+			{
+
+			<a asp-action="Edit" asp-route-id="@Model.Id" class="btn custom-primary-btn">Редактирай</a>
+			}
+			<a asp-action="Index" class="btn custom-primary-btn">Назад към списъка</a>
 		</div>
 	</div>
 </div>
+<h3>Снимки:</h3>
 
 
 @if (ViewData["RegisteredVehicles"] != null)
@@ -62,9 +92,109 @@
 
 
 
-<a asp-action="Index" class="btn custom-btn">Върни се назад</a>
+<a asp-action="Index" class="btn custom-primary-btn">Върни се назад</a>
 @if (!(bool)ViewData["IsRegistered"])
 {
-	<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn custom-btn">Запиши се</a>
+	<a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn custom-primary-btn">Запиши се</a>
 }
 
+ *@
+ @model MotorFest.Models.Event.EventViewModel
+
+<div class="container mt-5">
+    <div class="event-header text-center mb-4">
+        <h1 class="event-title"> @Model.Name</h1>
+        <p class="event-date">📅 @Model.EventDate.ToShortDateString()</p>
+        <img src="@Model.EventLogo" alt="Снимка на събитието" class="event-logo img-fluid rounded shadow">
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            @if (Model.EventPhotos != null && Model.EventPhotos.Any())
+            {
+                <div id="eventCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @{
+                            var photosList = Model.EventPhotos.ToList();
+                        }
+                        @for (int i = 0; i < photosList.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@photosList[i]" class="d-block w-100 rounded shadow-lg" alt="Снимка от събитието">
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="event-info p-4 rounded shadow">
+                <h4>ℹ Детайли за събитието</h4>
+                <p><strong>Място: </strong>@Model.Location.City, @Model.Location.FullAddress</p>
+                <p><strong>Описание:</strong> @Model.Description</p>
+
+                <p><strong>Мин. година:</strong> @Model.MinYearOfManufacture</p>
+                <p><strong>Макс. година:</strong> @Model.MaxYearOfManufacture</p>
+                <h5>Категории превозни средства:</h5>
+                <ul>
+                    @foreach (var category in Model.VehicleCategories.Where(c => c.IsChecked))
+                    {
+                        <li>🚗 @category.CategoryName</li>
+                    }
+                </ul>
+                <h5>Типове двигатели:</h5>
+                <ul>
+                    @foreach (var type in Model.EngineTypes.Where(c => c.IsChecked))
+                    {
+                        <li>⚙ @type.CategoryName</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewData["RegisteredVehicles"] != null)
+    {
+        <h3 class="text-center mt-5">Записани участници</h3>
+        <table class="table table-striped table-hover shadow-lg rounded">
+            <thead>
+                <tr>
+                    <th>Производител</th>
+                    <th>Модел</th>
+                    <th>Година</th>
+                    <th>Собственик</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicle in (IEnumerable<MotorFest.Models.Vehicle.VehicleViewModel>)ViewData["RegisteredVehicles"])
+                {
+                    <tr>
+                        <td>@vehicle.Manufacturer</td>
+                        <td>@vehicle.Model</td>
+                        <td>@vehicle.YearOfManufacture</td>
+                        <td>@vehicle.Owner.Firstname @vehicle.Owner.Lastname</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+        @if (!(bool)ViewData["IsRegistered"])
+        {
+            <a asp-action="Subscribe" asp-route-id="@Model.Id" class="btn custom-primary-btn btn-lg">Запиши се!</a>
+        }
+    </div>
+</div>
+
+<style>
+    
+</style>

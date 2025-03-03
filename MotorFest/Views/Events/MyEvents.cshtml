@@ -1,5 +1,5 @@
 ﻿<!-- Calendar.cshtml -->
-@model IEnumerable<MotorFest.Models.Event.EventViewModel>
+@* @model IEnumerable<MotorFest.Models.Event.EventViewModel>
 
 <h1>Календар на събитията, за които сте се записали</h1>
 
@@ -33,5 +33,49 @@
 			</ul>
 		</div>
 	}
+</div> *@
+ @model IEnumerable<MotorFest.Models.Event.EventViewModel>
+
+<div class="container mt-5">
+	<h2 class="mb-4 text-center">Календар на събитията</h2>
+
+	@foreach (var eventGroup in Model.GroupBy(e => e.EventDate.Date))
+	{
+		<div class="card mb-4 shadow">
+			<div class="card-header ">
+				<h4 class="mb-0">@eventGroup.Key.ToString("dd MMM yyyy")</h4>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					@foreach (var ev in eventGroup)
+					{
+						<div class="col-md-6 col-lg-4 mb-3">
+							<div class="card event-card">
+								<img src="@ev.EventLogo" class="card-img-top img-fluid rounded-top" alt="Снимка на събитието">
+								<div class="card-body">
+									<h5 class="card-title">@ev.Name</h5>
+									<p class="card-text">
+										@if (ev.EntranceFee == 0)
+										{
+											<span class="text-success">Вход свободен</span>
+										}
+										else
+										{
+											<span class="text-danger">Вход: @ev.EntranceFee лв.</span>
+										}
+									</p>
+									<a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-primary w-100">Детайли</a>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	}
+
+	<div class="text-center">
+		<a asp-action="Index" class="btn custom-primary-btn mt-3">Назад</a>
+	</div>
 </div>
 

@@ -2,59 +2,107 @@
 
 <h1>Създай Събитие</h1>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name">Име на събитието</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EventDate">Дата на събитието</label>
-        <input asp-for="EventDate" type="date" class="form-control" />
-        <span asp-validation-for="EventDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EntranceFee">Входна такса</label>
-        <input asp-for="EntranceFee" class="form-control" />
-        <span asp-validation-for="EntranceFee" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="LocationId" class="control-label">Локация</label>
-        <select asp-for="LocationId" class="form-control" asp-items="ViewBag.allLocations"></select>
-    </div>
-    <h3>Изисквания за участниците:</h3>
-    <div class="form-group">
-        <label asp-for="MinYearOfManufacture">Минимална година на производство</label>
-        <input asp-for="MinYearOfManufacture" type="number" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="MaxYearOfManufacture">Максимална година на производство</label>
-        <input asp-for="MaxYearOfManufacture" type="number" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Категории превозни средства:</label>
-        @for (int i = 0; i < Model.VehicleCategories.Count; i++)
-        {
-            <div>
-                <input type="hidden" asp-for="VehicleCategories[@i].Id" />
-                <input type="checkbox" asp-for="VehicleCategories[@i].IsChecked" />
-                <input type="hidden" asp-for="VehicleCategories[@i].CategoryName" />
-                <label>@Model.VehicleCategories[i].CategoryName</label>
-            </div>
-        }
-    </div>
-    <div class="form-group">
-        <label>Разрешени типове гориво:</label>
-        @for (int i = 0; i < Model.EngineTypes.Count; i++)
-        {
-            <div>
-                <input type="hidden" asp-for="EngineTypes[@i].Id" />
-                <input type="checkbox" asp-for="EngineTypes[@i].IsChecked" />
-                <input type="hidden" asp-for="EngineTypes[@i].CategoryName" />
-                <label>@Model.EngineTypes[i].CategoryName</label>
-            </div>
-        }
-    </div>
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+	<div class="form-group">
+		<label asp-for="Name">Име на събитието</label>
+		<input asp-for="Name" class="form-control" />
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Description">Описание на събитието</label>
+		<textarea asp-for="Description" class="form-control" rows="4"></textarea>
+		<span asp-validation-for="Description" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="EventDate">Дата на събитието</label>
+		<input asp-for="EventDate" type="date" class="form-control" />
+		<span asp-validation-for="EventDate" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="EntranceFee">Входна такса</label>
+		<input asp-for="EntranceFee" class="form-control" />
+		<span asp-validation-for="EntranceFee" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="LocationId" class="control-label">Локация</label>
+		<select asp-for="LocationId" class="form-control" asp-items="ViewBag.allLocations"></select>
+	</div>
+	<div class="mb-3">
+		<label asp-for="EventLogo" class="form-label">Лого на събитието:</label>
+		<input asp-for="EventLogo" class="form-control" type="file" accept="image/*" id="eventLogoInput" name="eventLogoFile" />
+		<div id="eventLogoPreview" class="d-flex flex-wrap gap-2 m-2"></div>
+	</div>
 
-    <button type="submit" class="btn btn-primary">Създай събитието</button>
+	<div class="mb-3">
+		<label asp-for="EventPhotos" class="form-label">Снимки от минали събития:</label>
+		<input asp-for="EventPhotos" class="form-control" type="file" accept="image/*" multiple id="eventPhotosInput" name="eventPhotoFiles" />
+		<div id="eventPhotosPreview" class="d-flex flex-wrap gap-2"></div>
+	</div>
+
+	<h3>Изисквания за участниците:</h3>
+	<div class="form-group">
+		<label asp-for="MinYearOfManufacture">Минимална година на производство</label>
+		<input asp-for="MinYearOfManufacture" type="number" class="form-control" />
+	</div>
+	<div class="form-group">
+		<label asp-for="MaxYearOfManufacture">Максимална година на производство</label>
+		<input asp-for="MaxYearOfManufacture" type="number" class="form-control" />
+	</div>
+	<div class="form-group">
+		<label>Категории превозни средства:</label>
+		@for (int i = 0; i < Model.VehicleCategories.Count; i++)
+		{
+			<div>
+				<input type="hidden" asp-for="VehicleCategories[@i].Id" />
+				<input type="checkbox" asp-for="VehicleCategories[@i].IsChecked" />
+				<input type="hidden" asp-for="VehicleCategories[@i].CategoryName" />
+				<label>@Model.VehicleCategories[i].CategoryName</label>
+			</div>
+		}
+	</div>
+	<div class="form-group">
+		<label>Разрешени типове гориво:</label>
+		@for (int i = 0; i < Model.EngineTypes.Count; i++)
+		{
+			<div>
+				<input type="hidden" asp-for="EngineTypes[@i].Id" />
+				<input type="checkbox" asp-for="EngineTypes[@i].IsChecked" />
+				<input type="hidden" asp-for="EngineTypes[@i].CategoryName" />
+				<label>@Model.EngineTypes[i].CategoryName</label>
+			</div>
+		}
+	</div>
+
+	<button type="submit" class="btn btn-primary">Създай събитието</button>
 </form>
+<script>
+	document.getElementById('eventLogoInput').addEventListener('change', function(event) {
+		let preview = document.getElementById('eventLogoPreview');
+		preview.innerHTML = '';
+		if (event.target.files.length > 0) {
+			let img = document.createElement('img');
+			img.src = URL.createObjectURL(event.target.files[0]);
+			img.classList.add('img-thumbnail', 'small-image');
+			preview.appendChild(img);
+		}
+	});
+
+	document.getElementById('eventPhotosInput').addEventListener('change', function(event) {
+		let preview = document.getElementById('eventPhotosPreview');
+		preview.innerHTML = '';
+		Array.from(event.target.files).forEach(file => {
+			let img = document.createElement('img');
+			img.src = URL.createObjectURL(file);
+			img.classList.add('img-thumbnail', 'small-image', 'm-1');
+			preview.appendChild(img);
+		});
+	});
+</script>
+
+<style>
+	.small-image {
+		width: 160px;
+		height: 90px;
+		object-fit: cover;
+	}
+</style>

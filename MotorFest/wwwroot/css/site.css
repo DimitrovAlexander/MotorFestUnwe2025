@@ -18,9 +18,43 @@ html {
     min-height: 100%;
 }
 
-.custom-btn {
+.custom-primary-btn {
     background-color: #38385E;
     color: #fff;
+}
+.btn-primary {
+    --bs-btn-color: #fff !important;
+    --bs-btn-bg: #38385E !important;
+    --bs-btn-border-color: #38385E !important;
+    --bs-btn-hover-color: #38385E !important;
+    --bs-btn-hover-bg: #fff !important;
+    --bs-btn-hover-border-color: #38385E !important;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253 !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: #38385E !important;
+    --bs-btn-active-border-color: #38385E !important;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+    --bs-btn-disabled-color: #fff !important;
+    --bs-btn-disabled-bg: #38385E !important;
+    --bs-btn-disabled-border-color: #38385E !important;
+    margin:0px 3px 0px 0px;
+}
+.custom-secondary-btn {
+    --bs-btn-color: #38385E !important;
+    --bs-btn-border-color: #38385E !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: #38385E !important;
+    --bs-btn-hover-border-color: #38385E !important;
+    --bs-btn-focus-shadow-rgb: 13, 110, 253 !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: #38385E !important;
+    --bs-btn-active-border-color: #38385E !important;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+    --bs-btn-disabled-color: #38385E !important;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #38385E !important;
+    --bs-gradient: none !important;
+    margin-right: 3px;
 }
 
 custom-item {
@@ -47,6 +81,21 @@ body {
 
 .small-image {
     width: 100px;
+    height: auto;
+    object-fit: cover;
+}
+.medium-image {
+    width: 200px;
+    height: auto;
+    object-fit: cover;
+}
+.big-image {
+    width: 250px;
+    height: auto;
+    object-fit: cover;
+}
+.huge-image {
+    width: 500px;
     height: auto;
     object-fit: cover;
 }
@@ -141,22 +190,7 @@ body {
     --bs-primary: #38385E !important;
     --bs-secondary: #6c757d;
 }
-.btn-primary {
-    --bs-btn-color: #fff !important;
-    --bs-btn-bg: #38385E !important;
-    --bs-btn-border-color: #38385E !important;
-    --bs-btn-hover-color: #38385E !important;
-    --bs-btn-hover-bg: #fff !important;
-    --bs-btn-hover-border-color: #fff !important;
-    --bs-btn-focus-shadow-rgb: 49, 132, 253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #0a58ca;
-    --bs-btn-active-border-color: #0a53be;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #38385E;
-    --bs-btn-disabled-border-color: #38385E;
-}
+
 .calendar-container {
     display: flex;
     flex-direction: column;
@@ -259,4 +293,83 @@ svg {
     color: #fff !important;
     border-color:#fff;
     
+}
+/*EventDetails*/
+#eventCarousel {
+    max-width: 600px; /* Ограничаваме ширината до снимките */
+    margin: auto; /* Центриране */
+    position: relative;
+}
+
+.carousel-inner {
+    text-align: center;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%; /* Намалява зоната на стрелките */
+}
+
+.carousel-control-prev {
+    left: 0;
+}
+
+.carousel-control-next {
+    right: 0;
+}
+
+.event-header {
+    text-align: center;
+}
+
+.event-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.event-date {
+    font-size: 1.2rem;
+    color: gray;
+}
+
+.event-logo {
+    max-width: 300px;
+    margin-top: 15px;
+}
+
+.event-info {
+    background: #f8f9fa;
+    border-left: 5px solid #38385E;
+}
+
+.carousel {
+    max-width: 100%;
+    margin: auto;
+}
+
+    .carousel img {
+        max-height: 400px;
+        object-fit: cover;
+    }
+
+.btn-lg {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+}
+
+.event-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+    .event-card .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+.bg-info {
+    --bs-bg-opacity: 1;
+    background-color: #38385E !important;
 }

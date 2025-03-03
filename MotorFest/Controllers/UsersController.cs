@@ -9,7 +9,6 @@ namespace MotorFest.Controllers
     public class UsersViewController : Controller
     {
         private readonly IUsersViewService usersViewService;
-
         public UsersViewController(IUsersViewService usersViewService)
         {
             this.usersViewService = usersViewService;
@@ -18,6 +17,8 @@ namespace MotorFest.Controllers
 
 
         // GET: UsersViewController
+
+    [Route("Users")]
         public async Task<IActionResult> Index(string searchString, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -42,6 +43,8 @@ namespace MotorFest.Controllers
         }
 
         // GET: UsersViewController/Details/5
+        [Route("Users/Details")]
+
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)

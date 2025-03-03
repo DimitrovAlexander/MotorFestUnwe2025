@@ -15,7 +15,7 @@ public partial class Event
     public int LocationId { get; set; }
     public DateTime EventDate { get; set; }
 
-
+    public string Description { get; set; }
     public decimal EntranceFee { get; set; }
     [Column("21180022_LastUpdate")]
 
@@ -27,6 +27,8 @@ public partial class Event
     public int? MinYearOfManufacture { get; set; }
     public int? MaxYearOfManufacture { get; set; }
     public bool IsCanceled { get; set; } = false;
+    public string EventLogo { get; set; }
+    public ICollection<string> EventPhotos { get; set; } = new List<string>();
     public virtual ICollection<EventEngineType> EventEngineTypes { get; set; } = new List<EventEngineType>();
 
     public virtual ICollection<EventVehicleCategory> EventVehicleCategories { get; set; } = new List<EventVehicleCategory>();

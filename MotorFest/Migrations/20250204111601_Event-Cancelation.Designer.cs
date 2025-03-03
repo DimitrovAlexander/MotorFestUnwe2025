@@ -467,7 +467,7 @@ namespace MotorFest.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("21180022_LastUpdate");
 
-                    b.Property<string>("Municipality")
+                    b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

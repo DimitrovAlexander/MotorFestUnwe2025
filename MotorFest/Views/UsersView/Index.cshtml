@@ -1,4 +1,4 @@
-﻿@using X.PagedList
+﻿@* @using X.PagedList
 @model IPagedList<MotorFest.Models.User.UsersViewViewModel>
 
 <div class="container mt-5">
@@ -7,8 +7,8 @@
 	<!-- Search Form -->
 	<form asp-action="Index" method="get" class="form-inline mb-3">
 		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
-		<button type="submit" class="btn custom-btn mt-1">Търсене</button>
-		<a asp-action="Index" class="btn custom-btn">Изчисти търсенето</a>
+		<button type="submit" class="btn custom-primary-btn mt-1">Търсене</button>
+		<a asp-action="Index" class="btn custom-primary-btn">Изчисти търсенето</a>
 
 	</form>
 
@@ -41,7 +41,7 @@
 
 					}
 					<td>
-						<a asp-action="Details" asp-route-id="@user.UserId" class="btn custom-btn btn-sm">Детайли</a>
+						<a asp-action="Details" asp-route-id="@user.UserId" class="btn custom-primary-btn btn-sm">Детайли</a>
 						
 					</td>
 					
@@ -58,6 +58,62 @@
 				UlElementClasses = new List<string> { "pagination" },
 		LiElementClasses = new List<string> { "page-item" },
 		PageClasses = new List<string> { "page-link" }
+		})
+	</div>
+</div> *@
+@using X.PagedList
+@model IPagedList<MotorFest.Models.User.UsersViewViewModel>
+
+<div class="container mt-5">
+	<h2 class="mb-4 text-center">👥 Списък с Потребители</h2>
+
+	<!-- Search Form -->
+	<form asp-action="Index" method="get" class="d-flex justify-content-center mb-4">
+		<input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
+		<button type="submit" class="btn btn-primary">Търсене</button>
+		<a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
+	</form>
+
+	<div class="row">
+		@foreach (var user in Model)
+		{
+			<div class="col-md-4">
+				<div class="card shadow-sm mb-4">
+					<div class="card-body text-center">
+						<h5 class="card-title">👤 @user.FullName</h5>
+						<p class="text-muted">@user.Email</p>
+						<hr>
+
+						<p>
+							@if (user.RoleName == "Administrator")
+							{
+								<span class="badge bg-danger"><i class="bi bi-shield-lock"></i> Администратор</span>
+							}
+							else if (user.RoleName == "Participant")
+							{
+								<span class="badge bg-success"><i class="bi bi-person-check"></i> Участник</span>
+							}
+							else if (user.RoleName == "Organizer")
+							{
+								<span class="badge bg-warning"><i class="bi bi-calendar-event"></i> Организатор</span>
+							}
+						</p>
+
+						<a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+
+	<!-- Pagination Controls -->
+	<div class="pagination justify-content-center">
+		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
+					new PagedListRenderOptions
+		{
+			UlElementClasses = new List<string> { "pagination" },
+			LiElementClasses = new List<string> { "page-item" },
+			PageClasses = new List<string> { "page-link" }
 		})
 	</div>
 </div>

@@ -42,6 +42,11 @@ namespace MotorFest.Models.Event
 
         [Required(ErrorMessage = "Трябва да има поне един тип гориво.")]
         public List<CheckBoxItem> EngineTypes { get; set; } = new List<CheckBoxItem>();
+        [Required(ErrorMessage = "Събитието трябва да има описание")]
+
+        public string Description { get; set; }
+        public string EventLogo { get; set; }
+        public ICollection<string> EventPhotos { get; set; } = new List<string>();
 
         public DateTime LastUpdate { get; set; }
 

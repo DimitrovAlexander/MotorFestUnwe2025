@@ -128,15 +128,16 @@ namespace MotorFest.Controllers
             {
                 if (photo != null && photo.Length > 0)
                 {
+                    string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(photo.FileName)}";
                     var fileName = Path.GetFileName(photo.FileName);
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/vehicles", uniqueFileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await photo.CopyToAsync(stream);
                     }
 
-                    vehicle.Photo = "/images/" + fileName;
+                    vehicle.Photo = "/images/vehicles/" + uniqueFileName;
                 }
                 else
                 {

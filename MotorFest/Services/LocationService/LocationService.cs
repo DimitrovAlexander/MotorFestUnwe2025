@@ -23,7 +23,7 @@ namespace MotorFest.Services.LocationService
                 Name = addressViewModel.Name,
                 City = addressViewModel.City,
                 FullAddress = addressViewModel.FullAddress,
-                Municipality = addressViewModel.Municipality,
+                Country = addressViewModel.Country,
                 Events = new List<Event>(),
                 LastUpdate = DateTime.UtcNow
             };
@@ -60,7 +60,7 @@ namespace MotorFest.Services.LocationService
                      Name = address.Name,
                      City = address.City,
                      FullAddress = address.FullAddress,
-                     Municipality = address.Municipality,
+                     Country = address.Country,
                      Events = address.Events.Select(eventEntity => new EventViewModel
                      {
                          Id = eventEntity.Id,
@@ -101,7 +101,7 @@ namespace MotorFest.Services.LocationService
                     OrganizerId = eventEntity.OrganizerId,
                     LastUpdate = eventEntity.LastUpdate
                 }).ToList(),
-                Municipality = address.Municipality,
+                Country = address.Country,
                 LastUpdate = address.LastUpdate,
                 Name = address.Name
             };
@@ -110,7 +110,7 @@ namespace MotorFest.Services.LocationService
         public async Task<bool> Update(int id, LocationViewModel address)
         {
             var addressEntity = dbContext.Find<Location>(id);
-            addressEntity.Municipality = address.Municipality;
+            addressEntity.Country = address.Country;
             addressEntity.Name = address.Name;
             addressEntity.City = address.City;
             addressEntity.FullAddress = address.FullAddress;

@@ -14,9 +14,9 @@ namespace MotorFest.Models.Location
         [Display(Name = "Пълен адрес")]
 
         public string FullAddress { get; set; } = null!;
-        [Display(Name = "Община")]
+        [Display(Name = "Държава")]
 
-        public string Municipality { get; set; } = null!;
+        public string Country { get; set; } = null!;
 
         public DateTime LastUpdate { get; set; } = DateTime.Now;
 

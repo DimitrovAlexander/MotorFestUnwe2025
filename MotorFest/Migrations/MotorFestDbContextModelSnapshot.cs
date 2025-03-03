@@ -168,6 +168,10 @@ namespace MotorFest.Migrations
                     b.Property<int>("EngineTypeId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("21180022_LastUpdate");
+
                     b.HasKey("EventId", "EngineTypeId");
 
                     b.HasIndex("EngineTypeId");
@@ -188,6 +192,10 @@ namespace MotorFest.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("21180022_LastUpdate");
+
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
@@ -207,6 +215,10 @@ namespace MotorFest.Migrations
 
                     b.Property<int>("VehicleCategoryId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("21180022_LastUpdate");
 
                     b.HasKey("EventId", "VehicleCategoryId");
 
@@ -403,11 +415,23 @@ namespace MotorFest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("EntranceFee")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("EventDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EventLogo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.PrimitiveCollection<string>("EventPhotos")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCanceled")
                         .HasColumnType("bit");
@@ -456,6 +480,10 @@ namespace MotorFest.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FullAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -463,10 +491,6 @@ namespace MotorFest.Migrations
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("datetime2")
                         .HasColumnName("21180022_LastUpdate");
-
-                    b.Property<string>("Municipality")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

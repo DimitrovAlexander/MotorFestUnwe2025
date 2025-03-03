@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using MotorFest;
 using MotorFest.Data;
 using MotorFest.Data.Entities;
@@ -62,7 +63,7 @@ namespace MotorFest.Controllers
                                           ).ToList();
             }
 
-            int pageSize = 5;
+            int pageSize = 3;
             int pageNumber = (page ?? 1);
             var pagedEvents = events.ToPagedList(pageNumber, pageSize);
 
@@ -116,16 +117,60 @@ namespace MotorFest.Controllers
         }
         [Authorize(Roles = "Administrator,Organizer")]
         [HttpPost]
-        public async Task<IActionResult> Create(EventViewModel model)
+        public async Task<IActionResult> Create(EventViewModel model, IFormFile eventLogoFile, List<IFormFile> eventPhotoFiles)
         {
             ModelState.Remove("Location");
             ModelState.Remove("Organizer");
             ModelState.Remove("OrganizerId");
             ModelState.Remove("HasVehicles");
+            ModelState.Remove("eventLogoFile");
+            ModelState.Remove("EventLogo");
             if (!ModelState.IsValid)
             {
+
                 return View(model);
             }
+
+            // Запазване на логото
+            if (eventLogoFile != null && eventLogoFile.Length > 0)
+            {
+                string logoDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/eventLogos");
+                Directory.CreateDirectory(logoDirectory);
+
+                string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(eventLogoFile.FileName)}";
+                string filePath = Path.Combine(logoDirectory, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await eventLogoFile.CopyToAsync(fileStream);
+                }
+
+                model.EventLogo = $"/images/eventLogos/{uniqueFileName}";
+            }
+
+            // Запазване на снимките от събитието
+            if (eventPhotoFiles != null && eventPhotoFiles.Any())
+            {
+                string photosDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/eventPhotos");
+                Directory.CreateDirectory(photosDirectory);
+
+                foreach (var photo in eventPhotoFiles)
+                {
+                    if (photo.Length > 0)
+                    {
+                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(photo.FileName)}";
+                        string filePath = Path.Combine(photosDirectory, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await photo.CopyToAsync(fileStream);
+                        }
+
+                        model.EventPhotos.Add($"/images/eventPhotos/{uniqueFileName}");
+                    }
+                }
+            }
+
             var user = await _userManager.GetUserAsync(User);
             model.OrganizerId = user.Id;
             await eventService.Create(model);
@@ -363,7 +408,7 @@ namespace MotorFest.Controllers
             }
 
             // Paginate the results
-            int pageSize = 5;
+            int pageSize = 3;
             int pageNumber = (page ?? 1);
             var pagedLocations = events.ToPagedList(pageNumber, pageSize);
 

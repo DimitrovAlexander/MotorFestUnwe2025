@@ -147,8 +147,8 @@
 									<i class="bi bi-calendar-event"></i> Събития
 								</li> *@
 							}
-							@if (User.IsInRole("Organizer") || User.IsInRole("Participant") || User.IsInRole("Administrator"))
-							{
+							@* @if (User.IsInRole("Organizer") || User.IsInRole("Participant") || User.IsInRole("Administrator"))
+							{ *@
 
 								<li class="nav-item">
 									<a class="nav-link" asp-area="" asp-controller="Events" asp-action="Calendar">
@@ -161,7 +161,7 @@
 										</span> 
 									</a>
 								</li>
-							}
+							@* } *@
 							@if (User.IsInRole("Participant") || User.IsInRole("Administrator"))
 							{
 								<li class="nav-item">

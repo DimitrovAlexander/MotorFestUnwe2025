@@ -1,4 +1,5 @@
-﻿using MotorFest;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using MotorFest;
 
 namespace MotorFest.Data.Entities;
 public class EventVehicleCategory
@@ -8,4 +9,7 @@ public class EventVehicleCategory
 
     public int VehicleCategoryId { get; set; }
     public VehicleCategory VehicleCategory { get; set; }
+    [Column("21180022_LastUpdate")]
+
+    public DateTime LastUpdate { get; set; } = DateTime.Now;
 }

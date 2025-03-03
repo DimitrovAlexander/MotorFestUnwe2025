@@ -1,4 +1,4 @@
-﻿@using X.PagedList
+﻿@* @using X.PagedList
 @model IPagedList<MotorFest.Models.Event.EventsViewViewModel>
 
 <div class="container mt-5">
@@ -7,7 +7,7 @@
 	<!-- Search Form -->
 	<form asp-action="Index" method="get" class="form-inline mb-3">
 		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
-		<button type="submit" class="btn custom-btn mt-1">Търсене</button>
+		<button type="submit" class="btn custom-primary-btn mt-1">Търсене</button>
 	</form>
 
 
@@ -44,10 +44,7 @@
 					<td>@evnt.RegisteredParticipantsCount</td>
 					<td>@evnt.ExpectedRevenue лв</td>
 					
-					@* <td>
-						<a asp-action="Details" asp-route-id="@eve.UserId" class="btn custom-btn btn-sm">Детайли</a>
 
-					</td> *@
 
 				</tr>
 			}
@@ -57,6 +54,67 @@
 	<!-- Pagination Controls -->
 	<div class="pagination justify-content-center">
 		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
+					new PagedListRenderOptions
+		{
+			UlElementClasses = new List<string> { "pagination" },
+			LiElementClasses = new List<string> { "page-item" },
+			PageClasses = new List<string> { "page-link" }
+		})
+	</div>
+</div> *@
+@using X.PagedList
+@model IPagedList<MotorFest.Models.Event.EventsViewViewModel>
+
+<div class="container mt-5">
+	<h2 class="mb-4 text-center">📊 Статистика на събитията</h2>
+
+	<!-- Search Form -->
+	<form asp-action="Index" method="get" class="d-flex justify-content-center mb-4">
+		<input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
+		<button type="submit" class="btn btn-primary">Търсене</button>
+	</form>
+
+	<div class="row">
+		@foreach (var evnt in Model)
+		{
+			<div class="col-md-4">
+				<div class="card shadow-sm mb-4">
+					<div class="card-body">
+						<h5 class="card-title text-center">🚗 @evnt.EventName</h5>
+						<p class="text-muted text-center">@evnt.OrganizerFullName</p>
+						<hr>
+
+						<p><i class="bi bi-geo-alt-fill text-danger"></i> <strong>Локация:</strong> @evnt.LocationName</p>
+						<p><i class="bi bi-calendar-event text-primary"></i> <strong>Дата:</strong> @evnt.EventDate.ToShortDateString()</p>
+
+						<p>
+							<i class="bi bi-ticket-detailed text-success"></i>
+							<strong>Вход:</strong>
+							@if (evnt.EntranceFee == 0)
+							{
+								<span class="badge bg-success">Безплатно</span>
+							}
+							else
+							{
+								<span class="badge bg-warning">@evnt.EntranceFee лв</span>
+							}
+						</p>
+
+						<p><i class="bi bi-people text-info"></i> <strong>Регистрирани:</strong> @evnt.RegisteredParticipantsCount</p>
+						<p><i class="bi bi-cash-coin text-warning"></i> <strong>Очаквани приходи:</strong> @evnt.ExpectedRevenue лв</p>
+
+						<div class="text-center mt-3">
+							<a asp-action="Details" asp-route-id="@evnt.EventId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+
+	<!-- Pagination Controls -->
+	<div class="pagination justify-content-center">
+		@Html.PagedListPager(Model, page => Url.Action("Statistics", new { page, searchString = ViewData["CurrentFilter"] }),
 					new PagedListRenderOptions
 		{
 			UlElementClasses = new List<string> { "pagination" },
