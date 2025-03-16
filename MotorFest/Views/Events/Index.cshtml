@@ -192,24 +192,36 @@
 @model IPagedList<MotorFest.Models.Event.EventViewModel>
 
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📅 Моите събития</h2>
-        <div class="d-flex justify-content-end mb-3">
-            <button id="toggleViewBtn" class="btn btn-secondary">Превключи изглед</button>
+    <div class="d-flex justify-content-between align-items-center mb-4 fade-fly-in">
+        <h2 class="fade-fly-in">📅 Моите събития</h2>
+        <div class="d-flex justify-content-end mb-3 fade-fly-in">
+            <a id ="toggleViewBtn" class="menu-button js-button fade-fly-in d-inline-block mx-auto fade-fly-in">
+                <span class="button__inner">
+                    <span class="button__text js-button__text">Превключи изглед</span>
+                    <span class="button__hover js-button__hover">Превключи изглед</span>
+                </span>
+            </a>
+            
         </div>
     </div>
 
     <!-- Search Form -->
-    <form asp-action="Index" method="get" class="d-flex justify-content-center mb-4">
+    <form asp-action="Index" method="get" class="d-flex justify-content-center mb-4 fade-fly-in">
         <input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, локация, дата, категория..." value="@ViewData["CurrentFilter"]" />
         <button type="submit" class="btn custom-primary-btn">Търсене</button>
         <a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
     </form>
 
-    <a asp-action="Create" class="btn custom-primary-btn mb-4">➕ Добави събитие</a>
+    <a asp-action="Create" class="menu-button js-button d-inline-block mx-auto fade-fly-in  mb-4">
+        <span class="button__inner">
+            <span class="button__text js-button__text">Добави събитие</span>
+            <span class="button__hover js-button__hover">Добави събитие</span>
+        </span>
+    </a>
+
 
     <!-- Табличен изглед -->
-    <div id="tableView" class="view-container">
+    <div id="tableView" class="view-container fade-fly-in">
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -267,7 +279,7 @@
     </div>
 
     <!-- Картов изглед -->
-    <div id="cardView" class="row view-container" style="display: none;">
+    <div id="cardView" class="row view-container fade-fly-in" style="display: none;">
         @foreach (var item in Model)
         {
             <div class="col-md-4 col-sm-6 mb-4">
@@ -329,7 +341,7 @@
     </div>
 
     <!-- Pagination Controls -->
-    <div class="pagination justify-content-center">
+    <div class="pagination justify-content-center fade-fly-in">
         @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
                  new PagedListRenderOptions
         {

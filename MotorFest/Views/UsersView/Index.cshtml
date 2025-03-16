@@ -12,7 +12,7 @@
 
 	</form>
 
-	
+
 	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
@@ -42,9 +42,9 @@
 					}
 					<td>
 						<a asp-action="Details" asp-route-id="@user.UserId" class="btn custom-primary-btn btn-sm">Детайли</a>
-						
+
 					</td>
-					
+
 				</tr>
 			}
 		</tbody>
@@ -65,16 +65,68 @@
 @model IPagedList<MotorFest.Models.User.UsersViewViewModel>
 
 <div class="container mt-5">
-	<h2 class="mb-4 text-center">👥 Списък с Потребители</h2>
+	<h2 class="mb-4 text-center fade-fly-in">👥 Списък с Потребители</h2>
+
+	<!-- Toggle View Button -->
+	<div id="toggleView" class="d-flex justify-content-end mb-3">
+		<a class="menu-button js-button fade-fly-in">
+			<span class="button__inner">
+				<span class="button__text js-button__text">Превключи изгледа</span>
+				<span class="button__hover js-button__hover">Превключи изгледа</span>
+			</span>
+		</a>
+		@* <button id="toggleView" class="btn btn-primary">Превключи изглед</button> *@
+	</div>
 
 	<!-- Search Form -->
-	<form asp-action="Index" method="get" class="d-flex justify-content-center mb-4">
+	<form asp-action="Index" method="get" class="d-flex justify-content-center mb-4 fade-fly-in">
 		<input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
 		<button type="submit" class="btn btn-primary">Търсене</button>
 		<a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
 	</form>
 
-	<div class="row">
+	<!-- Users Table View -->
+	<div id="tableView" class="table-responsive fade-fly-in">
+		<table class="table table-striped table-hover">
+			<thead class="thead-dark">
+				<tr>
+					<th>Име</th>
+					<th>Имейл</th>
+					<th>Роля</th>
+					<th>Действия</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var user in Model)
+				{
+					<tr>
+						<td>@user.FullName</td>
+						<td>@user.Email</td>
+						<td>
+							@if (user.RoleName == "Administrator")
+							{
+								<span class="badge bg-danger">Администратор</span>
+							}
+							else if (user.RoleName == "Participant")
+							{
+								<span class="badge bg-success">Участник</span>
+							}
+							else if (user.RoleName == "Organizer")
+							{
+								<span class="badge bg-warning">Организатор</span>
+							}
+						</td>
+						<td>
+							<a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Users Card View -->
+	<div id="cardView" class="row d-none fade-fly-in">
 		@foreach (var user in Model)
 		{
 			<div class="col-md-4">
@@ -83,22 +135,20 @@
 						<h5 class="card-title">👤 @user.FullName</h5>
 						<p class="text-muted">@user.Email</p>
 						<hr>
-
 						<p>
 							@if (user.RoleName == "Administrator")
 							{
-								<span class="badge bg-danger"><i class="bi bi-shield-lock"></i> Администратор</span>
+								<span class="badge bg-danger">Администратор</span>
 							}
 							else if (user.RoleName == "Participant")
 							{
-								<span class="badge bg-success"><i class="bi bi-person-check"></i> Участник</span>
+								<span class="badge bg-success">Участник</span>
 							}
 							else if (user.RoleName == "Organizer")
 							{
-								<span class="badge bg-warning"><i class="bi bi-calendar-event"></i> Организатор</span>
+								<span class="badge bg-warning">Организатор</span>
 							}
 						</p>
-
 						<a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
 					</div>
 				</div>
@@ -107,7 +157,7 @@
 	</div>
 
 	<!-- Pagination Controls -->
-	<div class="pagination justify-content-center">
+	<div class="pagination justify-content-center fade-fly-in">
 		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
 					new PagedListRenderOptions
 		{
@@ -117,3 +167,10 @@
 		})
 	</div>
 </div>
+
+<script>
+	document.getElementById("toggleView").addEventListener("click", function () {
+		document.getElementById("tableView").classList.toggle("d-none");
+		document.getElementById("cardView").classList.toggle("d-none");
+	});
+</script>

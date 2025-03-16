@@ -1,4 +1,4 @@
-﻿@using X.PagedList
+﻿@* @using X.PagedList
 @model IPagedList<MotorFest.Models.Location.LocationViewModel>
 
 <div class="container mt-5">
@@ -60,3 +60,149 @@
 		})
 	</div>
 </div>
+ *@
+@using X.PagedList
+@model IPagedList<MotorFest.Models.Location.LocationViewModel>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 fade-fly-in">
+        <h2>📍 Локации</h2>
+        <div class="d-flex justify-content-end mb-3">
+            <button id ="toggleViewBtn" class="menu-button js-button fade-fly-in ">
+                <span class="button__inner">
+                    <span class="button__text js-button__text">Превключи изглед</span>
+                    <span class="button__hover js-button__hover">Превключи изглед</span>
+                </span>
+            </button>
+            @* <button id="toggleViewBtn" class="btn btn-secondary">Превключи изглед</button> *@
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <form asp-action="Index" method="get" class="d-flex justify-content-center mb-4 fade-fly-in">
+        <input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, град, община..." value="@ViewData["CurrentFilter"]" />
+        <button type="submit" class="btn custom-primary-btn">Търсене</button>
+        <a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
+    </form>
+
+
+
+    <a asp-action="Create" class="menu-button js-button fade-fly-in d-inline-block mx-auto fade-fly-in mb-4" >
+        <span class="button__inner">
+            <span class="button__text js-button__text">Добави локация</span>
+            <span class="button__hover js-button__hover">Добави локация</span>
+        </span>
+    </a>
+    
+
+
+    <!-- Табличен изглед -->
+    <div id="tableView" class="view-container fade-fly-in" style="margin-top:69px">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Град</th>
+                    <th>Пълен Адрес</th>
+                    <th>Община</th>
+                    <th>Действия</th>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <th>Последна промяна</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var location in Model)
+                {
+                    <tr>
+                        <td>@location.Name</td>
+                        <td>@location.City</td>
+                        <td>@location.FullAddress</td>
+                        <td>@location.Country</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a asp-action="Details" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Детайли</a>
+                                <a asp-action="Edit" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Редактирай</a>
+                                <a asp-action="Delete" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Изтрий</a>
+                            </div>
+                        </td>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <td>@location.LastUpdate</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Картов изглед -->
+    <div id="cardView" class="row view-container fade-fly-in" style="display: none; ">
+        @foreach (var location in Model)
+        {
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center d-flex flex-column mt-auto">
+                        <h5 class="card-title mt-auto">📍 @location.Name</h5>
+                        <p class="text-muted"><i class="bi bi-geo-alt"></i> @location.City, @location.Country</p>
+                        <p><i class="bi bi-map"></i> @location.FullAddress</p>
+                        <div class="d-flex justify-content-center mt-auto">
+                            <a asp-action="Details" asp-route-id="@location.Id" class="btn btn-outline-primary btn-sm mx-1">ℹ️ Детайли</a>
+                            <a asp-action="Edit" asp-route-id="@location.Id" class="btn btn-outline-warning btn-sm mx-1">✏️ Редакция</a>
+                            <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-outline-danger btn-sm mx-1">🗑 Изтрий</a>
+                        </div>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <p class="text-muted mt-2"><i class="bi bi-clock-history"></i> Последна промяна: @location.LastUpdate</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center fade-fly-in">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
+                 new PagedListRenderOptions
+        {
+            UlElementClasses = new List<string> { "pagination" },
+            LiElementClasses = new List<string> { "page-item" },
+            PageClasses = new List<string> { "page-link" }
+        })
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableView = document.getElementById("tableView");
+        const cardView = document.getElementById("cardView");
+        const toggleBtn = document.getElementById("toggleViewBtn");
+
+        // Проверяваме последно избрания изглед
+        let currentView = localStorage.getItem("viewMode") || "table";
+        updateView(currentView);
+
+        toggleBtn.addEventListener("click", function () {
+            currentView = (currentView === "table") ? "card" : "table";
+            localStorage.setItem("viewMode", currentView);
+            updateView(currentView);
+        });
+
+        function updateView(viewMode) {
+            if (viewMode === "table") {
+                tableView.style.display = "block";
+                cardView.style.display = "none";
+            } else {
+                tableView.style.display = "none";
+                cardView.style.display = "flex";
+            }
+        }
+    });
+</script>
+<style>
+    .table-container {
+        margin-top: 20px;
+    }
+</style>

@@ -419,7 +419,10 @@ namespace MotorFest.Services.EventsService
                         FullAddress = e.Location.FullAddress,
                         LastUpdate = e.Location.LastUpdate,
                     },
-                    IsCanceled = e.IsCanceled
+                    IsCanceled = e.IsCanceled,
+                    EventLogo = e.EventLogo,
+                    EventPhotos = e.EventPhotos,
+                    
 
                 })
                 .ToList();

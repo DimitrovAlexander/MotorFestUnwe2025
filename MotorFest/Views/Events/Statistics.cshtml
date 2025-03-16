@@ -66,60 +66,122 @@
 @model IPagedList<MotorFest.Models.Event.EventsViewViewModel>
 
 <div class="container mt-5">
-	<h2 class="mb-4 text-center">📊 Статистика на събитията</h2>
+    <h2 class="mb-4 text-center">📊 Статистика на събитията</h2>
 
-	<!-- Search Form -->
-	<form asp-action="Index" method="get" class="d-flex justify-content-center mb-4">
-		<input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
-		<button type="submit" class="btn btn-primary">Търсене</button>
-	</form>
+    <!-- Toggle View Button -->
+    <div class="d-flex justify-content-end mb-3">
+        <a id="toggleView" class="menu-button js-button fade-fly-in">
+            <span class="button__inner">
+                <span class="button__text js-button__text">Превключи изгледа</span>
+                <span class="button__hover js-button__hover">Превключи изгледа</span>
+            </span>
+        </a>
+        
+    </div>
 
-	<div class="row">
-		@foreach (var evnt in Model)
-		{
-			<div class="col-md-4">
-				<div class="card shadow-sm mb-4">
-					<div class="card-body">
-						<h5 class="card-title text-center">🚗 @evnt.EventName</h5>
-						<p class="text-muted text-center">@evnt.OrganizerFullName</p>
-						<hr>
+    <!-- Search Form -->
+    <form asp-action="Index" method="get" class="d-flex justify-content-center mb-4">
+        <input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, локация или организатор" value="@ViewData["CurrentFilter"]" />
+        <button type="submit" class="btn btn-primary">Търсене</button>
+        <a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
+    </form>
 
-						<p><i class="bi bi-geo-alt-fill text-danger"></i> <strong>Локация:</strong> @evnt.LocationName</p>
-						<p><i class="bi bi-calendar-event text-primary"></i> <strong>Дата:</strong> @evnt.EventDate.ToShortDateString()</p>
+    <!-- Table View -->
+    <div id="tableView" class="d-none">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Събитие</th>
+                    <th>Организатор</th>
+                    <th>Локация</th>
+                    <th>Дата</th>
+                    <th>Вход</th>
+                    <th>Регистрирани</th>
+                    <th>Очаквани приходи</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var evnt in Model)
+                {
+                    <tr>
+                        <td>@evnt.EventName</td>
+                        <td>@evnt.OrganizerFullName</td>
+                        <td>@evnt.LocationName</td>
+                        <td>@evnt.EventDate.ToShortDateString()</td>
+                        <td>
+                            @if (evnt.EntranceFee == 0)
+                            {
+                                <span class="badge bg-success">Безплатно</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@evnt.EntranceFee лв</span>
+                            }
+                        </td>
+                        <td>@evnt.RegisteredParticipantsCount</td>
+                        <td>@evnt.ExpectedRevenue лв</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@evnt.EventId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-						<p>
-							<i class="bi bi-ticket-detailed text-success"></i>
-							<strong>Вход:</strong>
-							@if (evnt.EntranceFee == 0)
-							{
-								<span class="badge bg-success">Безплатно</span>
-							}
-							else
-							{
-								<span class="badge bg-warning">@evnt.EntranceFee лв</span>
-							}
-						</p>
+    <!-- Card View -->
+    <div id="cardView" class="row">
+        @foreach (var evnt in Model)
+        {
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">🚗 @evnt.EventName</h5>
+                        <p class="text-muted text-center">@evnt.OrganizerFullName</p>
+                        <hr>
+                        <p><i class="bi bi-geo-alt-fill text-danger"></i> <strong>Локация:</strong> @evnt.LocationName</p>
+                        <p><i class="bi bi-calendar-event text-primary"></i> <strong>Дата:</strong> @evnt.EventDate.ToShortDateString()</p>
+                        <p>
+                            <i class="bi bi-ticket-detailed text-success"></i>
+                            <strong>Вход:</strong>
+                            @if (evnt.EntranceFee == 0)
+                            {
+                                <span class="badge bg-success">Безплатно</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@evnt.EntranceFee лв</span>
+                            }
+                        </p>
+                        <p><i class="bi bi-people text-info"></i> <strong>Регистрирани:</strong> @evnt.RegisteredParticipantsCount</p>
+                        <p><i class="bi bi-cash-coin text-warning"></i> <strong>Очаквани приходи:</strong> @evnt.ExpectedRevenue лв</p>
+                        <div class="text-center mt-3">
+                            <a asp-action="Details" asp-route-id="@evnt.EventId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 
-						<p><i class="bi bi-people text-info"></i> <strong>Регистрирани:</strong> @evnt.RegisteredParticipantsCount</p>
-						<p><i class="bi bi-cash-coin text-warning"></i> <strong>Очаквани приходи:</strong> @evnt.ExpectedRevenue лв</p>
-
-						<div class="text-center mt-3">
-							<a asp-action="Details" asp-route-id="@evnt.EventId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		}
-	</div>
-
-	<!-- Pagination Controls -->
-	<div class="pagination justify-content-center">
-		@Html.PagedListPager(Model, page => Url.Action("Statistics", new { page, searchString = ViewData["CurrentFilter"] }),
-					new PagedListRenderOptions
-		{
-			UlElementClasses = new List<string> { "pagination" },
-			LiElementClasses = new List<string> { "page-item" },
-			PageClasses = new List<string> { "page-link" }
-		})
-	</div>
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center">
+        @Html.PagedListPager(Model, page => Url.Action("Statistics", new { page, searchString = ViewData["CurrentFilter"] }),
+                 new PagedListRenderOptions
+        {
+            UlElementClasses = new List<string> { "pagination" },
+            LiElementClasses = new List<string> { "page-item" },
+            PageClasses = new List<string> { "page-link" }
+        })
+    </div>
 </div>
+
+<script>
+    document.getElementById("toggleView").addEventListener("click", function () {
+        document.getElementById("cardView").classList.toggle("d-none");
+        document.getElementById("tableView").classList.toggle("d-none");
+    });
+</script>
+
+

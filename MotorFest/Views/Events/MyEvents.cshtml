@@ -34,10 +34,10 @@
 		</div>
 	}
 </div> *@
- @model IEnumerable<MotorFest.Models.Event.EventViewModel>
+  @model IEnumerable<MotorFest.Models.Event.EventViewModel>
 
 <div class="container mt-5">
-	<h2 class="mb-4 text-center">Календар на събитията</h2>
+	<h2 class="mb-4 text-center">Моите запазени събитията</h2>
 
 	@foreach (var eventGroup in Model.GroupBy(e => e.EventDate.Date))
 	{
@@ -53,7 +53,16 @@
 							<div class="card event-card">
 								<img src="@ev.EventLogo" class="card-img-top img-fluid rounded-top" alt="Снимка на събитието">
 								<div class="card-body">
+									@if (ev.IsCanceled)
+									{
+										<h5 class="card-title">@ev.Name - ОТМЕНЕНО</h5>
+
+									}
+									else{
+
 									<h5 class="card-title">@ev.Name</h5>
+									}
+
 									<p class="card-text">
 										@if (ev.EntranceFee == 0)
 										{
