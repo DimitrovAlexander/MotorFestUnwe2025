@@ -75,15 +75,15 @@
     <div id="cardsView" class="row d-none">
         @foreach (var item in Model)
         {
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card shadow-sm mb-4">
                     <img src="@item.Photo" class="card-img-top" alt="Снимка на @item.Model">
-                    <div class="card-body text-center">
+                    <div class="card-body text-center d-flex flex-column mt-auto">
                         <h5 class="card-title">🚗 @item.Manufacturer @item.Model</h5>
                         <p class="text-muted">Година: @item.YearOfManufacture</p>
                         <p><strong>Категория:</strong> @item.Category.Name</p>
                         <p><strong>Вид на двигателя:</strong> @item.EngineType.Name</p>
-                        <div>
+                        <div class="d-flex justify-content-center mt-auto">
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
                             @if (isVehicleInFutureEvents.ContainsKey(item.Id) && !isVehicleInFutureEvents[item.Id])
                             {
@@ -110,8 +110,29 @@
 </div>
 
 <script>
-    document.getElementById("toggleView").addEventListener("click", function () {
-         document.getElementById("tableView").classList.toggle("d-none");
-         document.getElementById("cardView").classList.toggle("d-none");
-     });
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableView = document.getElementById("tableView");
+        const cardsView = document.getElementById("cardsView");
+        const toggleBtn = document.getElementById("toggleView");
+
+        // Check the last selected view mode
+        let currentView = localStorage.getItem("viewMode") || "table";
+        updateView(currentView);
+
+        toggleBtn.addEventListener("click", function () {
+            currentView = (currentView === "table") ? "cards" : "table";
+            localStorage.setItem("viewMode", currentView);
+            updateView(currentView);
+        });
+
+        function updateView(viewMode) {
+            if (viewMode === "table") {
+                tableView.classList.remove("d-none");
+                cardsView.classList.add("d-none");
+            } else {
+                tableView.classList.add("d-none");
+                cardsView.classList.remove("d-none");
+            }
+        }
+    });
 </script>

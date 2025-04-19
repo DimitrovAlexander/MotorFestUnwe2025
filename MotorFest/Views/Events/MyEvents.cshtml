@@ -38,6 +38,10 @@
 
 <div class="container mt-5">
 	<h2 class="mb-4 text-center">Моите запазени събитията</h2>
+	<div class="text-end">
+		<a asp-action="ExportCsv" class="btn custom-primary-btn mt-3 mb-3">Export CSV</a>
+	</div>
+
 
 	@foreach (var eventGroup in Model.GroupBy(e => e.EventDate.Date))
 	{

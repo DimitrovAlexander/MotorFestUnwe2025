@@ -2,7 +2,7 @@
 
 namespace MotorFest.Services.EngineTypeService
 {
-    public interface IEngineTypeService :IBasicCrudService<EngineTypeViewModel>
+    public interface IEngineTypeService : ICreate<EngineTypeViewModel>, IGet<EngineTypeViewModel,int>, IUpdate<EngineTypeViewModel>, IDelete<EngineTypeViewModel>
     {
     }
 }

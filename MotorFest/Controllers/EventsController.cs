@@ -414,6 +414,19 @@ namespace MotorFest.Controllers
 
             return View(pagedLocations);
         }
+        [Authorize(Roles = "Administrator,Participant")]
+        public async Task<IActionResult> ExportCsv()
+        {
+            var userId = _userManager.GetUserId(User);
+            var csvData = eventService.GenerateCsvForUserEvents(userId);
+
+            var fileName = $"MyEvents_{DateTime.Now:yyyyMMddHHmmss}.csv";
+            var fileContent = System.Text.Encoding.UTF8.GetPreamble().Concat(System.Text.Encoding.UTF8.GetBytes(csvData)).ToArray();
+
+
+            return File(fileContent, "text/csv", fileName);
+        }
+
         public async Task<IActionResult> Cancel(int id)
         {
             await eventService.Cancel(id);

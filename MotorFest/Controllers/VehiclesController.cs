@@ -85,6 +85,7 @@ namespace MotorFest.Controllers
             }
 
             var vehicle = await vehicleService.GetById(id);
+            ViewData["CarIsInEvent"] = vehicleService.IsParticipatingInFutureEvents(id);
             if (vehicle == null)
             {
                 return NotFound();

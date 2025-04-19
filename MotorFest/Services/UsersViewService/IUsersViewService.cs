@@ -2,7 +2,7 @@
 
 namespace MotorFest.Services.UsersViewService
 {
-    public interface IUsersViewService :IGenericViewModelService<UsersViewViewModel,string>
+    public interface IUsersViewService :IGet<UsersViewViewModel,string>
     {
         
     }

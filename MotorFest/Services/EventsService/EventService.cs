@@ -6,6 +6,7 @@ using MotorFest.Models.Event;
 using MotorFest.Models.EventVehicleCategory;
 using MotorFest.Models.User;
 using MotorFest.Models.Vehicle;
+using System.Text;
 
 namespace MotorFest.Services.EventsService
 {
@@ -53,7 +54,7 @@ namespace MotorFest.Services.EventsService
             LastUpdate = e.LastUpdate
 
         })
-        .OrderBy(x=>x.EventDate).ToList(); // Тук материализираме данните
+        .OrderBy(x => x.EventDate).ToList(); // Тук материализираме данните
 
             // Добавяме информацията за това дали има записани превозни средства
             foreach (var ev in events)
@@ -162,7 +163,7 @@ namespace MotorFest.Services.EventsService
         }
         public ICollection<EventViewModel> GetUpcomingEvent()
         {
-            var upcomingEvents =  _context.Events
+            var upcomingEvents = _context.Events
                 .Include(e => e.Location)
                 .Include(e => e.EventVehicleCategories)
                 .ThenInclude(evc => evc.VehicleCategory)
@@ -422,7 +423,7 @@ namespace MotorFest.Services.EventsService
                     IsCanceled = e.IsCanceled,
                     EventLogo = e.EventLogo,
                     EventPhotos = e.EventPhotos,
-                    
+
 
                 })
                 .ToList();
@@ -466,5 +467,35 @@ namespace MotorFest.Services.EventsService
             evnt.LastUpdate = DateTime.Now;
             await _context.SaveChangesAsync();
         }
+        public string GenerateCsvForUserEvents(string userId)
+        {
+            
+            var events = _context.EventRegistrations
+                .Where(er => _context.Vehicles
+                    .Any(v => v.Id == er.VehicleId && v.OwnerId == userId))
+                .Include(er => er.Event)
+                .ThenInclude(e => e.Location)
+                .Include(er => er.Vehicle)
+                .Select(er => new
+                {
+                    EventName = er.Event.Name,
+                    EventDate = er.Event.EventDate,
+                    Location = $"{er.Event.Location.City}, {er.Event.Location.Country}",
+                    VehicleModel = er.Vehicle.Model,
+
+                })
+                .ToList();
+
+            var csvBuilder = new System.Text.StringBuilder();
+            csvBuilder.AppendLine("Име на събитието,Дата,Локация,Модел на регистрирания автомобил");
+
+            foreach (var ev in events)
+            {
+                csvBuilder.AppendLine($"{ev.EventName},{ev.EventDate:yyyy-MM-dd},{ev.Location},{ev.VehicleModel}");
+            }
+
+            return csvBuilder.ToString();
+        }
+
     }
 }

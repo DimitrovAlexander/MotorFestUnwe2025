@@ -3,7 +3,7 @@ using MotorFest.Models.Vehicle;
 
 namespace MotorFest.Services.EventService
 {
-    public interface IEventService : IBasicCrudService<EventViewModel>
+    public interface IEventService : ICreate<EventViewModel>, IUpdate<EventViewModel>,IGet<EventViewModel,int>, IDelete<EventViewModel>
     {
         bool HasVehiclesForEvent(int eventId);
         bool RegisterVehicleForEvent(int eventId, int vehicleId);
@@ -13,5 +13,6 @@ namespace MotorFest.Services.EventService
         ICollection<EventViewModel> GetAllByOrganizer(string userId);
         ICollection<EventViewModel> GetUpcomingEvent();
         Task Cancel(int id);
+        string GenerateCsvForUserEvents(string userId);
     }
 }
