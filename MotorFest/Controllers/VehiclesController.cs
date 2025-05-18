@@ -151,7 +151,8 @@ namespace MotorFest.Controllers
                 {
                     TempData.Add("successMessage", "Успешно добавихте превозно средство");
                     return RedirectToAction(nameof(Index));
-                };
+                }
+                ;
             }
             ViewData["allCategories"] = categoryService.GetAll()
          .Select(c => new SelectListItem
@@ -216,23 +217,7 @@ namespace MotorFest.Controllers
             ModelState.Remove("Photo");
             if (ModelState.IsValid)
             {
-                //if (photo != null && photo.Length > 0)
-                //{
-                //    var fileName = Path.GetFileName(photo.FileName);
-                //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
-                //    using (var stream = new FileStream(filePath, FileMode.Create))
-                //    {
-                //        await photo.CopyToAsync(stream);
-                //    }
-
-                //    vehicle.Photo = "/images/" + fileName;
-                //}
-                //else if (string.IsNullOrEmpty(vehicle.Photo))
-                //{
-                //    ModelState.AddModelError("Photo", "Снимката е задължителна.");
-                //    return View(vehicle);
-                //}
 
                 try
                 {
@@ -296,8 +281,12 @@ namespace MotorFest.Controllers
             if (vehicle != null)
             {
                 await vehicleService.Delete(id);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", vehicle.Photo);
+                if (System.IO.File.Exists(filePath)) // Ensure the file exists before attempting to delete
+                {
+                    System.IO.File.Delete(filePath); // Use the fully qualified name for File.Delete
+                }
             }
-
 
             return RedirectToAction(nameof(Index));
         }

@@ -126,6 +126,7 @@ namespace MotorFest.Services.EventsService
             {
                 Id = eventEntity.Id,
                 Name = eventEntity.Name,
+
                 OrganizerId = eventEntity.OrganizerId,
                 LocationId = eventEntity.LocationId,
                 EventDate = eventEntity.EventDate,
@@ -169,7 +170,7 @@ namespace MotorFest.Services.EventsService
                 .ThenInclude(evc => evc.VehicleCategory)
                 .Include(e => e.EventEngineTypes)
                 .ThenInclude(eet => eet.EngineType)
-                .Where(e => e.EventDate >= DateTime.UtcNow)
+                .Where(e => e.EventDate >= DateTime.UtcNow&&!e.IsCanceled)
                 .OrderBy(e => e.EventDate)
                 .ToList();
 
@@ -330,31 +331,25 @@ namespace MotorFest.Services.EventsService
         }
         public bool RegisterVehicleForEvent(int eventId, int vehicleId)
         {
-            var vehicle = _context.Vehicles.FirstOrDefault(v => v.Id == vehicleId);
-            var evnt = _context.Events.FirstOrDefault(e => e.Id == eventId);
+            var vehicle = _context.Vehicles.AsNoTracking().FirstOrDefault(v => v.Id == vehicleId);
+            var evnt = _context.Events.AsNoTracking().FirstOrDefault(e => e.Id == eventId);
             // Извличаме категорията на превозното средство
-            var vehicleCategoryId = _context.Vehicles
-                .Where(v => v.Id == vehicleId)
-                .Select(v => v.CategoryId)
-                .FirstOrDefault();
-            var vehicleEngineType = _context.Vehicles
-                .Where(v => v.Id == vehicleId)
-                .Select(v => v.EngineTypeId)
-                .FirstOrDefault();
+            var vehicleCategoryId = vehicle.CategoryId;
+            var vehicleEngineType = vehicle.CategoryId;
             if (vehicleCategoryId == 0)
             {
                 return false;
             }
 
 
-            var isCategorySupported = _context.EventVehicleCategories
+            var isCategorySupported = _context.EventVehicleCategories.AsNoTracking()
                 .Any(evc => evc.EventId == eventId && evc.VehicleCategoryId == vehicleCategoryId);
 
             if (!isCategorySupported)
             {
                 return false;
             }
-            var isEngineTypeSupported = _context.EventEngineTypes
+            var isEngineTypeSupported = _context.EventEngineTypes.AsNoTracking()
                 .Any(evc => evc.EventId == eventId && evc.EngineTypeId == vehicleEngineType);
 
             if (!isEngineTypeSupported)
@@ -367,8 +362,6 @@ namespace MotorFest.Services.EventsService
             {
                 return false;
             }
-
-
             var isVehicleAlreadyRegistered = _context.EventRegistrations
                 .Any(er => er.EventId == eventId && er.VehicleId == vehicleId);
 
@@ -376,7 +369,6 @@ namespace MotorFest.Services.EventsService
             {
                 return false;
             }
-
 
             _context.EventRegistrations.Add(new EventRegistration
             {

@@ -4,10 +4,8 @@
 	ViewData["Title"] = "Регистрация";
 }
 
-<h1>@ViewData["Title"]</h1>
-
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-md-6 offset-md-3">
 		<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
 			<h2>Регистрирай нов акаунт.</h2>
 			<hr />
@@ -39,18 +37,26 @@
 				<label asp-for="Input.Identifier">ЕГН или Булстат</label>
 				<span asp-validation-for="Input.Identifier" class="text-danger"></span>
 			</div>
-			<div class="form-floating mb-3">
-				<input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="" />
-				<label asp-for="Input.Password">Парола</label>
-				<span asp-validation-for="Input.Password" class="text-danger"></span>
-			</div>
-			<div class="form-floating mb-3">
-				<input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder=" " />
+            <div class="form-floating mb-3 position-relative">
+                <input asp-for="Input.Password" class="form-control pr-5" autocomplete="new-password" aria-required="true" placeholder="" id="passwordInput" />
+                <label asp-for="Input.Password">Парола</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <button type="button" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+                        style="z-index:2;" tabindex="-1" onclick="togglePasswordVisibility('passwordInput', this)">
+                    <span class="bi bi-eye" id="passwordToggleIcon"></span>
+                </button>
+            </div>
+			<div class="form-floating mb-3 position-relative">
+				<input asp-for="Input.ConfirmPassword" class="form-control pr-5" autocomplete="new-password" aria-required="true" placeholder="" id="passwordConfirmInput" />
 				<label asp-for="Input.ConfirmPassword">Потвърди паролата</label>
 				<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+				<button type="button" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+						style="z-index:2;" tabindex="-1" onclick="togglePasswordVisibility('passwordConfirmInput', this)">
+					<span class="bi bi-eye" id="passwordToggleIcon"></span>
+				</button>
 			</div>
+			
 
-			<!-- Radio Button Group for Role Selection -->
 			<div class="mb-3">
 				<label class="form-label">Роля</label>
 				<div>
@@ -76,6 +82,28 @@
 	<script>
 		function setRole(role) {
 			document.getElementById('roleInput').value = role;
+		}
+		function togglePasswordVisibility(inputId, btn) {
+			const input = document.getElementById(inputId);
+			const icon = btn.querySelector('span');
+			if (input.type === "password") {
+				input.type = "text";
+				if (icon) icon.className = "bi bi-eye-slash";
+			} else {
+				input.type = "password";
+				if (icon) icon.className = "bi bi-eye";
+			}
+		}
+		function togglePasswordVisibility(inputId, btn) {
+			const input = document.getElementById(inputId);
+			const icon = btn.querySelector('span');
+			if (input.type === "password") {
+				input.type = "text";
+				if (icon) icon.className = "bi bi-eye-slash";
+			} else {
+				input.type = "password";
+				if (icon) icon.className = "bi bi-eye";
+			}
 		}
 	</script>
 }

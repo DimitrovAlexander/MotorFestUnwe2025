@@ -37,8 +37,9 @@ namespace MotorFest.Services.LocationService
             var address = dbContext.Locations.FirstOrDefault(x => x.Id == id);
             if (address != null)
             {
-                dbContext.Locations.Remove(address);
-               await dbContext.SaveChangesAsync();
+                address.IsDeleted = true;
+                dbContext.Update(address);
+                await dbContext.SaveChangesAsync();
                 return true;
             }
             return false;
@@ -52,8 +53,8 @@ namespace MotorFest.Services.LocationService
                  .ThenInclude(e=>e.EventVehicleCategories)
                  .Include(e=>e.Events)
                  .ThenInclude(e=>e.Organizer)
+                 .Where(x => !x.IsDeleted)
 
-                 
                  .Select(address => new LocationViewModel
                  {
                      Id = address.Id,

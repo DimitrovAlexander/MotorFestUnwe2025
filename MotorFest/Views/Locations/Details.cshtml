@@ -5,8 +5,11 @@
             <h5 class="card-title">@Model.Name</h5>
             <p class="card-text"><strong>Град:</strong> @Model.City</p>
             <p class="card-text"><strong>Пълен Адрес:</strong> @Model.FullAddress</p>
-            <p class="card-text"><strong>Държава:</strong> @Model.Municipality</p>
+            <p class="card-text"><strong>Държава:</strong> @Model.Country</p>
+            @if (User.IsInRole("Administrator"))
+                        {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn custom-primary-btn">Редактирай</a>
+                        }
             <a asp-action="Index" class="btn custom-primary-btn">Назад към списъка</a>
         </div>
     </div>

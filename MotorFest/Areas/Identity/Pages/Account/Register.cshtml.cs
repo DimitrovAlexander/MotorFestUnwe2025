@@ -67,8 +67,8 @@ namespace MotorFest.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Имейл адресът е задължителен")]
+            [EmailAddress(ErrorMessage ="Имейл адресът не е валиден")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -76,8 +76,8 @@ namespace MotorFest.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Паролата е задължителна")]
+            [StringLength(100, ErrorMessage = "Паролата трябва да бъде миниму 6 символа.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -88,30 +88,30 @@ namespace MotorFest.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Паролите не съвпадат!")]
             public string ConfirmPassword { get; set; }
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [Required(ErrorMessage = "Името е задължително")]
+            [StringLength(30, ErrorMessage = "Името трябва да бъде между 3 и 30 символа.", MinimumLength = 3)]
             [DataType(DataType.Text)]
             [Display(Name = "First name")]
             public string FirstName { get; set; }
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [Required(ErrorMessage = "Потребителското име е задължително")]
+            [StringLength(30, ErrorMessage = "Потребителското име трябва да бъде между 3 и 30 символа", MinimumLength = 3)]
             [DataType(DataType.Text)]
             [Display(Name = "Username")]
             public string Usernmae { get; set; }
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [Required(ErrorMessage = "Фамилията е задължителна")]
+            [StringLength(100, ErrorMessage = "Фамилията трябва да бъде между 3 и 30 символа", MinimumLength = 3)]
             [DataType(DataType.Text)]
             [Display(Name = "Last name")]
             public string LastName { get; set; }
-            [Required]
+            [Required(ErrorMessage = "Ролята е задължителна")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
             [DataType(DataType.Text)]
 
             public string Role { get; set; }
-            [Required]
-            [StringLength(10, ErrorMessage = "The {0} must be 10 long.", MinimumLength = 10)]
+            [Required(ErrorMessage = "ЕГН/БУЛСТАТе задължителен")]
+            [StringLength(10, ErrorMessage = "ЕГН/БУЛСТАТ трябва да бъде 10 символа", MinimumLength = 10)]
             [DataType(DataType.Text)]
             [Display(Name = "Identifier")]
             public string Identifier { get; set; }

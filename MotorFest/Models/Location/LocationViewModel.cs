@@ -17,7 +17,7 @@ namespace MotorFest.Models.Location
         [Display(Name = "Държава")]
 
         public string Country { get; set; } = null!;
-
+        public bool IsDeleted { get; set; } = false;
         public DateTime LastUpdate { get; set; } = DateTime.Now;
 
         public virtual ICollection<EventViewModel> Events { get; set; } = new List<EventViewModel>();

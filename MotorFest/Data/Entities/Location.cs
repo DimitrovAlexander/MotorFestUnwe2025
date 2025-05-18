@@ -13,6 +13,7 @@ public partial class Location
     public string FullAddress { get; set; } = null!;
 
     public string Country { get; set; } = null!;
+    public bool IsDeleted { get; set; } = false;
     [Column("21180022_LastUpdate")]
     public DateTime LastUpdate { get; set; } =DateTime.Now;
 

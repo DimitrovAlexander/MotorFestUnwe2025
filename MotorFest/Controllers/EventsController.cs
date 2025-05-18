@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using MotorFest;
-using MotorFest.Data;
 using MotorFest.Data.Entities;
 using MotorFest.Models.Event;
 using MotorFest.Models.Vehicle;
 using MotorFest.Services.EngineTypeService;
 using MotorFest.Services.EventService;
-using MotorFest.Services.EventsService;
 using MotorFest.Services.EventsViewService;
 using MotorFest.Services.LocationService;
-using MotorFest.Services.UsersViewService;
 using MotorFest.Services.VehicleCategoryService;
 using MotorFest.Services.VehiclesService;
 using X.PagedList.Extensions;
@@ -174,6 +165,7 @@ namespace MotorFest.Controllers
             var user = await _userManager.GetUserAsync(User);
             model.OrganizerId = user.Id;
             await eventService.Create(model);
+            TempData.Add("successMessage", "Успешно добавихте събитие");
             return RedirectToAction("Index");
         }
 
@@ -202,6 +194,7 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var mfEvent = await eventService.GetById(id);
+           
             return View(mfEvent);
         }
         [Authorize(Roles = "Administrator,Organizer")]
@@ -209,6 +202,7 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> Delete(int id, EventViewModel eventViewModel)
         {
             await eventService.Delete(id);
+            TempData.Add("successMessage", "Успешно изтрихте събитие");
             return RedirectToAction("Index");
         }
         public IActionResult Calendar()
@@ -273,6 +267,7 @@ namespace MotorFest.Controllers
             ModelState.Remove("Location");
             ModelState.Remove("Organizer");
             ModelState.Remove("OrganizerId");
+            ModelState.Remove("EventLogo");
             if (ModelState.IsValid)
             {
                 try
@@ -280,6 +275,7 @@ namespace MotorFest.Controllers
                     var succeed = await eventService.Update(id, eventViewModel);
                     if (succeed)
                     {
+                        TempData.Add("successMessage", "Успешно редактирахте събитието");
                         return RedirectToAction(nameof(Index));
 
                     }

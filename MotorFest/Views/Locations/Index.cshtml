@@ -1,69 +1,8 @@
-﻿@* @using X.PagedList
+﻿@using X.PagedList
 @model IPagedList<MotorFest.Models.Location.LocationViewModel>
-
-<div class="container mt-5">
-	<h2 class="mb-4">Списък с Локации</h2>
-
-	<!-- Search Form -->
-	<form asp-action="Index" method="get" class="form-inline mb-3">
-		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, град или община" value="@ViewData["CurrentFilter"]" />
-		<button type="submit" class="btn custom-primary-btn mt-1">Търсене</button>
-		<a asp-action="Index" class="btn custom-primary-btn">Изчисти търсенето</a>
-
-	</form>
-
-	<a asp-action="Create" class="btn custom-primary-btn mb-3">Добави Нова Локация</a>
-	<table class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<th>Име</th>
-				<th>Град</th>
-				<th>Пълен Адрес</th>
-				<th>Община</th>
-				<th>Действия</th>
-				@if (User.IsInRole("Administrator"))
-				{
-					<th>Последна промяна</th>
-				}
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var location in Model)
-			{
-				<tr>
-					<td>@location.Name</td>
-					<td>@location.City</td>
-					<td>@location.FullAddress</td>
-					<td>@location.Country</td>
-					<td>
-						<a asp-action="Details" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Детайли</a>
-						<a asp-action="Delete" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Изтрий</a>
-						<a asp-action="Edit" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Редактирай</a>
-					</td>
-					@if (User.IsInRole("Administrator"))
-					{
-						<td>@location.LastUpdate</td>
-					}
-				</tr>
-			}
-		</tbody>
-	</table>
-
-	<!-- Pagination Controls -->
-	<div class="pagination justify-content-center">
-		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
-					new PagedListRenderOptions
-		{
-				UlElementClasses = new List<string> { "pagination" },
-		LiElementClasses = new List<string> { "page-item" },
-		PageClasses = new List<string> { "page-link" }
-		})
-	</div>
-</div>
- *@
-@using X.PagedList
-@model IPagedList<MotorFest.Models.Location.LocationViewModel>
-
+@{
+    var successMessage = TempData["successMessage"]?.ToString();
+}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4 fade-fly-in">
         <h2>📍 Локации</h2>
@@ -78,14 +17,17 @@
         </div>
     </div>
 
-    <!-- Search Form -->
+
     <form asp-action="Index" method="get" class="d-flex justify-content-center mb-4 fade-fly-in">
         <input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, град, община..." value="@ViewData["CurrentFilter"]" />
         <button type="submit" class="btn custom-primary-btn">Търсене</button>
         <a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
     </form>
 
-
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <div class="alert alert-success fade-fly-in">@successMessage</div>
+    }
 
     <a asp-action="Create" class="menu-button js-button fade-fly-in d-inline-block mx-auto fade-fly-in mb-4" >
         <span class="button__inner">
@@ -93,10 +35,10 @@
             <span class="button__hover js-button__hover">Добави локация</span>
         </span>
     </a>
-    
 
 
-    <!-- Табличен изглед -->
+
+
     <div id="tableView" class="view-container fade-fly-in" style="margin-top:69px">
         <table class="table table-striped table-hover">
             <thead>
@@ -123,8 +65,11 @@
                         <td>
                             <div class="d-flex gap-1">
                                 <a asp-action="Details" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Детайли</a>
-                                <a asp-action="Edit" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Редактирай</a>
-                                <a asp-action="Delete" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Изтрий</a>
+                                @if (User.IsInRole("Administrator"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Редактирай</a>
+                                    <a asp-action="Delete" asp-route-id="@location.Id" class="btn custom-primary-btn btn-sm">Изтрий</a>
+                                }
                             </div>
                         </td>
                         @if (User.IsInRole("Administrator"))
@@ -149,8 +94,11 @@
                         <p><i class="bi bi-map"></i> @location.FullAddress</p>
                         <div class="d-flex justify-content-center mt-auto">
                             <a asp-action="Details" asp-route-id="@location.Id" class="btn btn-outline-primary btn-sm mx-1">ℹ️ Детайли</a>
+                            @if (User.IsInRole("Administrator"))
+                            {
                             <a asp-action="Edit" asp-route-id="@location.Id" class="btn btn-outline-warning btn-sm mx-1">✏️ Редакция</a>
-                            <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-outline-danger btn-sm mx-1">🗑 Изтрий</a>
+                                <a asp-action="Delete" asp-route-id="@location.Id" class="btn btn-outline-danger btn-sm mx-1">🗑 Изтрий</a>
+                            }
                         </div>
                         @if (User.IsInRole("Administrator"))
                         {
@@ -173,7 +121,17 @@
         })
     </div>
 </div>
-
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="infoToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">MotorFest</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+			Ако искате да предложите редакция на локация или искате да изтриете такава, моля свържете се с администратор на адрес info.motorfest@gmail.com.
+        </div>
+    </div>
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const tableView = document.getElementById("tableView");
@@ -199,6 +157,19 @@
                 cardView.style.display = "flex";
             }
         }
+    });
+        document.addEventListener("DOMContentLoaded", function () {
+         
+            var toastEl = document.getElementById("infoToast");
+            if (toastEl) {
+                console.log("Toast елементът е намерен!"); // Дебъг
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                
+            } else {
+                console.error("Toast елементът не е намерен!"); // Дебъг
+            }
+        
     });
 </script>
 <style>

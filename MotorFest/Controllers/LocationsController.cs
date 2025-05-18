@@ -24,8 +24,8 @@ namespace MotorFest.Controllers
             this.addressService = addressService;
         }
 
-        // GET:
-        // es
+
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Index(string searchString, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -42,7 +42,7 @@ namespace MotorFest.Controllers
             }
 
             // Paginate the results
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedLocations = locations.ToPagedList(pageNumber, pageSize);
 
@@ -50,6 +50,7 @@ namespace MotorFest.Controllers
         }
 
         // GET: Locationes/Details/5
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Details(int id)
         {
             if (id == null)
@@ -58,7 +59,7 @@ namespace MotorFest.Controllers
             }
 
             var address = await addressService.GetById(id);
-            if (address == null)
+            if (address == null || address.IsDeleted)
             {
                 return NotFound();
             }
@@ -67,6 +68,7 @@ namespace MotorFest.Controllers
         }
 
         // GET: Locationes/Create
+        [Authorize(Roles = "Administrator,Organizer")]
         public IActionResult Create()
         {
             return View();
@@ -77,17 +79,20 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Create(LocationViewModel address)
         {
             if (ModelState.IsValid)
             {
                 await addressService.Create(address);
+                TempData.Add("successMessage", "Успешно добавихте локация");
                 return RedirectToAction(nameof(Index));
             }
             return View(address);
         }
 
         // GET: Locationes/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
@@ -96,10 +101,12 @@ namespace MotorFest.Controllers
             }
 
             var address = await addressService.GetById(id);
-            if (address == null)
+            if (address == null||address.IsDeleted)
             {
                 return NotFound();
             }
+           
+
             return View(address);
         }
 
@@ -108,6 +115,7 @@ namespace MotorFest.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,FullAddress,Country,LastUpdate")] LocationViewModel address)
         {
             if (id != address.Id)
@@ -124,13 +132,16 @@ namespace MotorFest.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                    
+
                 }
+                TempData.Add("successMessage", "Успешно редактирахте локация");
                 return RedirectToAction(nameof(Index));
             }
             return View(address);
         }
 
         // GET: Locations/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
@@ -139,7 +150,7 @@ namespace MotorFest.Controllers
             }
 
             var address = await addressService.GetById(id);
-            if (address == null)
+            if (address == null||address.IsDeleted)
             {
                 return NotFound();
             }
@@ -150,9 +161,11 @@ namespace MotorFest.Controllers
         // POST: Locations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
            await addressService.Delete(id);
+            TempData.Add("successMessage", "Успешно изтрихте локация");
             return RedirectToAction(nameof(Index));
         }
 

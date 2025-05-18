@@ -41,7 +41,7 @@
 					<i class="bi bi-car-front-fill display-1 text-success"></i>
 					<h5 class="card-title mt-3">Превозни средства</h5>
 					<p class="card-text">Като Участник управлявайте вашите превозни средства и добавяйте нови.</p>
-					@if (User.IsInRole("Participant") || User.IsInRole("Organizer") || User.IsInRole("Administrator"))
+					@if (User.IsInRole("Participant") ||  User.IsInRole("Administrator"))
 					{
 						<a href="@Url.Action("Index", "Vehicles")" class="menu-button js-button d-inline-block mx-auto fade-fly-in">
 							<span class="button__inner">
@@ -59,7 +59,7 @@
 					<i class="bi bi-geo-alt-fill display-1 text-danger"></i>
 					<h5 class="card-title mt-3">Организиране на събития</h5>
 					<p class="card-text">Като Организатор можете бързо да организирате и администрирате събития.</p>
-					@if (User.IsInRole("Participant") || User.IsInRole("Organizer") || User.IsInRole("Administrator"))
+					@if  (User.IsInRole("Organizer") || User.IsInRole("Administrator"))
 					{
 						<a href="@Url.Action("Index", "Events")" class="menu-button js-button fade-fly-in d-inline-block mx-auto fade-fly-in">
 							<span class="button__inner">
