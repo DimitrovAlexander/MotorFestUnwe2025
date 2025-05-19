@@ -139,7 +139,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                var roleAssignmentResult = await _userManager.AddToRoleAsync(user, "Administrator");
+                var roleAssignmentResult = await _userManager.AddToRoleAsync(user, Input.Role);
                 if (result.Succeeded)
                 {
 
