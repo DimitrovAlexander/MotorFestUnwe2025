@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+MotorFest/Properties/launchSettings.json
+MotorFest/appsettings.json
