@@ -113,6 +113,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
                         return Page();
                     }
                 }
+                ModelState.AddModelError(string.Empty, "Грешен имейл или парола.");
             }
 
             // If we got this far, something failed, redisplay form

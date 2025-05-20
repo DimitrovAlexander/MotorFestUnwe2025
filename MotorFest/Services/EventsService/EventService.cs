@@ -7,6 +7,7 @@ using MotorFest.Models.EventVehicleCategory;
 using MotorFest.Models.User;
 using MotorFest.Models.Vehicle;
 using System.Text;
+using MotorFest.Services.VehiclesService;
 
 namespace MotorFest.Services.EventsService
 {
@@ -297,26 +298,27 @@ namespace MotorFest.Services.EventsService
             var existingCategories = eventEntity.EventVehicleCategories;
             _context.EventVehicleCategories.RemoveRange(existingCategories);
 
-            var newCategories = entity.VehicleCategories
+            List<EventVehicleCategory> newCategories = entity.VehicleCategories
                 .Where(vc => vc.IsChecked)
                 .Select(vc => new EventVehicleCategory
                 {
                     EventId = entity.Id,
                     VehicleCategoryId = vc.Id
-                });
+                }).ToList();
             var existingEngineTypes = eventEntity.EventEngineTypes;
             _context.EventEngineTypes.RemoveRange(existingEngineTypes);
             await _context.SaveChangesAsync();
 
-            var newEngineTypes = entity.EngineTypes
+            List<EventEngineType> newEngineTypes = entity.EngineTypes
                 .Where(vc => vc.IsChecked)
                 .Select(et => new EventEngineType
                 {
                     EventId = entity.Id,
                     EngineTypeId = et.Id
-                });
+                }).ToList();
 
             await _context.EventEngineTypes.AddRangeAsync(newEngineTypes);
+            await _context.EventVehicleCategories.AddRangeAsync(newCategories);
             _context.Update(eventEntity);
             await _context.SaveChangesAsync();
 
@@ -329,13 +331,42 @@ namespace MotorFest.Services.EventsService
                 .ThenInclude(vc => vc.Owner)
                 .Any(vr => vr.EventId == eventId);
         }
+       
         public bool RegisterVehicleForEvent(int eventId, int vehicleId)
+        {
+            bool valid =CheckVehicleCompatibility(eventId, vehicleId);
+            if (valid)
+            {
+
+            var isVehicleAlreadyRegistered = _context.EventRegistrations
+                .Any(er => er.EventId == eventId && er.VehicleId == vehicleId);
+
+            if (isVehicleAlreadyRegistered)
+            {
+                return false;
+            }
+
+            _context.EventRegistrations.Add(new EventRegistration
+            {
+                EventId = eventId,
+                VehicleId = vehicleId,
+                RegistrationDate = DateTime.Now
+            });
+
+            _context.SaveChanges();
+
+            return true;
+            }
+            else return false;
+        }
+
+        public bool CheckVehicleCompatibility(int eventId, int vehicleId)
         {
             var vehicle = _context.Vehicles.AsNoTracking().FirstOrDefault(v => v.Id == vehicleId);
             var evnt = _context.Events.AsNoTracking().FirstOrDefault(e => e.Id == eventId);
             // Извличаме категорията на превозното средство
             var vehicleCategoryId = vehicle.CategoryId;
-            var vehicleEngineType = vehicle.CategoryId;
+            var vehicleEngineType = vehicle.EngineTypeId;
             if (vehicleCategoryId == 0)
             {
                 return false;
@@ -362,25 +393,9 @@ namespace MotorFest.Services.EventsService
             {
                 return false;
             }
-            var isVehicleAlreadyRegistered = _context.EventRegistrations
-                .Any(er => er.EventId == eventId && er.VehicleId == vehicleId);
-
-            if (isVehicleAlreadyRegistered)
-            {
-                return false;
-            }
-
-            _context.EventRegistrations.Add(new EventRegistration
-            {
-                EventId = eventId,
-                VehicleId = vehicleId,
-                RegistrationDate = DateTime.Now
-            });
-
-            _context.SaveChanges();
-
             return true;
         }
+
         public ICollection<EventViewModel> GetAllByUserParticipating(string userId)
         {
             var events = _context.EventRegistrations
@@ -434,6 +449,7 @@ namespace MotorFest.Services.EventsService
                 .Where(er => er.EventId == eventId)
                 .Include(er => er.Vehicle)
                 .ThenInclude(v => v.Owner)
+                
                 .Select(er => new VehicleViewModel
                 {
                     Id = er.Vehicle.Id,
@@ -442,6 +458,7 @@ namespace MotorFest.Services.EventsService
                     YearOfManufacture = er.Vehicle.YearOfManufacture,
                     Owner = new UserViewModel
                     {
+                        Id = er.Vehicle.OwnerId,
                         Firstname = er.Vehicle.Owner.Firstname,
                         Lastname = er.Vehicle.Owner.Lastname
                     }

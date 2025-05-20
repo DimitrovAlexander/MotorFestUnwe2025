@@ -174,17 +174,40 @@ namespace MotorFest.Controllers
             var eventDetails = await eventService.GetById(id);
             if (eventDetails == null) return NotFound();
 
-            var userId = _userManager.GetUserId(User);
-            var isOrganizer = eventDetails.OrganizerId == userId;
+            MFUser user = _userManager.GetUserAsync(User).Result;
+            var isOrganizer = eventDetails.OrganizerId == user.Id;
             var isAdmin = User.IsInRole("Administrator");
-
-            if (isOrganizer || isAdmin)
-            {
+            var isParticipant = User.IsInRole("Participant");
                 var registeredVehicles = eventService.GetRegisteredVehiclesForEvent(id);
+            if (isOrganizer || isAdmin || isParticipant)
+            {
                 ViewData["RegisteredVehicles"] = registeredVehicles;
             }
 
-            bool isRegistered = eventService.IsUserRegisteredForEvent(userId, id);
+            ViewData["HasCompatibleVehicles"] = false;
+            bool isRegistered = eventService.IsUserRegisteredForEvent(user.Id, id);
+            if (isRegistered)
+            {
+                VehicleViewModel registeredVehicle = registeredVehicles.Where(x => x.Owner.Id == user.Id).FirstOrDefault();
+                ViewData["ParticipantVehicle"] = registeredVehicle;
+
+            }
+            else
+            {
+                List<VehicleViewModel> vehicles = vehicleService.GetByUserId(user.Id).ToList();
+                bool valid = false;
+                foreach (var vehicle in vehicles)
+                {
+                    valid = eventService.CheckVehicleCompatibility(id, vehicle.Id);
+                    if (valid)
+                    {
+
+                        break;
+                    }
+                }
+                ViewData["HasCompatibleVehicles"] = valid;
+
+            }
             ViewData["IsRegistered"] = isRegistered;
 
             return View(eventDetails);
@@ -194,7 +217,7 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var mfEvent = await eventService.GetById(id);
-           
+
             return View(mfEvent);
         }
         [Authorize(Roles = "Administrator,Organizer")]
@@ -230,14 +253,14 @@ namespace MotorFest.Controllers
             {
                 Id = c.Id,
                 CategoryName = c.Name,
-                IsChecked =mfEvent.VehicleCategories.Any(x=>x.CategoryName==c.Name)
-                
+                IsChecked = mfEvent.VehicleCategories.Any(x => x.CategoryName == c.Name)
+
             }).ToList();
             mfEvent.EngineTypes = engineTypes.Select(e => new CheckBoxItem
             {
                 Id = e.Id,
                 CategoryName = e.Name,
-                IsChecked= mfEvent.EngineTypes.Any(x => x.CategoryName == e.Name)
+                IsChecked = mfEvent.EngineTypes.Any(x => x.CategoryName == e.Name)
 
             }).ToList();
             ViewData["allLocations"] = locationService.GetAll()

@@ -14,5 +14,6 @@ namespace MotorFest.Services.EventService
         ICollection<EventViewModel> GetUpcomingEvent();
         Task Cancel(int id);
         string GenerateCsvForUserEvents(string userId);
+        bool CheckVehicleCompatibility(int eventId, int vehicleId);
     }
 }
