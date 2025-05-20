@@ -174,8 +174,11 @@ namespace MotorFest.Controllers
             var eventDetails = await eventService.GetById(id);
             if (eventDetails == null) return NotFound();
 
-            MFUser user = _userManager.GetUserAsync(User).Result;
-            var isOrganizer = eventDetails.OrganizerId == user.Id;
+            var user = _userManager.GetUserId(User);
+            if (user!=null)
+            {
+
+            var isOrganizer = eventDetails.OrganizerId == user;
             var isAdmin = User.IsInRole("Administrator");
             var isParticipant = User.IsInRole("Participant");
                 var registeredVehicles = eventService.GetRegisteredVehiclesForEvent(id);
@@ -185,16 +188,16 @@ namespace MotorFest.Controllers
             }
 
             ViewData["HasCompatibleVehicles"] = false;
-            bool isRegistered = eventService.IsUserRegisteredForEvent(user.Id, id);
+            bool isRegistered = eventService.IsUserRegisteredForEvent(user, id);
             if (isRegistered)
             {
-                VehicleViewModel registeredVehicle = registeredVehicles.Where(x => x.Owner.Id == user.Id).FirstOrDefault();
+                VehicleViewModel registeredVehicle = registeredVehicles.Where(x => x.Owner.Id == user).FirstOrDefault();
                 ViewData["ParticipantVehicle"] = registeredVehicle;
 
             }
             else
             {
-                List<VehicleViewModel> vehicles = vehicleService.GetByUserId(user.Id).ToList();
+                List<VehicleViewModel> vehicles = vehicleService.GetByUserId(user).ToList();
                 bool valid = false;
                 foreach (var vehicle in vehicles)
                 {
@@ -210,6 +213,12 @@ namespace MotorFest.Controllers
             }
             ViewData["IsRegistered"] = isRegistered;
 
+            return View(eventDetails);
+            }
+            ViewData["RegisteredVehicles"] = null;
+            ViewData["ParticipantVehicle"] = null;
+            ViewData["HasCompatibleVehicles"] = false;
+            ViewData["IsRegistered"] = false;
             return View(eventDetails);
         }
 
