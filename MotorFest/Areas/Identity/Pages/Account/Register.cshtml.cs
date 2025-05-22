@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MotorFest.Data.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MotorFest.Areas.Identity.Pages.Account
 {
@@ -68,7 +69,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required(ErrorMessage = "Имейл адресът е задължителен")]
-            [EmailAddress(ErrorMessage ="Имейл адресът не е валиден")]
+            [EmailAddress(ErrorMessage = "Имейл адресът не е валиден")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -91,6 +92,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Паролите не съвпадат!")]
             public string ConfirmPassword { get; set; }
             [Required(ErrorMessage = "Името е задължително")]
+            [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Името трябва да съдържа само букви.")]
             [StringLength(30, ErrorMessage = "Името трябва да бъде между 3 и 30 символа.", MinimumLength = 3)]
             [DataType(DataType.Text)]
             [Display(Name = "First name")]
@@ -102,13 +104,13 @@ namespace MotorFest.Areas.Identity.Pages.Account
             public string Usernmae { get; set; }
             [Required(ErrorMessage = "Фамилията е задължителна")]
             [StringLength(100, ErrorMessage = "Фамилията трябва да бъде между 3 и 30 символа", MinimumLength = 3)]
+            [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Името трябва да съдържа само букви.")]
             [DataType(DataType.Text)]
             [Display(Name = "Last name")]
             public string LastName { get; set; }
             [Required(ErrorMessage = "Ролята е задължителна")]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [StringLength(100, ErrorMessage = "Ролята трбява да бъде минимум 3 символа", MinimumLength = 3)]
             [DataType(DataType.Text)]
-
             public string Role { get; set; }
             [Required(ErrorMessage = "ЕГН/БУЛСТАТе задължителен")]
             [StringLength(10, ErrorMessage = "ЕГН/БУЛСТАТ трябва да бъде 10 символа", MinimumLength = 10)]
@@ -131,31 +133,39 @@ namespace MotorFest.Areas.Identity.Pages.Account
             {
                 var user = new MFUser
                 {
-                    UserName=Input.Usernmae,
+                    UserName = Input.Usernmae,
                     Email = Input.Email,
                     Firstname = Input.FirstName,
                     Lastname = Input.LastName,
                     Identifier = Input.Identifier,
                 };
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                var roleAssignmentResult = await _userManager.AddToRoleAsync(user, Input.Role);
-                if (result.Succeeded)
+                if (Input.Role.Length > 4)
                 {
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    var roleAssignmentResult = await _userManager.AddToRoleAsync(user, Input.Role);
+                    if (result.Succeeded)
+                    {
 
 
-                    var userId = await _userManager.GetUserIdAsync(user);
+                        var userId = await _userManager.GetUserIdAsync(user);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    user.EmailConfirmed = true;
-                    
-                    return Redirect("/");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        user.EmailConfirmed = true;
 
+                        return Redirect("/");
+
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        if (error.Code == "InvalidUserName")
+                        {
+                            error.Description = "Потребителското име трябва да съдържа само букви и цифри, без празни места";
+
+                        }
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                ModelState.AddModelError(string.Empty, "Ролята е заължителна");
             }
 
             // If we got this far, something failed, redisplay form

@@ -2,11 +2,17 @@
 
 @{
     ViewData["Title"] = "Create";
+  
+	
+	var returnUrl = ViewData["ReturnUrl"] as string; // Retrieve the returnUrl from ViewData
+
 }
 
 <div class="container mt-5">
     <h2 class="mb-4">Добави</h2>
     <form asp-action="Create">
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+
         <div class="mb-3">
             <label asp-for="Name" class="form-label">Име на Локация</label>
             <input asp-for="Name" class="form-control" />

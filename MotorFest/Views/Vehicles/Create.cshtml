@@ -29,11 +29,11 @@
 			<input asp-for="YearOfManufacture" class="form-control" />
 			<span asp-validation-for="YearOfManufacture" class="text-danger"></span>
 		</div>
-		<div class="mb-3">
-			<label asp-for="Photo" class="control-label">Снимка на МПС</label>
-			<input asp-for="Photo" type="file" class="form-control" />
-			<span asp-validation-for="Photo" class="text-danger"></span>
-		</div>
+        <div class="mb-3">
+        <label asp-for="Photo" class="control-label">Снимка на МПС</label>
+        <input asp-for="Photo" type="file" class="form-control" accept=".png,.jpeg,.jpg,.bmp" />
+        <span asp-validation-for="Photo" class="text-danger"></span>
+        </div>
 		
 		<button type="submit" class="btn custom-primary-btn">Добави</button>
 		<a asp-action="Index" class="btn custom-primary-btn">Назад към списъка</a>

@@ -69,8 +69,9 @@ namespace MotorFest.Controllers
 
         // GET: Locationes/Create
         [Authorize(Roles = "Administrator,Organizer")]
-        public IActionResult Create()
+        public IActionResult Create(string returnUrl)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
@@ -80,13 +81,13 @@ namespace MotorFest.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator,Organizer")]
-        public async Task<IActionResult> Create(LocationViewModel address)
+        public async Task<IActionResult> Create(LocationViewModel address, string returnUrl)
         {
             if (ModelState.IsValid)
             {
                 await addressService.Create(address);
                 TempData.Add("successMessage", "Успешно добавихте локация");
-                return RedirectToAction(nameof(Index));
+                return Redirect(returnUrl ?? Url.Action(nameof(Index)));
             }
             return View(address);
         }

@@ -1,8 +1,14 @@
 ﻿@model MotorFest.Models.Event.EventViewModel
-
+@{
+	
+	var returnUrl = ViewData["ReturnUrl"] as string; // Retrieve the returnUrl from ViewData
+}
 <h1>Създай Събитие</h1>
 
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form asp-action="Create" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="returnUrl" value="@returnUrl" />
 	<div class="form-group">
 		<label asp-for="Name">Име на събитието</label>
 		<input asp-for="Name" class="form-control" />
@@ -26,27 +32,41 @@
 	<div class="form-group">
 		<label asp-for="LocationId" class="control-label">Локация</label>
 		<select asp-for="LocationId" class="form-control" asp-items="ViewBag.allLocations"></select>
+		<span asp-validation-for="LocationId" class="text-danger"></span>
+		
+	</div>
+	<div class="form-group mt-2">
+
+		<a asp-controller="Locations" asp-action="Create" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString" class="btn custom-primary-btn">Добави Нова Локация</a> @* Added button styling and text *@
 	</div>
 	<div class="mb-3">
 		<label asp-for="EventLogo" class="form-label">Лого на събитието:</label>
 		<input asp-for="EventLogo" class="form-control" type="file" accept="image/*" id="eventLogoInput" name="eventLogoFile" />
 		<div id="eventLogoPreview" class="d-flex flex-wrap gap-2 m-2"></div>
+		<span asp-validation-for="EventLogo" class="text-danger"></span>
+
 	</div>
 
 	<div class="mb-3">
 		<label asp-for="EventPhotos" class="form-label">Снимки от минали събития:</label>
 		<input asp-for="EventPhotos" class="form-control" type="file" accept="image/*" multiple id="eventPhotosInput" name="eventPhotoFiles" />
 		<div id="eventPhotosPreview" class="d-flex flex-wrap gap-2"></div>
+		<span asp-validation-for="EventPhotos" class="text-danger"></span>
+
 	</div>
 
 	<h3>Изисквания за участниците:</h3>
 	<div class="form-group">
 		<label asp-for="MinYearOfManufacture">Минимална година на производство</label>
-		<input asp-for="MinYearOfManufacture" type="number" class="form-control" />
+		<input asp-for="MinYearOfManufacture" type="text" class="form-control" />
+		<span asp-validation-for="MinYearOfManufacture" class="text-danger"></span>
+
 	</div>
 	<div class="form-group">
 		<label asp-for="MaxYearOfManufacture">Максимална година на производство</label>
-		<input asp-for="MaxYearOfManufacture" type="number" class="form-control" />
+		<input asp-for="MaxYearOfManufacture" type="text" class="form-control" />
+		<span asp-validation-for="MaxYearOfManufacture" class="text-danger"></span>
+
 	</div>
 	<div class="form-group">
 		<label>Категории превозни средства:</label>

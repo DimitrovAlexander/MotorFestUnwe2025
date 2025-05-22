@@ -118,8 +118,15 @@ namespace MotorFest.Controllers
             ModelState.Remove("EventLogo");
             if (!ModelState.IsValid)
             {
+                ViewData["allLocations"] = locationService.GetAll()
+      .Select(c => new SelectListItem
+      {
+          Value = c.Id.ToString(),
+          Text = c.Name
+      }).ToList();
 
                 return View(model);
+
             }
 
             // Запазване на логото
