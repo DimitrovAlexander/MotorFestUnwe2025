@@ -106,5 +106,23 @@
 				if (icon) icon.className = "bi bi-eye";
 			}
 		}
+		document.addEventListener('DOMContentLoaded', function () {
+			const firstNameInput = document.getElementById('Input_FirstName');
+			const lastNameInput = document.getElementById('Input_LastName');
+
+			function preventSpaces(event) {
+				if (event.key === ' ') {
+					event.preventDefault();
+				}
+			}
+
+			if (firstNameInput) {
+				firstNameInput.addEventListener('keypress', preventSpaces);
+			}
+
+			if (lastNameInput) {
+				lastNameInput.addEventListener('keypress', preventSpaces);
+			}
+		});
 	</script>
 }

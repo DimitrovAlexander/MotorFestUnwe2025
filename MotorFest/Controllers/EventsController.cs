@@ -54,7 +54,7 @@ namespace MotorFest.Controllers
                                           ).ToList();
             }
 
-            int pageSize = 3;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedEvents = events.ToPagedList(pageNumber, pageSize);
 
@@ -102,7 +102,7 @@ namespace MotorFest.Controllers
        .Select(c => new SelectListItem
        {
            Value = c.Id.ToString(),
-           Text = c.Name
+           Text = $"{c.Name} - {c.FullAddress}"
        }).ToList();
             return View(model);
         }
@@ -409,7 +409,7 @@ namespace MotorFest.Controllers
             var events = eventService.GetAllByUserParticipating(userId);
             return View(events);
         }
-        // GET: UsersViewController
+        // GET: UsersController
         [Authorize(Roles = "Administrator,Organizer")]
 
         public async Task<IActionResult> Statistics(string searchString, int? page)
@@ -443,7 +443,7 @@ namespace MotorFest.Controllers
             }
 
             // Paginate the results
-            int pageSize = 3;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedLocations = events.ToPagedList(pageNumber, pageSize);
 

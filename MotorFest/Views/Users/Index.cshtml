@@ -1,66 +1,4 @@
-﻿@* @using X.PagedList
-@model IPagedList<MotorFest.Models.User.UsersViewViewModel>
-
-<div class="container mt-5">
-	<h2 class="mb-4">Списък с Потребители</h2>
-
-	<!-- Search Form -->
-	<form asp-action="Index" method="get" class="form-inline mb-3">
-		<input type="text" name="searchString" class="form-control mr-sm-2" placeholder="Търсене по име, имейл или роля" value="@ViewData["CurrentFilter"]" />
-		<button type="submit" class="btn custom-primary-btn mt-1">Търсене</button>
-		<a asp-action="Index" class="btn custom-primary-btn">Изчисти търсенето</a>
-
-	</form>
-
-
-	<table class="table table-striped table-hover">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Име</th>
-				<th>Имейл</th>
-				<th>Роля</th>	
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var user in Model)
-			{
-				<tr>
-					<td>@user.UserId</td>
-					<td>@user.FullName</td>
-					<td>@user.Email</td>
-					@if(user.RoleName=="Administrator"){
-						<td>Администратор</td>
-					}
-					else if(user.RoleName=="Participant"){
-						<td>Участник</td>
-
-					}
-					else if(user.RoleName=="Organizer"){
-						<td>Организатор</td>
-
-					}
-					<td>
-						<a asp-action="Details" asp-route-id="@user.UserId" class="btn custom-primary-btn btn-sm">Детайли</a>
-
-					</td>
-
-				</tr>
-			}
-		</tbody>
-	</table>
-
-	<!-- Pagination Controls -->
-	<div class="pagination justify-content-center">
-		@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
-					new PagedListRenderOptions
-		{
-				UlElementClasses = new List<string> { "pagination" },
-		LiElementClasses = new List<string> { "page-item" },
-		PageClasses = new List<string> { "page-link" }
-		})
-	</div>
-</div> *@
+﻿
 @using X.PagedList
 @model IPagedList<MotorFest.Models.User.UsersViewViewModel>
 
@@ -86,8 +24,8 @@
 	</form>
 
 	<!-- Users Table View -->
-	<div id="tableView" class="table-responsive fade-fly-in">
-		<table class="table table-striped table-hover">
+	<div id="tableView" >
+		<table class="table table-striped table-hover fade-fly-in">
 			<thead class="thead-dark">
 				<tr>
 					<th>Име</th>
@@ -126,7 +64,7 @@
 	</div>
 
 	<!-- Users Card View -->
-	<div id="cardView" class="row d-none fade-fly-in">
+	<div id="cardsView" class="row d-none fade-fly-in">
 		@foreach (var user in Model)
 		{
 			<div class="col-md-4">
@@ -169,8 +107,29 @@
 </div>
 
 <script>
-	document.getElementById("toggleView").addEventListener("click", function () {
-		document.getElementById("tableView").classList.toggle("d-none");
-		document.getElementById("cardView").classList.toggle("d-none");
+	document.addEventListener("DOMContentLoaded", function () {
+		const tableView = document.getElementById("tableView");
+		const cardsView = document.getElementById("cardsView");
+		const toggleBtn = document.getElementById("toggleView");
+
+		// Check the last selected view mode
+		let currentView = localStorage.getItem("viewMode") || "table";
+		updateView(currentView);
+
+		toggleBtn.addEventListener("click", function () {
+			currentView = (currentView === "table") ? "cards" : "table";
+			localStorage.setItem("viewMode", currentView);
+			updateView(currentView);
+		});
+
+		function updateView(viewMode) {
+			if (viewMode === "table") {
+				tableView.classList.remove("d-none");
+				cardsView.classList.add("d-none");
+			} else {
+				tableView.classList.add("d-none");
+				cardsView.classList.remove("d-none");
+			}
+		}
 	});
 </script>

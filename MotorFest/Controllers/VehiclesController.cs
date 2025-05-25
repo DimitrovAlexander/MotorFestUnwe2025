@@ -59,7 +59,7 @@ namespace MotorFest.Controllers
             }
             ViewData["carDictionary"] = isVehicleInEvent;
 
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             return View(allVehicles.ToPagedList(pageNumber, pageSize));
         }

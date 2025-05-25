@@ -6,17 +6,17 @@ using X.PagedList.Extensions;
 
 namespace MotorFest.Controllers
 {
-    public class UsersViewController : Controller
+    public class UsersController : Controller
     {
         private readonly IUsersViewService usersViewService;
-        public UsersViewController(IUsersViewService usersViewService)
+        public UsersController(IUsersViewService usersViewService)
         {
             this.usersViewService = usersViewService;
         }
 
 
 
-        // GET: UsersViewController
+        // GET: UsersController
 
     [Route("Users")]
         public async Task<IActionResult> Index(string searchString, int? page)
@@ -35,14 +35,14 @@ namespace MotorFest.Controllers
             }
 
             // Paginate the results
-            int pageSize = 5;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedLocations = users.ToPagedList(pageNumber, pageSize);
 
             return View(pagedLocations);
         }
 
-        // GET: UsersViewController/Details/5
+        // GET: UsersController/Details/5
         [Route("Users/Details")]
 
         public async Task<IActionResult> Details(string id)

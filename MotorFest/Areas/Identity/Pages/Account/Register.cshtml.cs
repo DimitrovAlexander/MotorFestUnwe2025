@@ -92,7 +92,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Паролите не съвпадат!")]
             public string ConfirmPassword { get; set; }
             [Required(ErrorMessage = "Името е задължително")]
-            [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Името трябва да съдържа само букви.")]
+            [RegularExpression(@"^[a-zA-Z\u0410-\u044F]+$", ErrorMessage = "Името трябва да съдържа само букви (латиница или кирилица).")]
             [StringLength(30, ErrorMessage = "Името трябва да бъде между 3 и 30 символа.", MinimumLength = 3)]
             [DataType(DataType.Text)]
             [Display(Name = "First name")]
@@ -104,7 +104,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
             public string Usernmae { get; set; }
             [Required(ErrorMessage = "Фамилията е задължителна")]
             [StringLength(100, ErrorMessage = "Фамилията трябва да бъде между 3 и 30 символа", MinimumLength = 3)]
-            [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Името трябва да съдържа само букви.")]
+            [RegularExpression(@"^[a-zA-Z\u0410-\u044F]+$", ErrorMessage = "Фамилията трябва да съдържа само букви (латиница или кирилица).")]
             [DataType(DataType.Text)]
             [Display(Name = "Last name")]
             public string LastName { get; set; }
@@ -165,7 +165,7 @@ namespace MotorFest.Areas.Identity.Pages.Account
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-                ModelState.AddModelError(string.Empty, "Ролята е заължителна");
+                //ModelState.AddModelError(string.Empty, "Ролята е заължителна");
             }
 
             // If we got this far, something failed, redisplay form
