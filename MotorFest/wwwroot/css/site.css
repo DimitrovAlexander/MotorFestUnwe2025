@@ -322,7 +322,13 @@ svg {
 .carousel-control-prev,
 .carousel-control-next {
     width: 10%; /* Намалява зоната на стрелките */
+    
+
+
+    filter: invert(18%) sepia(13%) saturate(2491%) hue-rotate(212deg) brightness(96%) contrast(89%); 
+    background-color: transparent; 
 }
+
 
 .carousel-control-prev {
     left: 0;
