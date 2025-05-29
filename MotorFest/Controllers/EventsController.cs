@@ -129,7 +129,7 @@ namespace MotorFest.Controllers
 
             }
 
-            // Запазване на логото
+          
             if (eventLogoFile != null && eventLogoFile.Length > 0)
             {
                 string logoDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/eventLogos");
@@ -146,7 +146,7 @@ namespace MotorFest.Controllers
                 model.EventLogo = $"/images/eventLogos/{uniqueFileName}";
             }
 
-            // Запазване на снимките от събитието
+            
             if (eventPhotoFiles != null && eventPhotoFiles.Any())
             {
                 string photosDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/eventPhotos");
@@ -172,7 +172,7 @@ namespace MotorFest.Controllers
             var user = await _userManager.GetUserAsync(User);
             model.OrganizerId = user.Id;
             await eventService.Create(model);
-            TempData.Add("successMessage", "Успешно добавихте събитие");
+            TempData["successMessage"] = "Успешно добавихте събитие";
             return RedirectToAction("Index");
         }
 
@@ -240,13 +240,14 @@ namespace MotorFest.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, EventViewModel eventViewModel)
         {
+            
             await eventService.Delete(id);
-            TempData.Add("successMessage", "Успешно изтрихте събитие");
+            TempData["successMessage"] = "Успешно изтрихте събитие";
             return RedirectToAction("Index");
         }
         public IActionResult Calendar()
         {
-            var events = eventService.GetAll().Where(x => x.IsCanceled == false); // Fetch all events using the service
+            var events = eventService.GetAll().Where(x => x.IsCanceled == false); 
             return View(events);
         }
         // GET: Events/Edit/5
@@ -314,7 +315,7 @@ namespace MotorFest.Controllers
                     var succeed = await eventService.Update(id, eventViewModel);
                     if (succeed)
                     {
-                        TempData.Add("successMessage", "Успешно редактирахте събитието");
+                        TempData["successMessage"] = "Успешно редактирахте събитието";
                         return RedirectToAction(nameof(Index));
 
                     }
@@ -345,18 +346,17 @@ namespace MotorFest.Controllers
         [Authorize(Roles = "Administrator,Participant")]
         public async Task<IActionResult> Subscribe(int id)
         {
-            // Намираме събитието
+            
             EventViewModel evnt = await eventService.GetById(id);
             if (evnt == null)
             {
                 return NotFound("Събитието не е намерено.");
             }
 
-            // Взимаме превозните средства на потребителя
-            var userId = _userManager.GetUserId(User); // Предполагаем метод за вземане на ID на текущия потребител
+           
+            var userId = _userManager.GetUserId(User); 
             List<VehicleViewModel> vehicles = vehicleService.GetByUserId(userId).ToList();
 
-            // Създаваме ViewModel
             var viewModel = new EventSubscribeViewModel
             {
                 EventId = evnt.Id,
@@ -380,7 +380,7 @@ namespace MotorFest.Controllers
                 return View(model);
             }
 
-            // Проверяваме дали превозното средство е валидно за потребителя
+            
             var userId = _userManager.GetUserId(User);
             VehicleViewModel vehicle = await vehicleService.GetById(model.SelectedVehicleId);
             if (vehicle == null || vehicle.OwnerId != userId)
@@ -389,7 +389,7 @@ namespace MotorFest.Controllers
                 return View(model);
             }
 
-            // Добавяме връзка между събитието и превозното средство
+           
             var success = eventService.RegisterVehicleForEvent(model.EventId, vehicle.Id);
             if (!success)
             {
@@ -442,7 +442,7 @@ namespace MotorFest.Controllers
                     e.EventName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            // Paginate the results
+          
             int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedLocations = events.ToPagedList(pageNumber, pageSize);

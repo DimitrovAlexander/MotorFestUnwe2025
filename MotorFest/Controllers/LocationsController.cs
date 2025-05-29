@@ -83,10 +83,11 @@ namespace MotorFest.Controllers
         [Authorize(Roles = "Administrator,Organizer")]
         public async Task<IActionResult> Create(LocationViewModel address, string returnUrl)
         {
+            ModelState.Remove("returnUrl");
             if (ModelState.IsValid)
             {
                 await addressService.Create(address);
-                TempData.Add("successMessage", "Успешно добавихте локация");
+                TempData["successMessage"] = "Успешно добавихте локация";
                 return Redirect(returnUrl ?? Url.Action(nameof(Index)));
             }
             return View(address);
@@ -135,7 +136,7 @@ namespace MotorFest.Controllers
                    
 
                 }
-                TempData.Add("successMessage", "Успешно редактирахте локация");
+                TempData["successMessage"] = "Успешно редактирахте локация";
                 return RedirectToAction(nameof(Index));
             }
             return View(address);
@@ -166,7 +167,7 @@ namespace MotorFest.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
            await addressService.Delete(id);
-            TempData.Add("successMessage", "Успешно изтрихте локация");
+            TempData["successMessage"] = "Успешно изтрихте локация";
             return RedirectToAction(nameof(Index));
         }
 

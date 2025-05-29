@@ -270,6 +270,18 @@ namespace MotorFest.Services.EventsService
             var eventEntity = await _context.Events.FindAsync(id);
             if (eventEntity != null)
             {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", eventEntity.EventLogo);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                foreach (var photo in eventEntity.EventPhotos)
+                {
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
                 _context.Events.Remove(eventEntity);
                 await _context.SaveChangesAsync();
                 return true;

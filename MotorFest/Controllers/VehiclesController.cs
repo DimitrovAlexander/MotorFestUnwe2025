@@ -149,7 +149,7 @@ namespace MotorFest.Controllers
                 vehicle.OwnerId = user.Id;
                 if (await vehicleService.Create(vehicle))
                 {
-                    TempData.Add("successMessage", "Успешно добавихте превозно средство");
+                    TempData["successMessage"] = "Успешно добавихте превозно средство";
                     return RedirectToAction(nameof(Index));
                 }
                 ;
@@ -277,18 +277,15 @@ namespace MotorFest.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicle = await vehicleService.GetById(id);
-            if (vehicle != null)
-            {
-                await vehicleService.Delete(id);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", vehicle.Photo);
-                if (System.IO.File.Exists(filePath)) // Ensure the file exists before attempting to delete
-                {
-                    System.IO.File.Delete(filePath); // Use the fully qualified name for File.Delete
-                }
-            }
 
-            return RedirectToAction(nameof(Index));
+            var result = await vehicleService.Delete(id);
+            if (result)
+            {
+                return RedirectToAction(nameof(Index));
+
+            }
+            return NotFound();
+
         }
 
 

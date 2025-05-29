@@ -56,6 +56,9 @@
 						</td>
 						<td>
 							<a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+
+								<a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-outline-danger btn-sm mx-1">🗑 Изтрий</a>
+							
 						</td>
 					</tr>
 				}
@@ -88,6 +91,9 @@
 							}
 						</p>
 						<a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-outline-primary btn-sm">ℹ️ Детайли</a>
+
+							<a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-outline-danger btn-sm mx-1">🗑 Изтрий</a>
+						
 					</div>
 				</div>
 			</div>

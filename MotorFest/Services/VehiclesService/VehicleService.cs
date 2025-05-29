@@ -41,6 +41,11 @@ namespace MotorFest.Services.VehiclesService
             var vehicle = dbContext.Vehicles.FirstOrDefault(x => x.Id == id);
             if (vehicle != null)
             {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", vehicle.Photo);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
                 var registrations = dbContext.EventRegistrations.Where(x => x.VehicleId == vehicle.Id);
                 dbContext.EventRegistrations.RemoveRange(registrations);
                 dbContext.Vehicles.Remove(vehicle);

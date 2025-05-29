@@ -15,6 +15,57 @@ namespace MotorFest.Services.UsersViewService
             this.dbContext = dbContext;
         }
 
+        public Task<bool> Delete(string id, UsersViewViewModel usersViewViewModel)
+        {
+            var user = dbContext.Users.FirstOrDefault(x => x.Id == id);
+            if (user == null)
+            {
+                return Task.FromResult(false);
+            }
+            if (usersViewViewModel.RoleName == "Organizer")
+            {
+                var events = dbContext.Events.Where(e => e.OrganizerId == user.Id).ToList();
+                foreach (var ev in events)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", ev.EventLogo);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                    foreach (var photo in ev.EventPhotos)
+                    {
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                    }
+                    dbContext.EventRegistrations.RemoveRange(dbContext.EventRegistrations.Where(er => er.EventId == ev.Id));
+                    dbContext.EventVehicleCategories.RemoveRange(dbContext.EventVehicleCategories.Where(evc => evc.EventId == ev.Id));
+                    dbContext.EventEngineTypes.RemoveRange(dbContext.EventEngineTypes.Where(eet => eet.EventId == ev.Id));
+                    dbContext.Events.Remove(ev);
+                }
+                dbContext.Users.Remove(user);
+            }
+            if (usersViewViewModel.RoleName == "Participant" )
+            {
+                var vehicles = dbContext.Vehicles.Where(v => v.OwnerId == user.Id).ToList();
+                foreach (var vehicle in vehicles)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", vehicle.Photo);
+                    if (System.IO.File.Exists(filePath)) // Ensure the file exists before attempting to delete
+                    {
+                        System.IO.File.Delete(filePath); // Use the fully qualified name for File.Delete
+                    }
+                    dbContext.EventRegistrations.RemoveRange(dbContext.EventRegistrations.Where(er => er.VehicleId == vehicle.Id));
+                  
+                    dbContext.Vehicles.Remove(vehicle);
+                }
+                dbContext.Users.Remove(user);
+            }
+            dbContext.SaveChanges();
+            return Task.FromResult(true);
+        }
+
         public ICollection<UsersViewViewModel> GetAll()
         {
             return dbContext.UsersView
@@ -50,9 +101,6 @@ namespace MotorFest.Services.UsersViewService
             return userViewModel;
         }
 
-        public Task<bool> Update(int id, UsersViewViewModel entity)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

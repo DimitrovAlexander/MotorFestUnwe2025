@@ -73,7 +73,8 @@
     </div>
 
     <!-- Card View -->
-    <div id="cardView" class="row">
+    <div id="cardViews" class="row d-none">
+        
         @foreach (var evnt in Model)
         {
             <div class="col-md-4">
@@ -110,6 +111,7 @@
         }
     </div>
 
+
     <!-- Pagination Controls -->
     <div class="pagination justify-content-center">
         @Html.PagedListPager(Model, page => Url.Action("Statistics", new { page, searchString = ViewData["CurrentFilter"] }),
@@ -121,12 +123,54 @@
         })
     </div>
 </div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="infoToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">MotorFest</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Ако нужда от помощ и съдействие, моля свържете се с администратор на адрес info.motorfest@gmail.com.
+        </div>
+    </div>
+</div>
 
-<script>
-    document.getElementById("toggleView").addEventListener("click", function () {
-        document.getElementById("cardView").classList.toggle("d-none");
-        document.getElementById("tableView").classList.toggle("d-none");
-    });
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tableView = document.getElementById("tableView");
+            const cardsView = document.getElementById("cardViews"); // <-- Тук е с "s"
+            const toggleBtn = document.getElementById("toggleView");
+
+            // Check the last selected view mode
+            let currentView = localStorage.getItem("viewModeStatistics") || "table";
+            updateView(currentView);
+
+            toggleBtn.addEventListener("click", function () {
+                currentView = (currentView === "table") ? "cards" : "table";
+                localStorage.setItem("viewModeStatistics", currentView);
+                updateView(currentView);
+            });
+
+            function updateView(viewMode) {
+                if (viewMode === "table") {
+                    tableView.classList.remove("d-none");
+                    cardsView.classList.add("d-none");
+                } else {
+                    tableView.classList.add("d-none");
+                    cardsView.classList.remove("d-none");
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastEl = document.getElementById("infoToast");
+            if (toastEl) {
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        });
+
+ 
 </script>
 
 

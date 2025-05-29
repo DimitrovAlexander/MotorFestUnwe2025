@@ -1,0 +1,46 @@
+﻿@model MotorFest.Models.User.UsersViewViewModel
+<div class="container mt-5">
+     <form asp-action="Delete">
+    <h2 class="mb-4">Сигурни ли сте, че искате да изтриете:</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@Model.FullName</h5>
+            <p class="card-text"><strong>Id:</strong> @Model.UserId</p>
+            <p class="card-text"><strong>Имейл:</strong> @Model.Email</p>
+            @if (Model.RoleName == "Organizer")
+            {
+
+                <p class="card-text"><strong>Роля:</strong> Организатор</p>
+            }
+            else if (Model.RoleName == "Administrator")
+            {
+                <p class="card-text"><strong>Роля:</strong> Администратор</p>
+
+            }
+            else if (Model.RoleName == "Participant")
+            {
+                <p class="card-text"><strong>Роля:</strong> Участник</p>
+
+            }
+            @if (Model.RoleName == "Organizer" || Model.RoleName == "Administrator")
+            {
+
+                <p class="card-text"><strong>Брой на организираните събития:</strong> @Model.OrganizedEventsCount</p>
+            }
+            @if (Model.RoleName == "Participant" || Model.RoleName == "Administrator")
+            {
+                <p class="card-text"><strong>Брой на регистрираните превозни средства:</strong> @Model.VehicleCount</p>
+                <p class="card-text"><strong>Брой на събитията, за които е регистриран:</strong> @Model.ParticipatedEventsCount</p>
+
+            }
+
+
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="RoleName" />
+
+                <button type="submit" class="btn btn-danger">Изтрий</button>
+            <a asp-action="Index" class="btn custom-primary-btn">Назад към списъка</a>
+        </div>
+    </div>
+    </form>
+</div>

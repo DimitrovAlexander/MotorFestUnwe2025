@@ -1,41 +1,4 @@
-﻿@* @model IEnumerable<MotorFest.Models.Event.EventViewModel>
-
-<h1>Календар на събитията</h1>
-
-<div class="calendar-container">
-	@foreach (var eventGroup in Model.GroupBy(e => e.EventDate.Date))
-	{
-		<div class="day-events">
-			<h3>@eventGroup.Key.ToString("dd MMM yyyy")</h3>
-			<ul>
-				@foreach (var ev in eventGroup)
-				{
-					<li>
-						<img src="@ev.EventLogo" alt="Снимка на събитието" class="event-logo img-fluid rounded shadow" />
-						@if (ev.EntranceFee == 0)
-						{
-							<a asp-action="Details" asp-route-id="@ev.Id" class="event-link">
-								@ev.Name - Вход свободен
-							</a>
-						}
-						else
-						{
-
-							<a asp-action="Details" asp-route-id="@ev.Id" class="event-link">
-								@ev.Name - Вход: @ev.EntranceFee лв.
-							</a>
-						}
-					</li>
-				}
-			</ul>
-		</div>
-	}
-</div>
-</br>
-<a asp-action="Index" class="btn custom-primary-btn">Назад</a>
- *@
-
- @model IEnumerable<MotorFest.Models.Event.EventViewModel>
+﻿@model IEnumerable<MotorFest.Models.Event.EventViewModel>
 
 <div class="container mt-5">
 	<h2 class="mb-4 text-center">Календар на събитията</h2>
@@ -79,3 +42,29 @@
 		<a asp-action="Index" class="btn custom-primary-btn mt-3">Назад</a>
 	</div>
 </div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="infoToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<strong class="me-auto">MotorFest</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body">
+			Ако нужда от помощ и съдействие, моля свържете се с администратор на адрес info.motorfest@gmail.com.
+		</div>
+	</div>
+</div>
+<script>
+	 document.addEventListener("DOMContentLoaded", function () {
+
+			var toastEl = document.getElementById("infoToast");
+			if (toastEl) {
+				console.log("Toast елементът е намерен!"); // Дебъг
+				var toast = new bootstrap.Toast(toastEl);
+				toast.show();
+
+			} else {
+				console.error("Toast елементът не е намерен!"); // Дебъг
+			}
+
+	});
+</script>
