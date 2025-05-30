@@ -62,7 +62,7 @@ namespace MotorFest.Models.Event
         public bool IsCanceled { get; set; }
         public virtual ICollection<EventRegistrationViewModel> EventRegistration { get; set; } = new HashSet<EventRegistrationViewModel>();
 
-        // Custom validation methods
+        
         public static ValidationResult ValidateEventDate(DateTime eventDate, ValidationContext context)
         {
             if (eventDate < DateTime.Now)

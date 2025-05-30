@@ -191,10 +191,10 @@ namespace MotorFest.Services.VehiclesService
         {
             var vehicleEntity = dbContext.Find<Vehicle>(id);
             vehicleEntity.YearOfManufacture = vehicle.YearOfManufacture;
-            //vehicleEntity.Photo = vehicle.Photo;
+            
             vehicleEntity.CategoryId=vehicle.CategoryId;
             vehicleEntity.EngineTypeId=vehicle.EngineTypeId;
-            //vehicleEntity.OwnerId=vehicle.OwnerId;
+            
             vehicleEntity.Model=vehicle.Model;
             vehicleEntity.Manufacturer = vehicle.Manufacturer;
 

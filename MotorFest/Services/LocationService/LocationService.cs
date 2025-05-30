@@ -65,12 +65,8 @@ namespace MotorFest.Services.LocationService
                      Events = address.Events.Select(eventEntity => new EventViewModel
                      {
                          Id = eventEntity.Id,
-                         //VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory=>new EventVehicleCategory
-                         //{
-                         //    EventId=vehicleCategory.EventId,
-                         //    VehicleCategoryId=vehicleCategory.VehicleCategoryId
-                         //}).ToList(),
                         
+                      
                          EventDate = eventEntity.EventDate,
                          EntranceFee = eventEntity.EntranceFee,
                          LocationId = eventEntity.LocationId,
@@ -91,11 +87,7 @@ namespace MotorFest.Services.LocationService
                 Events = address.Events.Select(eventEntity => new EventViewModel
                 {
                     Id = eventEntity.Id,
-                    //VehicleCategories = eventEntity.EventVehicleCategories.Select(vehicleCategory => new EventVehicleCategory
-                    //{
-                    //    EventId = vehicleCategory.EventId,
-                    //    VehicleCategoryId = vehicleCategory.VehicleCategoryId
-                    //}).ToList(),
+                    
                     EventDate = eventEntity.EventDate,
                     EntranceFee = eventEntity.EntranceFee,
                     LocationId = eventEntity.LocationId,

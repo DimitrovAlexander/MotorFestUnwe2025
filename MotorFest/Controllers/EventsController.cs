@@ -50,7 +50,9 @@ namespace MotorFest.Controllers
                                            e.EventDate.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                                             e.VehicleCategories.Any(vc => vc.CategoryName != null && vc.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
 
-                                           e.EngineTypes.Any(et => et.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                                           e.EngineTypes.Any(et => et.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) 
+                                         
+
                                           ).ToList();
             }
 

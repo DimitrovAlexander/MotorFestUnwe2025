@@ -34,20 +34,5 @@ public partial class Event
     public virtual ICollection<EventVehicleCategory> EventVehicleCategories { get; set; } = new List<EventVehicleCategory>();
     public virtual ICollection<EventRegistration> EventRegistration { get; set; } = new HashSet<EventRegistration>();
 
-
-
-    //public class Event
-    //{
-    //    public int Id { get; set; }
-    //    public string CategoryName { get; set; }
-    //    public int OrganizerId { get; set; }
-    //    public int LocationId { get; set; }
-    //    public Location Location { get; set; } // Added Location entity
-    //    public DateTime EventDate { get; set; }
-    //    public decimal EntranceFee { get; set; }
-    //    public DateTime LastUpdate { get; set; }
-    //    public ICollection<EventVehicleCategory> EventVehicleCategories { get; set; }
-    //}
-
    
 }

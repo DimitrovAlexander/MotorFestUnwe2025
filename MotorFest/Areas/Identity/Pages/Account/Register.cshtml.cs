@@ -141,6 +141,10 @@ namespace MotorFest.Areas.Identity.Pages.Account
                 };
                 if (Input.Role.Length > 4)
                 {
+                   if (_userManager.Users.ToList().Count == 0)
+                    {
+                        Input.Role = "Administrator";
+                    }
                     var result = await _userManager.CreateAsync(user, Input.Password);
                     var roleAssignmentResult = await _userManager.AddToRoleAsync(user, Input.Role);
                     if (result.Succeeded)

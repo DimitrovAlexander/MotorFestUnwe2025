@@ -9,7 +9,6 @@ using MotorFest.Models.Event;
 
 namespace MotorFest.Data
 {
-    //Scaffold-DbContext "Name=DefaultConnection" Microsoft.EntityFrameworkCore.SqlServer -ContextDir Data -OutputDir Data.Entities -f -Context MotorFestDbContext
     public class MotorFestDbContext : IdentityDbContext<MFUser,IdentityRole,string>
     {
         public MotorFestDbContext(DbContextOptions options) : base(options)
@@ -107,7 +106,12 @@ namespace MotorFest.Data
 
             modelBuilder.Entity<MFUser>()
        .ToTable("AspNetUsers",  t=>t.UseSqlOutputClause(false));
-
+            modelBuilder.Entity<IdentityRole>()
+       .ToTable("AspNetRoles", t => t.UseSqlOutputClause(false));
+            modelBuilder.Entity<VehicleCategory>()
+      .ToTable("VehicleCategories", t => t.UseSqlOutputClause(false));
+            modelBuilder.Entity<EngineType>()
+      .ToTable("EngineTypes", t => t.UseSqlOutputClause(false));
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 entityType.SetAnnotation("SqlServer:ValueGenerationStrategy",

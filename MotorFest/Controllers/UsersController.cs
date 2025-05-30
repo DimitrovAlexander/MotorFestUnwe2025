@@ -26,7 +26,6 @@ namespace MotorFest.Controllers
             ViewData["ShowLoadingScreen"] = true;
             var users = usersViewService.GetAll();
 
-            // Filter by search string
             if (!string.IsNullOrEmpty(searchString))
             {
                 users = users.Where(l =>
@@ -35,7 +34,7 @@ namespace MotorFest.Controllers
                     l.RoleName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            // Paginate the results
+            
             int pageSize = 6;
             int pageNumber = (page ?? 1);
             var pagedLocations = users.ToPagedList(pageNumber, pageSize);

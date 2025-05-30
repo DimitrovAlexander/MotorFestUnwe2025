@@ -15,7 +15,7 @@
         <a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
     </form>
 
-    <!-- Toggle View Buttons -->
+
     <div id="toggleView" class="d-flex justify-content-end mb-3">
         <a class="menu-button js-button fade-fly-in">
             <span class="button__inner">
@@ -23,7 +23,7 @@
                 <span class="button__hover js-button__hover">Превключи изгледа</span>
             </span>
         </a>
-        @* <button id="toggleView" class="btn btn-primary">Превключи изглед</button> *@
+
     </div>
 
     @if (!string.IsNullOrEmpty(successMessage))
@@ -33,7 +33,7 @@
 
     <a asp-action="Create" class="btn btn-primary mb-3">➕ Добави нов автомобил</a>
 
-    <!-- Table View -->
+   
     <div id="tableView">
         <table class="table table-striped table-hover">
             <thead>
@@ -71,7 +71,7 @@
         </table>
     </div>
 
-    <!-- Cards View -->
+   
     <div id="cardsView" class="row d-none">
         @foreach (var item in Model)
         {
@@ -97,7 +97,7 @@
         }
     </div>
 
-    <!-- Pagination Controls -->
+   
     <div class="pagination justify-content-center">
         @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
                  new PagedListRenderOptions
@@ -125,7 +125,7 @@
         const cardsView = document.getElementById("cardsView");
         const toggleBtn = document.getElementById("toggleView");
 
-        // Check the last selected view mode
+        
         let currentView = localStorage.getItem("viewMode") || "table";
         updateView(currentView);
 

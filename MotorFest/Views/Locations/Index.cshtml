@@ -13,13 +13,13 @@
                     <span class="button__hover js-button__hover">Превключи изглед</span>
                 </span>
             </button>
-            @* <button id="toggleViewBtn" class="btn btn-secondary">Превключи изглед</button> *@
+         
         </div>
     </div>
 
 
     <form asp-action="Index" method="get" class="d-flex justify-content-center mb-4 fade-fly-in">
-        <input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, град, община..." value="@ViewData["CurrentFilter"]" />
+        <input type="text" name="searchString" class="form-control w-50 mr-2" placeholder="🔍 Търсене по име, град, държава..." value="@ViewData["CurrentFilter"]" />
         <button type="submit" class="btn custom-primary-btn">Търсене</button>
         <a asp-action="Index" class="btn custom-secondary-btn ml-2">Изчисти</a>
     </form>
@@ -82,7 +82,7 @@
         </table>
     </div>
 
-    <!-- Картов изглед -->
+    
     <div id="cardView" class="row view-container fade-fly-in" style="display: none; ">
         @foreach (var location in Model)
         {
@@ -110,7 +110,7 @@
         }
     </div>
 
-    <!-- Pagination Controls -->
+   
     <div class="pagination justify-content-center fade-fly-in">
         @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }),
                  new PagedListRenderOptions
@@ -138,7 +138,7 @@
         const cardView = document.getElementById("cardView");
         const toggleBtn = document.getElementById("toggleViewBtn");
 
-        // Проверяваме последно избрания изглед
+      
         let currentView = localStorage.getItem("viewMode") || "table";
         updateView(currentView);
 

@@ -2,48 +2,66 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Влизане в акаунт";
+	ViewData["Title"] = "Влизане в акаунт";
 }
 
 
 <div class="row">
-    <div class="col-md-6 offset-md-3">
-        <section>
-            <form id="account" method="post">
-                <h2>Влезте в акаунта си, чрез Вашите имейл и парола.</h2> 
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"/>
-                    <label asp-for="Input.Email" class="form-label">Имейл</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true"/>
-                    <label asp-for="Input.Password" class="form-label">Парола</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg custom-primary-btn">Влез</button>
-                </div>
-                <div>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="event-link">Нямаш акаунт? Регистрирай се!</a>
-                    </p>
-                    
-                </div>
-            </form>
-        </section>
-    </div>
- 
+	<div class="col-md-6 offset-md-3">
+		<section>
+			<form id="account" method="post">
+				<h2>Влезте в акаунта си, чрез Вашите имейл и парола.</h2>
+				<hr />
+				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+				<div class="form-floating mb-3">
+					<input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+					<label asp-for="Input.Email" class="form-label">Имейл</label>
+					<span asp-validation-for="Input.Email" class="text-danger"></span>
+				</div>
+				<div class="form-floating mb-3">
+					<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" id="passwordInput" />
+					<label asp-for="Input.Password" class="form-label">Парола</label>
+					<span asp-validation-for="Input.Password" class="text-danger"></span>
+					<button type="button" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+							style="z-index:2;" tabindex="-1" onclick="togglePasswordVisibility('passwordInput', this)">
+						<span class="bi bi-eye" id="passwordToggleIcon"></span>
+					</button>
+				</div>
+				<div class="checkbox mb-3">
+					<label asp-for="Input.RememberMe" class="form-label">
+						<input class="form-check-input" asp-for="Input.RememberMe" />
+						@Html.DisplayNameFor(m => m.Input.RememberMe)
+					</label>
+				</div>
+				<div>
+					<button id="login-submit" type="submit" class="w-100 btn btn-lg custom-primary-btn">Влез</button>
+				</div>
+				<div>
+					<p>
+						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="event-link">Нямаш акаунт? Регистрирай се!</a>
+					</p>
+
+				</div>
+			</form>
+		</section>
+	</div>
+
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
+	<script>
+		function togglePasswordVisibility(inputId, btn) {
+				 const input = document.getElementById(inputId);
+				 const icon = btn.querySelector('span');
+				 if (input.type === "password") {
+					 input.type = "text";
+					 if (icon) icon.className = "bi bi-eye-slash";
+				 } else {
+					 input.type = "password";
+					 if (icon) icon.className = "bi bi-eye";
+				 }
+			 }
+	</script>
+
 }

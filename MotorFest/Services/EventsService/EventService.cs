@@ -55,9 +55,8 @@ namespace MotorFest.Services.EventsService
             LastUpdate = e.LastUpdate
 
         })
-        .OrderBy(x => x.EventDate).ToList(); // Тук материализираме данните
+        .OrderBy(x => x.EventDate).ToList(); 
 
-            // Добавяме информацията за това дали има записани превозни средства
             foreach (var ev in events)
             {
                 ev.HasVehicles = HasVehiclesForEvent(ev.Id);
@@ -101,9 +100,7 @@ namespace MotorFest.Services.EventsService
         })
         .Where(x => x.OrganizerId.Equals(userId))
         .OrderBy(x => x.EventDate)
-        .ToList(); // Тук материализираме данните
-
-            // Добавяме информацията за това дали има записани превозни средства
+        .ToList(); 
             foreach (var ev in events)
             {
                 ev.HasVehicles = HasVehiclesForEvent(ev.Id);
@@ -282,6 +279,21 @@ namespace MotorFest.Services.EventsService
                         System.IO.File.Delete(filePath);
                     }
                 }
+                var engineTypes = _context.EventEngineTypes.Where(x=>x.EventId== id);
+                foreach (var engineType in engineTypes) {
+
+                    _context.EventEngineTypes.Remove(engineType);
+                        }
+                var categories = _context.EventVehicleCategories.Where(x=>x.EventId== id);
+                foreach (var category in categories)
+                {
+                    _context.EventVehicleCategories.Remove(category);
+                }
+                var registrations = _context.EventRegistrations.Where(x=>x.EventId== id);
+                foreach (var registration in registrations)
+                {
+                    _context.EventRegistrations.Remove(registration);
+                }
                 _context.Events.Remove(eventEntity);
                 await _context.SaveChangesAsync();
                 return true;
@@ -376,7 +388,7 @@ namespace MotorFest.Services.EventsService
         {
             var vehicle = _context.Vehicles.AsNoTracking().FirstOrDefault(v => v.Id == vehicleId);
             var evnt = _context.Events.AsNoTracking().FirstOrDefault(e => e.Id == eventId);
-            // Извличаме категорията на превозното средство
+           
             var vehicleCategoryId = vehicle.CategoryId;
             var vehicleEngineType = vehicle.EngineTypeId;
             if (vehicleCategoryId == 0)

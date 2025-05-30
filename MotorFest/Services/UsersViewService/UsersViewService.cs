@@ -52,9 +52,9 @@ namespace MotorFest.Services.UsersViewService
                 foreach (var vehicle in vehicles)
                 {
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", vehicle.Photo);
-                    if (System.IO.File.Exists(filePath)) // Ensure the file exists before attempting to delete
+                    if (System.IO.File.Exists(filePath)) 
                     {
-                        System.IO.File.Delete(filePath); // Use the fully qualified name for File.Delete
+                        System.IO.File.Delete(filePath); 
                     }
                     dbContext.EventRegistrations.RemoveRange(dbContext.EventRegistrations.Where(er => er.VehicleId == vehicle.Id));
                   

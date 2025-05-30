@@ -13,7 +13,7 @@ namespace MotorFest.Data.Entities
 
         public DateTime LastUpdate { get; set; } = DateTime.Now;
 
-        // Навигационни свойства
+       
         public Event Event { get; set; }
         public Vehicle Vehicle { get; set; }
     }
