@@ -26,12 +26,20 @@ namespace MotorFest.Services.EventsService
         .Include(e => e.Location)
         .Include(e => e.EventEngineTypes)
         .Include(e => e.EventVehicleCategories)
+        .Include(e => e.Organizer)
         .Select(e => new EventViewModel
         {
             Id = e.Id,
             Name = e.Name,
             Description = e.Description,
             OrganizerId = e.OrganizerId,
+            Organizer = new UserViewModel
+            {
+                Id = e.Organizer.Id,
+                Firstname = e.Organizer.Firstname,
+                Lastname = e.Organizer.Lastname,
+                
+            },
             LocationId = e.LocationId,
             EventDate = e.EventDate,
             EntranceFee = e.EntranceFee,
@@ -116,6 +124,7 @@ namespace MotorFest.Services.EventsService
                 .Include(e => e.EventVehicleCategories)
                 .ThenInclude(ec => ec.VehicleCategory)
                 .Include(e => e.Location)
+                .Include(e => e.Organizer)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (eventEntity == null) return null;
@@ -124,7 +133,12 @@ namespace MotorFest.Services.EventsService
             {
                 Id = eventEntity.Id,
                 Name = eventEntity.Name,
-
+                Organizer = new UserViewModel
+                {
+                    Id = eventEntity.Organizer.Id,
+                    Firstname = eventEntity.Organizer.Firstname,
+                    Lastname = eventEntity.Organizer.Lastname,
+                },
                 OrganizerId = eventEntity.OrganizerId,
                 LocationId = eventEntity.LocationId,
                 EventDate = eventEntity.EventDate,

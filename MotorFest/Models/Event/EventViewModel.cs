@@ -3,6 +3,7 @@ using MotorFest.Data.Entities;
 using MotorFest.Models.EventRegistration;
 using MotorFest.Models.EventVehicleCategory;
 using MotorFest.Models.Location;
+using MotorFest.Models.User;
 using MotorFest.Models.VehicleCategories;
 
 namespace MotorFest.Models.Event
@@ -58,7 +59,7 @@ namespace MotorFest.Models.Event
         public DateTime LastUpdate { get; set; }
 
         public virtual LocationViewModel Location { get; set; } = null!;
-        public virtual MFUser Organizer { get; set; } = null!;
+        public virtual UserViewModel Organizer { get; set; } = null!;
         public bool IsCanceled { get; set; }
         public virtual ICollection<EventRegistrationViewModel> EventRegistration { get; set; } = new HashSet<EventRegistrationViewModel>();
 

@@ -18,6 +18,11 @@
 								<img src="@ev.EventLogo" class="card-img-top img-fluid rounded-top" alt="Снимка на събитието">
 								<div class="card-body">
 									<h5 class="card-title">@ev.Name</h5>
+									@if (User.IsInRole("Administrator"))
+									{
+										<p class="card-title mt-auto"><i class="bi bi-person"></i>Ораганизатор:</p>
+										<p class="text-muted"><i class="bi bi-person"></i>@ev.Organizer.Firstname @ev.Organizer.Lastname</p>
+									}
 									<p class="card-text">
 										@if (ev.EntranceFee == 0)
 										{

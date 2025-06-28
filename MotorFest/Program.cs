@@ -35,7 +35,7 @@ namespace MotorFest
             builder.Services.AddScoped<IEventService,EventService>();
             builder.Services.AddScoped<IUsersViewService,UsersViewService>();
             builder.Services.AddScoped<IEventsViewService,EventsViewService>();
-           
+           builder.Services.AddLogging();
             builder.Services.AddControllersWithViews()
     .AddMvcOptions(options =>
     {

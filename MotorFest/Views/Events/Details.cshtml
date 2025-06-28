@@ -8,6 +8,10 @@
 	<div class="event-header text-center mb-4">
 		<h1 class="event-title"> @Model.Name</h1>
 		<p class="event-date">📅 @Model.EventDate.ToShortDateString()</p>
+
+			
+			
+		
 		<img src="@Model.EventLogo" alt="Снимка на събитието" class="event-logo img-fluid rounded shadow">
 	</div>
 	@if (!string.IsNullOrEmpty(successMessage))
@@ -43,6 +47,7 @@
 		<div class="col-lg-4">
 			<div class="event-info p-4 rounded shadow">
 				<h4>ℹ Детайли за събитието</h4>
+				<p><strong>Организатор: </strong>@Model.Organizer.Firstname @Model.Organizer.Lastname</p>
 				<p><strong>Място: </strong>@Model.Location.City, @Model.Location.FullAddress</p>
 				<p><strong>Описание:</strong> @Model.Description</p>
 
